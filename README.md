@@ -69,6 +69,28 @@ Every push to `main` on GitHub deploys automatically via Vercel.
 find the last good deployment, and click "… → Promote to Production". That's instant and
 doesn't touch git. Then fix the code at your leisure.
 
+## Photos the site is waiting for
+
+Drop files into `public/images/` with exactly these names and the placeholders
+become photos on the next deploy — no code changes. Landscape, 2000px+ on the
+long edge. Get written permission for any recognizable child.
+
+| File | What it should show |
+|---|---|
+| `building-exterior.jpg` | Building from the road, bright day |
+| `main-entrance.jpg` | The door visitors should actually use |
+| `parking-lot.jpg` | Lot, showing parking relative to that door |
+| `family-school-wide.jpg` | All ages together in one room (wide) |
+| `kids-class.jpg` | Kids class in session |
+| `checkin-station.jpg` | Check-in station in use |
+| `youth-group.jpg` | Youth group on a Wednesday night |
+| `young-adults-activity.jpg` | Young adults at an activity |
+| `choir.jpg` | Choir mid-song |
+| `orchestra.jpg` | Orchestra mid-song |
+| `missions-map.jpg` | Missionary map/display |
+| `church-center-screenshots.png` | Church Center app screenshots |
+| `staff/adam-summers.jpg` (etc.) | Staff headshots — square, consistent lighting; one per person, named after the file in `content/staff/` |
+
 ## Environment variables
 
 | Variable | What it does | Where to set it |

@@ -78,6 +78,10 @@ export default config({
             facebook: fields.url({ label: "Facebook" }),
             instagram: fields.url({ label: "Instagram" }),
             youtube: fields.url({ label: "YouTube" }),
+            youtubeChannelId: fields.text({
+              label: "YouTube channel ID",
+              description: "Technical ID used for video embeds — don't change unless the channel changes",
+            }),
           },
           { label: "Social links" }
         ),
