@@ -1,11 +1,17 @@
 import Link from "next/link";
 import site from "@/content/site.json";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 
 // A 404 should answer the question the visitor probably had anyway:
 // when do you meet, where are you, and how do I plan a visit.
+// Header/Footer are included directly because this file lives outside
+// the (site) route group (Next.js requires the global 404 at app root).
 export default function NotFound() {
   return (
-    <main className="flex-1 px-4 py-20 text-center">
+    <>
+      <Header />
+      <main className="flex-1 px-4 py-20 text-center">
       <p className="text-sm font-semibold uppercase tracking-wider text-brand-700">
         Page not found
       </p>
@@ -42,6 +48,8 @@ export default function NotFound() {
           Go to the homepage
         </Link>
       </div>
-    </main>
+      </main>
+      <Footer />
+    </>
   );
 }

@@ -28,11 +28,38 @@ run it before pushing if you've edited code by hand.
 | Images | `public/images/` (logo is `public/images/logo.svg`) |
 | Secrets (Planning Center token, etc.) | `.env.local` — never committed, listed in `.gitignore` |
 
-## Changing a service time
+## Editing content — two paths, same files
 
-Edit the `services` array in `content/site.json`, commit, push. Vercel redeploys
-automatically. (Once Keystatic is set up in phase 3, this will also be editable in a
-browser at `/keystatic`.)
+**Path 1 (browser):** run `npm run dev`, open http://localhost:3000/keystatic.
+Edit Church Info (service times, address, links), Staff & Leaders, or
+Announcements. Saving writes to the files under `content/` — then commit and push.
+
+**Path 2 (files):** edit `content/site.json` or the `.mdx` files in
+`content/staff/` and `content/announcements/` directly, commit, push.
+
+Both paths touch the same files, so they can never disagree. Every push to
+`main` redeploys the live site automatically.
+
+### Adding a staff member
+
+/keystatic → Staff & Leaders → "+" → fill in name, role, display order, photo,
+bio → Save. Or copy an existing file in `content/staff/` and edit it.
+
+### Adding an announcement
+
+/keystatic → Announcements → "+". Set "Show until" — the announcement drops off
+the homepage automatically after that date, so you never have to remember to
+take it down.
+
+### Letting volunteers edit content (not set up yet)
+
+Right now `/keystatic` only works on a computer running the dev server, because
+Keystatic is in "local" storage mode. To let volunteers edit through the live
+website we switch `keystatic.config.ts` to GitHub storage mode, which requires a
+one-time setup: Keystatic walks you through creating a GitHub App on the repo,
+and volunteers then log in at `fbcchelsea… /keystatic` with GitHub accounts that
+have access to the repo. Their edits become git commits, same as everything
+else. Ask Claude Code to do this when you're ready to onboard a volunteer.
 
 ## Deploying and rolling back
 
