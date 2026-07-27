@@ -44,7 +44,9 @@ doesn't touch git. Then fix the code at your leisure.
 
 ## Environment variables
 
-None yet. Each one added in later phases will be documented here.
+| Variable | What it does | Where to set it |
+|---|---|---|
+| `NEXT_PUBLIC_SITE_URL` | The site's public URL (e.g. `https://fbc-website.vercel.app`). Used to build absolute links for Facebook/social previews. Optional — falls back to the Vercel deploy URL. | Vercel → project → Settings → Environment Variables |
 
 ## Known notes
 
