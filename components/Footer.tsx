@@ -1,18 +1,22 @@
 import Link from "next/link";
 import site from "@/content/site.json";
-import {
-  ministries,
-  planYourVisit,
-  primaryLinks,
-  secondaryLinks,
-} from "@/lib/nav";
 
-// Site-wide footer: service times, address, contact, nav, socials.
-// Everything factual comes from content/site.json.
+// Site-wide footer, kept deliberately light: service times, address/contact,
+// and a short list of the links people actually look for. The full page list
+// lives in the header menu — repeating all of it here just adds noise.
+const quickLinks = [
+  { label: "Plan Your Visit", href: "/plan-your-visit" },
+  { label: "Common Questions", href: "/common-questions" },
+  { label: "Sermons", href: "/sermons" },
+  { label: "Events", href: "/events" },
+  { label: "Give", href: "/give" },
+  { label: "Contact", href: "/contact" },
+];
+
 export default function Footer() {
   return (
     <footer className="bg-slate-950 text-slate-300">
-      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:grid-cols-3">
         <div>
           <h2 className="text-sm font-semibold uppercase tracking-wider text-white">
             Service Times
@@ -57,10 +61,10 @@ export default function Footer() {
 
         <div>
           <h2 className="text-sm font-semibold uppercase tracking-wider text-white">
-            Pages
+            Quick Links
           </h2>
-          <ul className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-            {[planYourVisit, ...primaryLinks, ...ministries.links, ...secondaryLinks].map((l) => (
+          <ul className="mt-4 space-y-2 text-sm">
+            {quickLinks.map((l) => (
               <li key={l.href}>
                 <Link href={l.href} className="hover:text-white">
                   {l.label}
@@ -69,42 +73,28 @@ export default function Footer() {
             ))}
           </ul>
         </div>
-
-        <div>
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-white">
-            Connect
-          </h2>
-          <ul className="mt-4 space-y-2 text-sm">
-            <li>
-              <a href={site.social.facebook} className="hover:text-white">
-                Facebook
-              </a>
-            </li>
-            <li>
-              <a href={site.social.instagram} className="hover:text-white">
-                Instagram
-              </a>
-            </li>
-            <li>
-              <a href={site.social.youtube} className="hover:text-white">
-                YouTube
-              </a>
-            </li>
-            <li>
-              <a href={site.links.churchCenter} className="hover:text-white">
-                Church Center
-              </a>
-            </li>
-          </ul>
-        </div>
       </div>
 
       <div className="border-t border-slate-800">
-        <p className="mx-auto max-w-6xl px-4 py-6 text-center text-xs text-slate-500">
-          © {new Date().getFullYear()} {site.name} of Chelsea ·{" "}
-          {site.address.street}, {site.address.city}, {site.address.state}{" "}
-          {site.address.zip}
-        </p>
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-4 py-6 sm:flex-row sm:justify-between">
+          <p className="text-xs text-slate-500">
+            © {new Date().getFullYear()} {site.name} of Chelsea
+          </p>
+          <p className="flex gap-5 text-xs">
+            <a href={site.social.facebook} className="text-slate-400 hover:text-white">
+              Facebook
+            </a>
+            <a href={site.social.instagram} className="text-slate-400 hover:text-white">
+              Instagram
+            </a>
+            <a href={site.social.youtube} className="text-slate-400 hover:text-white">
+              YouTube
+            </a>
+            <a href={site.links.churchCenter} className="text-slate-400 hover:text-white">
+              Church Center
+            </a>
+          </p>
+        </div>
       </div>
     </footer>
   );

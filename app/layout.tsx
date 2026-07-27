@@ -8,12 +8,12 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-// NEXT_PUBLIC_SITE_URL is set in Vercel (and .env.local) to the site's
-// public URL so Open Graph tags resolve to absolute links. Falls back to
-// the Vercel preview URL, then localhost, so builds never fail without it.
+// The site's public URL, used to build absolute links for Facebook/social
+// previews. NEXT_PUBLIC_SITE_URL (set in Vercel) overrides the default —
+// when we eventually cut over to fbcchelsea.org, set it there or update
+// the fallback below.
 const siteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ??
-  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://fbc-website-delta.vercel.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
