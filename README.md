@@ -95,7 +95,24 @@ long edge. Get written permission for any recognizable child.
 
 | Variable | What it does | Where to set it |
 |---|---|---|
-| `NEXT_PUBLIC_SITE_URL` | The site's public URL (e.g. `https://fbc-website.vercel.app`). Used to build absolute links for Facebook/social previews. Optional — falls back to the Vercel deploy URL. | Vercel → project → Settings → Environment Variables |
+| `NEXT_PUBLIC_SITE_URL` | The site's public URL. Used to build absolute links for Facebook/social previews. Optional — falls back to the production URL baked into `app/layout.tsx`. | Vercel → project → Settings → Environment Variables |
+| `PCO_APP_ID` | Planning Center Personal Access Token — the Application ID half. | Vercel env vars + `.env.local` |
+| `PCO_SECRET` | Planning Center Personal Access Token — the Secret half. Server-side only; never sent to browsers. | Vercel env vars + `.env.local` |
+
+## How the Events page works
+
+Upcoming events come from two places, merged on the page:
+
+1. **Planning Center Registrations** — every open, non-archived signup shows
+   automatically with its date, description, image, and Register button.
+   Cached for 15 minutes; if Planning Center is unreachable the section
+   quietly disappears rather than erroring (last-known-good stays up until
+   the next successful refresh).
+2. **Announcements** (`/keystatic` → Announcements) — for anything that isn't
+   a registration: potlucks, schedule changes, etc.
+
+**Is something broken?** Open `/admin/health` on the live site — it probes
+each Planning Center product live and tells you exactly what's wrong.
 
 ## Known notes
 
