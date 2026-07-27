@@ -1,36 +1,58 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Faith Baptist Church of Chelsea — Website
 
-## Getting Started
+The new fbcchelsea.org, built with Next.js (App Router), TypeScript, and Tailwind CSS.
+Deployed on Vercel. The old WordPress site stays live and untouched until we cut over.
 
-First, run the development server:
+This README is the manual. If something here is out of date or confusing, that's a bug —
+fix it or ask Claude Code to.
+
+## Running it locally
+
+You need Node.js 20+ (you have it via nvm). Then:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install    # once, or after pulling changes that touch package.json
+npm run dev    # starts the site at http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Stop it with Ctrl+C. `npm run build` checks that the site compiles for production —
+run it before pushing if you've edited code by hand.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Where things live
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| What | Where |
+|---|---|
+| Church facts (times, address, phone, links) | `content/site.json` — edit this, not the components |
+| Page copy, bios, ministries | `content/` (Markdown/JSON — coming in phase 3) |
+| Pages (one folder per page) | `app/` |
+| Images | `public/images/` (logo is `public/images/logo.svg`) |
+| Secrets (Planning Center token, etc.) | `.env.local` — never committed, listed in `.gitignore` |
 
-## Learn More
+## Changing a service time
 
-To learn more about Next.js, take a look at the following resources:
+Edit the `services` array in `content/site.json`, commit, push. Vercel redeploys
+automatically. (Once Keystatic is set up in phase 3, this will also be editable in a
+browser at `/keystatic`.)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deploying and rolling back
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Every push to `main` on GitHub deploys automatically via Vercel.
 
-## Deploy on Vercel
+**To roll back a bad deploy:** go to the Vercel dashboard → the project → Deployments,
+find the last good deployment, and click "… → Promote to Production". That's instant and
+doesn't touch git. Then fix the code at your leisure.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Environment variables
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+None yet. Each one added in later phases will be documented here.
+
+## Known notes
+
+- `npm audit` reports a `brace-expansion` advisory inside ESLint's dependencies. That's
+  a development-only tool — it never ships to the live site. Don't run
+  `npm audit fix --force`; it would break the linter. `sharp` (the image processor that
+  *does* ship) is pinned to a patched version via the `overrides` field in `package.json`.
+
+## Future ideas
+
+- Sermon audio podcast (details to be written in phase 8)
