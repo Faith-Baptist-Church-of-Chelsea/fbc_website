@@ -1,0 +1,43 @@
+{
+  "name": "Faith Baptist Church",
+  "tagline": "An extremely friendly church that digs into the Word",
+  "address": {
+    "street": "4030 Kalmbach Rd",
+    "city": "Chelsea",
+    "state": "MI",
+    "zip": "48118",
+    "directionsNote": "I-94 Exit 156",
+    "mapsUrl": "https://maps.google.com/?q=4030+Kalmbach+Rd,+Chelsea,+MI+48118"
+  },
+  "phone": "(734) 433-1360",
+  "emails": {
+    "pastor": "pastorsummers@fbcchelsea.org",
+    "assistantPastor": "pastorsteve@fbcchelsea.org",
+    "office": "moriah@fbcchelsea.org"
+  },
+  "officeHours": [
+    { "days": "Monday–Thursday", "hours": "8:00 AM – 4:00 PM" },
+    { "days": "Wednesday evening", "hours": "open through the evening service" },
+    { "days": "Saturday", "hours": "8:00 AM – 12:00 PM" },
+    { "days": "Friday", "hours": "Closed" }
+  ],
+  "services": [
+    { "name": "Family School", "day": "Sunday", "time": "9:45 AM" },
+    { "name": "Morning Service", "day": "Sunday", "time": "11:00 AM" },
+    { "name": "Evening Service", "day": "Sunday", "time": "6:00 PM" },
+    { "name": "Midweek Service", "day": "Wednesday", "time": "7:00 PM" }
+  ],
+  "social": {
+    "facebook": "https://www.facebook.com/profile.php?id=100091820160379",
+    "instagram": "https://www.instagram.com/faith_baptist_church/",
+    "youtube": "https://www.youtube.com/@faithbaptistchurchofchelsea"
+  },
+  "links": {
+    "churchCenter": "https://fbcchelsea.churchcenter.com",
+    "giving": "https://fbcchelsea.churchtrac.com/give",
+    "missionaries": "https://fbcchelsea.churchcenter.com/pages/all-missionaries",
+    "unashamedRegistration": "https://fbcchelsea.churchcenter.com/registrations/events/3565632",
+    "appStoreChurchCenter": "https://apps.apple.com/us/app/church-center-app/id1357742931",
+    "googlePlayChurchCenter": "https://play.google.com/store/apps/details?id=com.ministrycentered.churchcenter"
+  }
+}

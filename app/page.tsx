@@ -1,65 +1,64 @@
 import Image from "next/image";
+import site from "@/content/site.json";
 
+// Phase 1 placeholder homepage. The real homepage (Plan Your Visit CTA,
+// this-week-at-a-glance, latest sermon, ministry entry points) lands in
+// phase 4. This page exists so the deploy pipeline has something honest
+// to show: who we are, when we meet, where we are.
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+    <main className="flex-1">
+      <section className="bg-white px-6 py-16 text-center">
         <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
+          src="/images/logo.svg"
+          alt={`${site.name} logo`}
+          width={320}
+          height={160}
           priority
+          className="mx-auto h-auto w-64 sm:w-80"
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+        <p className="mx-auto mt-6 max-w-xl text-lg text-slate-600">
+          {site.tagline}. A new website is on the way — in the meantime,
+          here&rsquo;s everything you need to join us this week.
+        </p>
+      </section>
+
+      <section className="bg-slate-900 px-6 py-16 text-white">
+        <div className="mx-auto max-w-3xl">
+          <h1 className="text-center text-3xl font-bold sm:text-4xl">
+            Join us this week
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
+          <ul className="mt-10 grid gap-4 sm:grid-cols-2">
+            {site.services.map((s) => (
+              <li
+                key={`${s.day}-${s.time}`}
+                className="rounded-lg bg-slate-800 p-6 text-center"
+              >
+                <p className="text-sm font-semibold uppercase tracking-wide text-sky-400">
+                  {s.day}
+                </p>
+                <p className="mt-1 text-2xl font-bold">{s.time}</p>
+                <p className="mt-1 text-slate-300">{s.name}</p>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-12 text-center">
             <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              href={site.address.mapsUrl}
+              className="text-lg font-semibold text-sky-400 underline-offset-4 hover:underline"
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+              {site.address.street}, {site.address.city}, {site.address.state}{" "}
+              {site.address.zip}
+            </a>
+            <p className="mt-1 text-slate-400">{site.address.directionsNote}</p>
+            <p className="mt-6 text-slate-300">
+              <a href={`tel:${site.phone.replace(/\D/g, "")}`} className="hover:text-white">
+                {site.phone}
+              </a>
+            </p>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </section>
+    </main>
   );
 }
