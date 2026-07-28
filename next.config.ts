@@ -7,9 +7,16 @@ const nextConfig: NextConfig = {
   // (chat-facts.md, staff bios, announcements). Vercel only bundles files
   // it can statically trace, so include the whole content folder for that
   // function explicitly.
+  // Every page that re-renders on Vercel (ISR or dynamic) reads content/
+  // through the Keystatic reader at runtime, so the content files must be
+  // bundled into EVERY serverless function — not just the API routes.
+  // Without this, the homepage's 15-minute regeneration finds no
+  // content/events/ and the carousel silently goes empty.
   outputFileTracingIncludes: {
-    "/api/ask": ["./content/**/*"],
-    "/api/digest": ["./content/**/*"],
+    "/": ["./content/**/*"],
+    "/**": ["./content/**/*"],
+    "/api/digest": ["./public/images/events/**/*"],
+    "/api/forms": ["./public/images/teachers/**/*"],
   },
   // node-ical must stay a plain Node dependency (bundling breaks it).
   serverExternalPackages: ["node-ical"],
