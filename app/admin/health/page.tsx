@@ -45,8 +45,28 @@ export default async function HealthPage() {
       : { name: "YouTube", ok: false, detail: "API key is set but the video list request failed — check quota or key restrictions." };
   }
 
+  const ai: HealthCheck = process.env.ANTHROPIC_API_KEY
+    ? { name: "AI (question bubble + admin editor)", ok: true, detail: "Anthropic API key present." }
+    : { name: "AI (question bubble + admin editor)", ok: false, detail: "ANTHROPIC_API_KEY not set — the chat bubble is hidden and the /admin editor is disabled." };
+
+  const adminEditor: HealthCheck =
+    process.env.ADMIN_PASSWORD && process.env.GITHUB_TOKEN
+      ? { name: "Admin editor (/admin)", ok: true, detail: "Password and GitHub token configured." }
+      : {
+          name: "Admin editor (/admin)",
+          ok: false,
+          detail: `Missing: ${[
+            !process.env.ADMIN_PASSWORD && "ADMIN_PASSWORD (pick any strong password)",
+            !process.env.GITHUB_TOKEN && "GITHUB_TOKEN (fine-grained PAT with Contents read/write on the repo)",
+          ]
+            .filter(Boolean)
+            .join(", ")}.`,
+        };
+
   const staticChecks: HealthCheck[] = [
     youtube,
+    ai,
+    adminEditor,
     process.env.RESEND_API_KEY
       ? {
           name: "Contact forms / email (Resend)",

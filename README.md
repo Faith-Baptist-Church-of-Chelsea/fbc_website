@@ -100,6 +100,40 @@ long edge. Get written permission for any recognizable child.
 | `PCO_SECRET` | Planning Center Personal Access Token — the Secret half. Server-side only; never sent to browsers. | Vercel env vars + `.env.local` |
 | `RESEND_API_KEY` | Lets form submissions send email. Without it, forms still record people in Planning Center but staff get no email (red on /admin/health). | Vercel env vars + `.env.local` |
 | `YOUTUBE_API_KEY` | Optional upgrade: verified "We're live" banner + sermon grid with titles/dates. Without it everything still works in keyless mode. | Vercel env vars + `.env.local` |
+| `ANTHROPIC_API_KEY` | Powers the visitor question bubble and the /admin plain-English editor. Without it the bubble is hidden and /admin is disabled. | Vercel env vars + `.env.local` |
+| `ADMIN_PASSWORD` | The password volunteers type on /admin. Pick something long; share it only with people allowed to change the site. | Vercel env vars + `.env.local` |
+| `GITHUB_TOKEN` | Lets /admin commit content changes to the repo. Fine-grained personal access token, ONLY the `fbc_website` repo, ONLY Contents read/write permission. | Vercel env vars + `.env.local` |
+
+## The visitor question bubble
+
+Every page has a chat bubble (bottom-right) where visitors can ask questions
+("What should I wear?", "Do you have a nursery?"). It answers using ONLY the
+church's own content — service times, the statement of faith, staff bios,
+announcements, and `content/chat-facts.md`. It refuses off-topic questions and
+points personal/pastoral matters to the pastors.
+
+**If it can't answer something people keep asking:** add the fact to
+`content/chat-facts.md` (editable via /admin too) and push.
+
+**Cost:** it runs on Claude (Anthropic's API). A typical question costs a few
+cents at most — usually under a cent once caching kicks in. At small-church
+traffic that's a few dollars a month. Set a spending limit in the Anthropic
+console for peace of mind.
+
+## The /admin plain-English editor
+
+`yoursite/admin` lets anyone with the admin password type a change in plain
+English ("move the Wednesday service to 6:30"), preview exactly what will
+change, and apply it. Under the hood: Claude edits the same `content/` files
+Keystatic edits, the server validates the result (only content files, JSON
+must stay valid, the statement of faith can't silently lose sections), and the
+change is committed to GitHub → auto-deploys in ~2 minutes.
+
+**Undoing a change:** every change is a git commit. `git revert <sha>` and
+push, or ask Claude Code. The commit message starts with "Admin panel:".
+
+**What it can't do:** new pages, design changes, photos — those still go
+through the code (and Steven).
 
 ## How the contact form works
 
