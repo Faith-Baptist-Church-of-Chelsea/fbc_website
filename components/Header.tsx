@@ -35,7 +35,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 bg-slate-950/95 backdrop-blur supports-[backdrop-filter]:bg-slate-950/85">
       <nav
         aria-label="Main"
-        className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-2 px-4"
+        className="mx-auto flex h-20 max-w-6xl items-center justify-between gap-2 px-4"
       >
         <Link href="/" onClick={close} className="flex shrink-0 items-center">
           <Image
@@ -44,7 +44,7 @@ export default function Header() {
             width={150}
             height={75}
             priority
-            className="h-12 w-auto"
+            className="h-14 w-auto sm:h-16"
           />
         </Link>
 
