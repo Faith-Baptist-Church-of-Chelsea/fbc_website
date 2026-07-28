@@ -89,8 +89,6 @@ export default function FbcKids() {
               minute, and a real person is at the station to help the first
               time.
             </p>
-            {/* TODO: Steven — CONFIRM this describes your actual check-in flow
-                (name tag + matching parent tag). Adjust if you run it differently. */}
           </div>
           <Photo
             src="/images/checkin-station.jpg"

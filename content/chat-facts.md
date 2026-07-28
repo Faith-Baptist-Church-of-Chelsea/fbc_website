@@ -8,9 +8,10 @@ answer, add the answer here.
 
 - First-time visitors usually come to the 11:00 AM Sunday morning service; it
   runs about an hour and 15 minutes.
-- Park anywhere in the lot; spots closest to the main entrance are for guests.
-  Greeters at the door help people find everything.
-- Dress: come as you are — some dress up, plenty don't.
+- There are marked visitor parking signs for first-time guests. Greeters at
+  the door help people find everything.
+- Dress: wear whatever you're comfortable in. Many wear suits and dresses,
+  some wear T-shirts — there is no judgment based on dress, either way.
 - Nobody is singled out: no standing up, no introducing yourself to the room.
 - The church is at 4030 Kalmbach Rd, Chelsea MI, just off I-94 Exit 156.
 
@@ -42,7 +43,10 @@ answer, add the answer here.
   children with special needs.
 - Young adults (18–30): activities organized by Matthew Dowdy, plus the
   Unashamed conference hosted at the church (Instagram:
-  @unashamed_fbcconference).
+  @unashamed_fbcconference). This year's Unashamed theme is "the Author and
+  Finisher of our Faith"; it runs Friday 7:00 PM through Saturday 4:30 PM
+  with special speaker Evan Scofield — details and registration at
+  fbcchelsea.churchcenter.com.
 
 ## Practical
 

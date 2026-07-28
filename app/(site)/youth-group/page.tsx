@@ -33,8 +33,6 @@ export default function YouthGroup() {
             one — talk to the Jaworskis on a Wednesday night for details and to
             get signed up.
           </p>
-          {/* TODO: Steven — if there's a Church Center registration link for the
-              trip, add a button here. */}
         </div>
       </section>
 

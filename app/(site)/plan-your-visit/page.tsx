@@ -11,11 +11,6 @@ export const metadata: Metadata = {
     "Where to park, which door to use, what to wear, and what happens with your kids — everything you need to know before your first Sunday at Faith Baptist Church in Chelsea.",
 };
 
-// TODO: Steven — the copy below makes a few assumptions that need your
-// confirmation before launch (grep for CONFIRM):
-//   CONFIRM which entrance visitors should use and where guest parking is
-//   CONFIRM typical service length (drafted as "about an hour and 15 minutes")
-//   CONFIRM the dress description matches reality
 export default function PlanYourVisit() {
   return (
     <main className="flex-1">
@@ -60,8 +55,9 @@ export default function PlanYourVisit() {
               downtown Chelsea.
             </p>
             <p className="mt-4 text-slate-600">
-              Park anywhere in our lot — the spots closest to the main entrance
-              are yours. Greeters at the door will help you find everything.
+              Look for the <span className="font-semibold text-slate-900">visitor parking signs</span> —
+              those spots are reserved for first-time guests. Greeters at the
+              door will help you find everything.
             </p>
           </div>
         </div>
@@ -79,8 +75,8 @@ export default function PlanYourVisit() {
               <figcaption className="mt-2 text-sm text-slate-600">The building, from Kalmbach Road</figcaption>
             </figure>
             <figure>
-              <Photo src="/images/parking-lot.jpg" alt="The church parking lot" width={800} height={600} />
-              <figcaption className="mt-2 text-sm text-slate-600">Park anywhere — close spots are for you</figcaption>
+              <Photo src="/images/parking-lot.jpg" alt="The church parking lot with visitor parking signs" width={800} height={600} />
+              <figcaption className="mt-2 text-sm text-slate-600">Visitor parking is marked — those spots are for you</figcaption>
             </figure>
             <figure>
               <Photo src="/images/main-entrance.jpg" alt="The main entrance visitors should use" width={800} height={600} />
@@ -96,8 +92,9 @@ export default function PlanYourVisit() {
           <div>
             <h2 className="text-xl font-bold text-slate-900">What should I wear?</h2>
             <p className="mt-3 text-slate-700">
-              Come as you are. You&rsquo;ll see a mix — some folks dress up for
-              church, plenty don&rsquo;t. Nobody is checking.
+              Whatever you&rsquo;re comfortable in. You&rsquo;ll see plenty of
+              suits and dresses and plenty of T-shirts, often in the same pew —
+              there is no judgment based on dress here, in either direction.
             </p>
           </div>
           <div>

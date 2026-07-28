@@ -39,9 +39,6 @@ export default async function About() {
             missionaries around the world, and welcoming whoever walks through
             the door.
           </p>
-          {/* TODO: Steven — anything else worth telling here? Building history,
-              growth, memorable chapters? This is intentionally short until you
-              add what matters. */}
         </div>
       </section>
 
