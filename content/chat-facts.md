@@ -6,8 +6,12 @@ answer, add the answer here.
 
 ## Visiting
 
-- First-time visitors usually come to the 11:00 AM Sunday morning service; it
-  runs about an hour and 15 minutes.
+- Any service is a great first visit — each one is completely different, so
+  visitors should come to whichever fits their week. Services run about an
+  hour and 15 minutes.
+- First stop: the welcome desk, right inside the main entrance. There's a
+  free gift for first-time visitors, and it's where every question gets
+  answered (where the nursery is, where classes meet, and so on).
 - There are marked visitor parking signs for first-time guests. Greeters at
   the door help people find everything.
 - Dress: wear whatever you're comfortable in. Many wear suits and dresses,

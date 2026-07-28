@@ -19,6 +19,7 @@ export type Submission = {
   phone?: string;
   message: string;
   confidential?: boolean;
+  kidsAges?: string;
 };
 
 const KIND_LABEL: Record<Submission["kind"], string> = {
@@ -55,8 +56,9 @@ export async function sendFormEmail(s: Submission): Promise<boolean> {
       subject: `[Website] ${KIND_LABEL[s.kind]} — ${s.name}`,
       text:
         `${KIND_LABEL[s.kind]}${confidentialNote}\n` +
-        `Name: ${s.name}\nEmail: ${s.email}\nPhone: ${s.phone || "—"}\n\n` +
-        `${s.message}\n\n— Sent from the website contact form. Reply goes to the sender.`,
+        `Name: ${s.name}\nEmail: ${s.email}\nPhone: ${s.phone || "—"}\n` +
+        (s.kidsAges ? `Kids' ages: ${s.kidsAges} (they were sent the teacher-introduction email)\n` : "") +
+        `\n${s.message}\n\n— Sent from the website contact form. Reply goes to the sender.`,
     });
     if (error) {
       console.warn("[forms] Resend error:", error.message);
@@ -65,6 +67,82 @@ export async function sendFormEmail(s: Submission): Promise<boolean> {
     return true;
   } catch (err) {
     console.warn("[forms] email failed:", err instanceof Error ? err.message : err);
+    return false;
+  }
+}
+
+// ---------- Visitor welcome email (sent when someone plans a visit) ----------
+
+// Maps a child's age to their Sunday/Wednesday classes and teachers.
+// Update alongside the FBC Kids page if classes or teachers change.
+function classesForAge(age: number): string | null {
+  if (age <= 3) {
+    return `age ${age}: our staffed nursery is open at every single service — drop in whenever you're ready, or keep your little one with you. Both are genuinely fine.`;
+  }
+  if (age <= 4) {
+    return `age ${age}: Sundays at 11:00, Ben & Amanda Bolen's class — a couple with two kids of their own and a heart for helping young children understand God's Word. Wednesdays at 7:00 they'd join Scott & Heather Turnbow's lively class for ages 3–7.`;
+  }
+  if (age <= 7) {
+    return `age ${age}: Sundays at 11:00 with Haley Sackmann, who is passionate about helping kids grow in their understanding of God's Word. Wednesdays at 7:00 with Scott & Heather Turnbow — a joyful, nurturing class.`;
+  }
+  if (age <= 12) {
+    return `age ${age}: Sundays at 11:00 with Abi Wireman, who loves helping preteens grow in their faith. Wednesdays at 7:00 with Moriah Summers, who makes lessons practical and relatable.`;
+  }
+  if (age <= 18) {
+    return `age ${age}: our youth group (ages 12–18) meets Wednesdays at 7:00 PM with Josiah & Ashley Jaworski — they're passionate about investing in teens.`;
+  }
+  return null;
+}
+
+/**
+ * Sends the "we can't wait to meet you" email to someone who said they're
+ * coming — including introductions to their kids' teachers when ages were
+ * given. Deterministic (no AI). Returns true on success.
+ * NOTE: delivers to arbitrary visitor addresses only after fbcchelsea.org
+ * is verified in Resend; until then Resend rejects it (logged, harmless).
+ */
+export async function sendVisitorWelcomeEmail(s: Submission): Promise<boolean> {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) return false;
+  const ages = [...new Set((s.kidsAges ?? "").match(/\d{1,2}/g)?.map(Number) ?? [])]
+    .filter((n) => n >= 0 && n <= 18)
+    .sort((a, b) => a - b);
+  const kidLines = ages.map(classesForAge).filter(Boolean) as string[];
+  const firstName = s.name.trim().split(/\s+/)[0];
+
+  const text =
+    `Hi ${firstName},\n\n` +
+    `We're so glad you're planning to visit Faith Baptist Church — we'll be watching for you!\n\n` +
+    `A few things that make the first visit easy:\n` +
+    `- Look for the visitor parking signs; those spots are saved for you.\n` +
+    `- Come in the main entrance and stop at the WELCOME DESK first — there's a free gift waiting for you, and it's the place where every question gets answered.\n` +
+    `- Wear whatever you're comfortable in. Nobody will single you out or ask you to stand.\n\n` +
+    (kidLines.length > 0
+      ? `Since you mentioned your kids' ages, here's who will be loving on them:\n` +
+        kidLines.map((l) => `- For your child ${l}`).join("\n") +
+        `\n\nCheck-in is simple: your child gets a name tag and you get a matching pickup tag at the check-in station — the welcome desk will walk you right to it.\n\n`
+      : "") +
+    `Service times:\n${site.services.map((sv) => `- ${sv.day} ${sv.time} — ${sv.name}`).join("\n")}\n\n` +
+    `We're at ${site.address.street}, ${site.address.city}, ${site.address.state} ${site.address.zip} (${site.address.directionsNote}).\n\n` +
+    `Any questions before you come, just reply to this email or call ${site.phone}.\n\n` +
+    `See you soon,\nFaith Baptist Church of Chelsea\n${site.links.churchCenter}`;
+
+  try {
+    const resend = new Resend(key);
+    const { error } = await resend.emails.send({
+      from: "Faith Baptist Church <onboarding@resend.dev>", // TODO: switch to welcome@fbcchelsea.org once the domain is verified in Resend
+      to: [s.email],
+      replyTo: site.emails.assistantPastor,
+      subject: "We can't wait to meet you — your visit to Faith Baptist",
+      text,
+    });
+    if (error) {
+      console.warn("[forms] visitor welcome email failed:", error.message);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.warn("[forms] visitor welcome email failed:", err instanceof Error ? err.message : err);
     return false;
   }
 }

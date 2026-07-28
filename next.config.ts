@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/api/ask": ["./content/**/*"],
   },
+  // node-ical must stay a plain Node dependency (bundling breaks it).
+  serverExternalPackages: ["node-ical"],
 };
 
 export default nextConfig;

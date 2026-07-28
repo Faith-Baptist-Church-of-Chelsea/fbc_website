@@ -2,6 +2,9 @@ import Link from "next/link";
 import site from "@/content/site.json";
 import Photo from "@/components/Photo";
 import { getActiveAnnouncements } from "@/lib/content";
+import { getRecentVideos } from "@/lib/youtube";
+
+export const revalidate = 900;
 
 // The homepage has one job: move a hesitant visitor one step closer to
 // showing up on Sunday. Service times and address are visible without
@@ -18,27 +21,29 @@ const ministries = [
 
 export default async function Home() {
   const announcements = await getActiveAnnouncements();
+  // The true latest video (sorted by real publish date — see lib/youtube).
+  const [latest] = await getRecentVideos(1);
 
   return (
     <main className="flex-1">
       {/* Hero: times + address above the fold, Plan Your Visit dominant */}
       <section className="bg-slate-900 px-4 pb-14 pt-12 text-white sm:pb-20 sm:pt-16">
         <div className="mx-auto max-w-4xl text-center">
-          <h1 className="text-4xl font-bold leading-tight sm:text-6xl">
+          <h1 className="animate-rise animate-rise-1 text-4xl font-bold leading-tight sm:text-6xl">
             An extremely friendly church that digs into the Word.
           </h1>
-          <p className="mx-auto mt-5 max-w-2xl text-lg text-slate-300">
+          <p className="animate-rise animate-rise-2 mx-auto mt-5 max-w-2xl text-lg text-slate-300">
             Expository Bible preaching, music that blends the old hymns with
             newer songs, and people who will learn your name. In Chelsea, just
             off {site.address.directionsNote}.
           </p>
           <Link
             href="/plan-your-visit"
-            className="mt-8 inline-block rounded-lg bg-brand-500 px-10 py-4 text-xl font-bold text-white shadow-lg transition-colors hover:bg-brand-600"
+            className="animate-rise animate-rise-3 hover-lift mt-8 inline-block rounded-lg bg-brand-500 px-10 py-4 text-xl font-bold text-white shadow-lg transition-colors hover:bg-brand-600"
           >
             Plan Your Visit
           </Link>
-          <div className="mx-auto mt-10 grid max-w-3xl grid-cols-2 gap-3 text-left sm:grid-cols-4">
+          <div className="animate-rise animate-rise-4 mx-auto mt-10 grid max-w-3xl grid-cols-2 gap-3 text-left sm:grid-cols-4">
             {site.services.map((s) => (
               <div key={`${s.day}-${s.time}`} className="rounded-lg bg-slate-800/70 p-3 text-center">
                 <p className="text-xs font-semibold uppercase tracking-wide text-brand-400">{s.day}</p>
@@ -47,7 +52,7 @@ export default async function Home() {
               </div>
             ))}
           </div>
-          <p className="mt-6 text-slate-300">
+          <p className="animate-rise animate-rise-5 mt-6 text-slate-300">
             <a href={site.address.mapsUrl} className="font-semibold text-white underline-offset-4 hover:underline">
               {site.address.street}, {site.address.city}, {site.address.state} {site.address.zip}
             </a>
@@ -91,13 +96,22 @@ export default async function Home() {
           <div className="mt-6 overflow-hidden rounded-xl">
             <iframe
               className="aspect-video w-full"
-              src={`https://www.youtube-nocookie.com/embed/videoseries?list=${site.social.youtubeChannelId.replace(/^UC/, "UU")}`}
-              title="Latest sermon from Faith Baptist Church of Chelsea"
+              src={
+                latest
+                  ? `https://www.youtube-nocookie.com/embed/${latest.videoId}`
+                  : `https://www.youtube-nocookie.com/embed/videoseries?list=${site.social.youtubeChannelId.replace(/^UC/, "UU")}`
+              }
+              title={latest?.title ?? "Latest sermon from Faith Baptist Church of Chelsea"}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
               loading="lazy"
             />
           </div>
+          {latest && (
+            <p className="mt-3 text-center text-slate-700">
+              <span className="font-semibold text-slate-900">{latest.title}</span>
+            </p>
+          )}
           <p className="mt-4 text-center">
             <Link href="/sermons" className="font-semibold text-brand-700 underline-offset-4 hover:underline">
               Browse all sermons →
@@ -117,7 +131,7 @@ export default async function Home() {
               <Link
                 key={m.href}
                 href={m.href}
-                className="group overflow-hidden rounded-xl border border-slate-200 bg-white transition-shadow hover:shadow-lg"
+                className="group hover-lift overflow-hidden rounded-xl border border-slate-200 bg-white transition-shadow hover:shadow-lg"
               >
                 <Photo src={m.img} alt="" width={800} height={500} className="w-full" />
                 <div className="p-5">

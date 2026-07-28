@@ -26,15 +26,27 @@ export default function Give() {
           <h2 className="text-2xl font-bold text-slate-900">Give online</h2>
           <p className="mt-3 text-slate-700">
             Online giving runs through ChurchTrac, our secure giving provider.
-            You can give once or set up recurring giving — it takes about two
-            minutes the first time.
+            You can give once or set up recurring giving — right here, without
+            leaving the page.
           </p>
-          <a
-            href={site.links.giving}
-            className="mt-6 inline-block rounded-lg bg-brand-500 px-8 py-4 text-lg font-semibold text-white transition-colors hover:bg-brand-600"
-          >
-            Give securely online
-          </a>
+          {/* Embedded ChurchTrac giving form. Requires this site's domain to
+              be entered in ChurchTrac -> Giving -> Online Giving -> Embed
+              (one domain only — update it when we move to fbcchelsea.org). */}
+          <div className="mt-6 overflow-hidden rounded-xl border border-slate-200">
+            <iframe
+              src={site.links.giving}
+              title="Give online to Faith Baptist Church (secure ChurchTrac form)"
+              className="h-[52rem] w-full border-0"
+              loading="lazy"
+            />
+          </div>
+          <p className="mt-3 text-sm text-slate-500">
+            Form not loading?{" "}
+            <a href={site.links.giving} className="font-semibold text-brand-700 underline-offset-4 hover:underline">
+              Open the secure giving page directly
+            </a>
+            .
+          </p>
           <p className="mt-8 text-slate-600">
             Prefer to give in person? There&rsquo;s an offering at every
             service — cash or check, envelopes available.

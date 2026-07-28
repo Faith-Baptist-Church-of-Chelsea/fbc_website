@@ -85,7 +85,10 @@ export type SermonVideo = {
 };
 
 /**
- * Recent uploads (newest first) via the uploads playlist — 1 quota unit.
+ * Recent uploads (newest first) — 1 quota unit. YouTube's uploads playlist
+ * orders completed LIVE STREAMS by their scheduled date rather than when
+ * they actually happened, so playlist order can't be trusted: we fetch 50
+ * and sort by the video's real publish date ourselves.
  * Returns [] without an API key or on any failure; callers fall back to
  * the keyless playlist embed.
  */
@@ -94,8 +97,8 @@ export async function getRecentVideos(limit = 12): Promise<SermonVideo[]> {
   try {
     const playlist = CHANNEL.replace(/^UC/, "UU");
     const url =
-      `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlist}` +
-      `&maxResults=${limit}&key=${KEY}`;
+      `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&playlistId=${playlist}` +
+      `&maxResults=50&key=${KEY}`;
     const res = await fetch(url, { next: { revalidate: 900 } });
     if (!res.ok) {
       console.warn(`[youtube] playlistItems HTTP ${res.status}`);
@@ -109,16 +112,21 @@ export async function getRecentVideos(limit = 12): Promise<SermonVideo[]> {
           resourceId?: { videoId?: string };
           thumbnails?: { medium?: { url?: string }; high?: { url?: string } };
         };
+        contentDetails?: { videoPublishedAt?: string };
       }[];
     };
     return (json.items ?? [])
       .map((i) => ({
         videoId: i.snippet?.resourceId?.videoId ?? "",
         title: i.snippet?.title ?? "Untitled",
-        publishedAt: i.snippet?.publishedAt ?? "",
+        // contentDetails carries the video's true publish time; snippet's
+        // publishedAt is only "when it was added to the playlist".
+        publishedAt: i.contentDetails?.videoPublishedAt ?? i.snippet?.publishedAt ?? "",
         thumbnail: i.snippet?.thumbnails?.medium?.url ?? i.snippet?.thumbnails?.high?.url ?? null,
       }))
-      .filter((v) => v.videoId);
+      .filter((v) => v.videoId && v.publishedAt)
+      .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
+      .slice(0, limit);
   } catch (err) {
     console.warn("[youtube] getRecentVideos failed:", err instanceof Error ? err.message : err);
     return [];

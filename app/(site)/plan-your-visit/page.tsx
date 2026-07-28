@@ -36,11 +36,9 @@ export default function PlanYourVisit() {
               ))}
             </ul>
             <p className="mt-4 text-slate-600">
-              Most first-time visitors come to the{" "}
-              <span className="font-semibold text-slate-900">
-                11:00 AM Sunday morning service
-              </span>
-              . It runs about an hour and 15 minutes.
+              Any of them is a great first visit — each service is completely
+              different, so come to whichever fits your week. Services run
+              about an hour and 15 minutes.
             </p>
           </div>
           <div className="rounded-xl bg-slate-50 p-8">
@@ -89,6 +87,16 @@ export default function PlanYourVisit() {
       {/* The honest answers section */}
       <section className="px-4 py-14">
         <div className="mx-auto max-w-3xl space-y-10">
+          <div>
+            <h2 className="text-xl font-bold text-slate-900">Where do I go first?</h2>
+            <p className="mt-3 text-slate-700">
+              The <span className="font-semibold text-slate-900">welcome desk</span>,
+              right inside the main entrance. There&rsquo;s a free gift waiting
+              for you there, and it&rsquo;s the spot where any question gets
+              answered — where the nursery is, where your kids&rsquo; classes
+              meet, where the coffee is.
+            </p>
+          </div>
           <div>
             <h2 className="text-xl font-bold text-slate-900">What should I wear?</h2>
             <p className="mt-3 text-slate-700">
@@ -144,10 +152,11 @@ export default function PlanYourVisit() {
             Want us to expect you? (Totally optional)
           </h2>
           <p className="mt-3 text-slate-700">
-            You&rsquo;re welcome to just show up — most people do. But if
-            you&rsquo;d like someone watching for you at the door, or you have
-            a question before you come, send us a note and we&rsquo;ll take
-            care of the rest.
+            You&rsquo;re welcome to just show up — most people do. But if you
+            let us know you&rsquo;re coming, we&rsquo;ll have someone watching
+            for you at the door — and if you tell us your kids&rsquo; ages,
+            we&rsquo;ll email you a short introduction to their teachers so
+            the faces are familiar before you ever walk in.
           </p>
           <Link
             href="/contact"

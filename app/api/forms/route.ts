@@ -4,7 +4,13 @@
 // CAPTCHA, per the design brief: never punish real people.
 import { NextRequest, NextResponse } from "next/server";
 import site from "@/content/site.json";
-import { rateLimited, sendFormEmail, upsertPersonInPco, type Submission } from "@/lib/forms";
+import {
+  rateLimited,
+  sendFormEmail,
+  sendVisitorWelcomeEmail,
+  upsertPersonInPco,
+  type Submission,
+} from "@/lib/forms";
 
 export const dynamic = "force-dynamic";
 
@@ -40,6 +46,7 @@ export async function POST(req: NextRequest) {
   const phone = String(body.phone ?? "").trim().slice(0, 50);
   const message = String(body.message ?? "").trim().slice(0, 5000);
   const confidential = Boolean(body.confidential);
+  const kidsAges = String(body.kidsAges ?? "").trim().slice(0, 100);
 
   if (!name || !message || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     return NextResponse.json(
@@ -48,11 +55,14 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const submission: Submission = { kind, name, email, phone, message, confidential };
+  const submission: Submission = { kind, name, email, phone, message, confidential, kidsAges };
 
   const [emailed, inPco] = await Promise.all([
     sendFormEmail(submission),
     upsertPersonInPco(submission),
+    // Visit heads-ups get a warm welcome email back (teacher intros when
+    // kids' ages were shared). Best-effort; never blocks the submission.
+    kind === "visit" ? sendVisitorWelcomeEmail(submission) : Promise.resolve(false),
   ]);
 
   if (!emailed && !inPco) {

@@ -12,6 +12,7 @@ export const ministries: NavGroup = {
     { label: "Youth Group", href: "/youth-group" },
     { label: "Young Adults", href: "/young-adults" },
     { label: "Special Music", href: "/special-music" },
+    { label: "Missions", href: "/missions" },
   ],
 };
 
@@ -19,10 +20,9 @@ export const ministries: NavGroup = {
 export const primaryLinks: NavLink[] = [
   { label: "About", href: "/about" },
   { label: "Sermons", href: "/sermons" },
+  { label: "Live", href: "/live" },
   { label: "Events", href: "/events" },
-  { label: "Missions", href: "/missions" },
   { label: "Give", href: "/give" },
-  { label: "Contact", href: "/contact" },
 ];
 
 // The single most important link on the site — rendered as a button.
@@ -33,6 +33,7 @@ export const planYourVisit: NavLink = {
 
 // Shown in the footer (and the mobile menu) but not the desktop bar.
 export const secondaryLinks: NavLink[] = [
+  { label: "Contact", href: "/contact" },
   { label: "Common Questions", href: "/common-questions" },
   { label: "Church Center App", href: "/church-center-app" },
 ];

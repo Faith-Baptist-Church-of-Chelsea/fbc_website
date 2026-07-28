@@ -39,12 +39,12 @@ export default function Header() {
       >
         <Link href="/" onClick={close} className="flex shrink-0 items-center">
           <Image
-            src="/images/logo-light.svg"
+            src="/images/logo-horizontal-light.png"
             alt="Faith Baptist Church of Chelsea — home"
-            width={150}
-            height={75}
+            width={1200}
+            height={358}
             priority
-            className="h-14 w-auto sm:h-16"
+            className="h-11 w-auto sm:h-12"
           />
         </Link>
 

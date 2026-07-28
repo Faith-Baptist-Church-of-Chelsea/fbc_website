@@ -48,16 +48,49 @@ body {
     main > section {
       animation: section-enter linear both;
       animation-timeline: view();
-      animation-range: entry 0% entry 18%;
+      animation-range: entry 0% entry 22%;
     }
   }
 }
 
 @keyframes section-enter {
   from {
-    opacity: 0.2;
-    transform: translateY(14px);
+    opacity: 0;
+    transform: translateY(28px);
   }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/*
+ * Entrance animation for hero content: elements rise into place with a
+ * stagger (.animate-rise-1 … -5 set the order). Defined only when motion
+ * is allowed, so reduced-motion users simply see the content in place.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .animate-rise {
+    opacity: 0;
+    transform: translateY(26px);
+    animation: rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+  .animate-rise-1 { animation-delay: 0.05s; }
+  .animate-rise-2 { animation-delay: 0.18s; }
+  .animate-rise-3 { animation-delay: 0.32s; }
+  .animate-rise-4 { animation-delay: 0.46s; }
+  .animate-rise-5 { animation-delay: 0.6s; }
+
+  /* Cards and buttons lift gently on hover. */
+  .hover-lift {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .hover-lift:hover {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes rise {
   to {
     opacity: 1;
     transform: none;

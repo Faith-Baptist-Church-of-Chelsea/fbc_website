@@ -4,6 +4,7 @@ import PageHero from "@/components/PageHero";
 import Photo from "@/components/Photo";
 import NextStep from "@/components/NextStep";
 import { getUpcomingSignups } from "@/lib/pco";
+import { htmlToParagraphs } from "@/lib/html";
 
 export const metadata: Metadata = {
   title: "Young Adults",
@@ -19,22 +20,6 @@ const dateFmt = new Intl.DateTimeFormat("en-US", {
   day: "numeric",
   timeZone: "America/Detroit",
 });
-
-// Registration descriptions from Planning Center arrive as HTML;
-// flatten to plain paragraphs so we control the styling.
-function htmlToParagraphs(html: string): string[] {
-  return html
-    .replace(/<br\s*\/?>/gi, "\n")
-    .replace(/<\/(p|div|li|h[1-6])>/gi, "\n")
-    .replace(/<[^>]+>/g, "")
-    .replace(/&nbsp;/g, " ")
-    .replace(/&amp;/g, "&")
-    .replace(/&#39;/g, "'")
-    .replace(/&quot;/g, '"')
-    .split(/\n+/)
-    .map((s) => s.trim())
-    .filter(Boolean);
-}
 
 export default async function YoungAdults() {
   // The Unashamed details come live from the Planning Center registration,
@@ -55,7 +40,7 @@ export default async function YoungAdults() {
           {unashamed?.logoUrl && (
             /* eslint-disable-next-line @next/next/no-img-element --
                remote Planning Center image with unknown dimensions */
-            <img src={unashamed.logoUrl} alt="" className="max-h-72 w-full object-cover" loading="lazy" />
+            <img src={unashamed.logoUrl} alt="" className="max-h-80 w-full bg-slate-950 object-contain" loading="lazy" />
           )}
           <div className="p-8 sm:p-10">
             <p className="text-sm font-semibold uppercase tracking-wider text-brand-400">

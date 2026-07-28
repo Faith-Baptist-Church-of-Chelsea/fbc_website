@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import site from "@/content/site.json";
 
 type LiveState = {
   show: boolean;
@@ -18,8 +17,14 @@ export default function LiveBanner() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/live")
-      .then((r) => (r.ok ? r.json() : { show: false }))
+    // Add ?preview-live to any page URL to see the banner without being
+    // live — for checking the design, not shown to normal visitors.
+    const preview = window.location.search.includes("preview-live");
+    (preview
+      ? Promise.resolve({ show: true, verified: true, label: "Sunday Morning Service (preview)" })
+      : fetch("/api/live")
+          .then((r) => (r.ok ? r.json() : { show: false }))
+    )
       .then((s: LiveState) => {
         if (!cancelled) setState(s);
       })
@@ -33,9 +38,7 @@ export default function LiveBanner() {
 
   if (!state?.show) return null;
 
-  const watchUrl = state.videoId
-    ? `https://www.youtube.com/watch?v=${state.videoId}`
-    : `${site.social.youtube}/live`;
+  const watchUrl = "/live";
 
   return (
     <div className="bg-red-700 px-4 py-3 text-white">

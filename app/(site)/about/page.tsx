@@ -42,11 +42,11 @@ export default async function About() {
         </div>
       </section>
 
-      {/* Leadership */}
+      {/* Staff */}
       <section className="bg-slate-50 px-4 py-14">
         <div className="mx-auto max-w-5xl">
           <h2 className="text-center text-2xl font-bold text-slate-900 sm:text-3xl">
-            Leadership
+            Staff
           </h2>
           <div className="mt-10 grid gap-8 sm:grid-cols-2">
             {staff.map(({ slug, entry }) => (

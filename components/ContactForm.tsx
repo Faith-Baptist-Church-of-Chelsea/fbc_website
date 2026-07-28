@@ -118,6 +118,23 @@ export default function ContactForm({ initialKind = "question" }: { initialKind?
         />
       </div>
 
+      {kind === "visit" && (
+        <div>
+          <label htmlFor="cf-kids" className="block font-semibold text-slate-900">
+            Kids&rsquo; ages <span className="font-normal text-slate-500">(optional)</span>
+          </label>
+          <p className="text-sm text-slate-500">
+            Tell us their ages (like &ldquo;2, 6 and 9&rdquo;) and we&rsquo;ll
+            email you a short introduction to their teachers before you come.
+          </p>
+          <input
+            id="cf-kids"
+            name="kidsAges"
+            className="mt-1 w-full rounded-lg border border-slate-300 p-3"
+          />
+        </div>
+      )}
+
       <div>
         <label htmlFor="cf-message" className="block font-semibold text-slate-900">
           Message
