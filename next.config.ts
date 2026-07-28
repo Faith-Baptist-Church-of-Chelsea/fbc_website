@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Let the dev server be reached as 127.0.0.1 as well as localhost.
+  allowedDevOrigins: ["127.0.0.1"],
   // The /api/ask route reads content/ files from disk at request time
   // (chat-facts.md, staff bios, announcements). Vercel only bundles files
   // it can statically trace, so include the whole content folder for that

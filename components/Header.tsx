@@ -43,29 +43,15 @@ export default function Header() {
           aria-label="Faith Baptist Church of Chelsea — home"
           className="flex shrink-0 items-center gap-3"
         >
+          {/* Moriah's official website logo */}
           <Image
-            src="/images/logo-mark-white.png"
-            alt=""
-            width={471}
-            height={254}
+            src="/images/logo-header.png"
+            alt="Faith Baptist Church of Chelsea — home"
+            width={820}
+            height={178}
             priority
-            className="h-[42px] w-auto"
+            className="h-10 w-auto sm:h-11"
           />
-          {/* Real text, not an image. FAITH's letters are spread with
-              justify-between so the word is exactly as wide as the
-              BAPTIST CHURCH line beneath it. */}
-          <span className="inline-block leading-none">
-            <span aria-hidden="true" className="flex justify-between font-display text-[27px] text-white">
-              <span>F</span><span>A</span><span>I</span><span>T</span><span>H</span>
-            </span>
-            <span
-              className="mt-[4px] block whitespace-nowrap text-[10.5px] font-bold uppercase tracking-[0.32em] text-brand-400"
-              style={{ marginRight: "-0.32em" }}
-            >
-              Baptist Church
-            </span>
-            <span className="sr-only">Faith Baptist Church</span>
-          </span>
         </Link>
 
         {/* Desktop nav */}
