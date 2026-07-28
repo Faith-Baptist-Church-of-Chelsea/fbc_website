@@ -88,7 +88,7 @@ export default function SpecialMusic() {
         title="Come hear it live"
         text="A recording doesn't do a full choir justice. Come listen on Sunday at 11."
         primary={{ label: "Plan Your Visit", href: "/plan-your-visit" }}
-        secondary={{ label: "More on our music", href: "/common-questions" }}
+        secondary={{ label: "Questions? Contact us", href: "/contact" }}
       />
     </main>
   );

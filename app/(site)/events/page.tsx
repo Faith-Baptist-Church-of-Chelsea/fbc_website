@@ -5,7 +5,6 @@ import Link from "next/link";
 import { getUpcomingEvents } from "@/lib/content";
 import { getUpcomingSignups } from "@/lib/pco";
 import { getUpcomingCalendarEvents } from "@/lib/calendar";
-import { churchCenterEventLink } from "@/lib/churchcenter";
 import { htmlToParagraphs } from "@/lib/html";
 
 export const metadata: Metadata = {
@@ -37,14 +36,19 @@ export default async function Events() {
     getUpcomingSignups(),
     getUpcomingCalendarEvents(12),
   ]);
-  // Verified Church Center links (never 404s — falls back to the
-  // upcoming-events page when no matching page exists).
-  const calendar = await Promise.all(
-    rawCalendar.map(async (e) => ({
-      ...e,
-      href: await churchCenterEventLink(e.title, e.description),
-    }))
-  );
+  // Calendar rows link to OUR event pages when a matching featured event
+  // exists (by title-word overlap); otherwise they render unlinked.
+  const tokens = (t: string) =>
+    new Set(t.toLowerCase().replace(/[^a-z0-9\s]/g, " ").split(/\s+/).filter((w) => w.length > 2));
+  const calendar = rawCalendar.map((e) => {
+    const ct = tokens(e.title);
+    const match = events.find((ev) => {
+      const et = tokens(ev.title);
+      const shared = [...et].filter((w) => ct.has(w)).length;
+      return shared >= Math.min(et.size, ct.size) * 0.6 && shared > 0;
+    });
+    return { ...e, href: match ? `/events/${match.slug}` : null };
+  });
 
   return (
     <main className="flex-1">
@@ -97,22 +101,32 @@ export default async function Events() {
               <ul className="mt-4 divide-y divide-slate-200 rounded-xl border border-slate-200">
                 {calendar.map((e, i) => (
                   <li key={i}>
-                    <a
-                      href={e.href}
-                      className="group flex items-baseline gap-4 p-4 transition-colors hover:bg-slate-50"
-                    >
-                      <span className="w-32 shrink-0 text-sm font-semibold uppercase tracking-wide text-brand-700">
-                        {dateFmt.format(new Date(e.start))}
-                      </span>
-                      <span>
-                        <span className="font-semibold text-slate-900 group-hover:text-brand-700">{e.title}</span>
-                        <span className="text-sm text-slate-600">
-                          {!e.allDay && <> · {timeFmt.format(new Date(e.start))}</>}
-                          {e.location && <> · {e.location}</>}
-                        </span>
-                        <span className="ml-2 text-sm font-semibold text-brand-700 opacity-0 transition-opacity group-hover:opacity-100">details →</span>
-                      </span>
-                    </a>
+                    {(() => {
+                      const inner = (
+                        <>
+                          <span className="w-32 shrink-0 text-sm font-semibold uppercase tracking-wide text-brand-700">
+                            {dateFmt.format(new Date(e.start))}
+                          </span>
+                          <span>
+                            <span className={`font-semibold text-slate-900${e.href ? " group-hover:text-brand-700" : ""}`}>{e.title}</span>
+                            <span className="text-sm text-slate-600">
+                              {!e.allDay && <> · {timeFmt.format(new Date(e.start))}</>}
+                              {e.location && <> · {e.location}</>}
+                            </span>
+                            {e.href && (
+                              <span className="ml-2 text-sm font-semibold text-brand-700 opacity-0 transition-opacity group-hover:opacity-100">details →</span>
+                            )}
+                          </span>
+                        </>
+                      );
+                      return e.href ? (
+                        <Link href={e.href} className="group flex items-baseline gap-4 p-4 transition-colors hover:bg-slate-50">
+                          {inner}
+                        </Link>
+                      ) : (
+                        <div className="flex items-baseline gap-4 p-4">{inner}</div>
+                      );
+                    })()}
                   </li>
                 ))}
               </ul>

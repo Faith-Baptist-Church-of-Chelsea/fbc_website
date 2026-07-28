@@ -128,8 +128,8 @@ export default async function Sermons() {
       </section>
 
       <NextStep
-        title="A sermon is better with the singing before it"
-        text="Watch online this week — then come hear one in the room."
+        title="Live stream is great, but in person is even better"
+        text="Watch online — then join us in person."
         primary={{ label: "Plan Your Visit", href: "/plan-your-visit" }}
         secondary={{ label: "Subscribe on YouTube", href: site.social.youtube }}
       />
