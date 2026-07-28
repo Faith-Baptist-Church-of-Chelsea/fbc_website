@@ -51,11 +51,6 @@ export default function Footer() {
                 {site.phone}
               </a>
             </p>
-            <p>
-              <a href={`mailto:${site.emails.office}`} className="hover:text-white">
-                {site.emails.office}
-              </a>
-            </p>
           </address>
         </div>
 

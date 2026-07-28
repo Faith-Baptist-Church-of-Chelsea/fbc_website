@@ -88,7 +88,7 @@ export default async function YoungAdults() {
         <div className="mx-auto grid max-w-5xl items-center gap-10 md:grid-cols-2">
           <div>
             <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
-              What we do between conferences
+Connecting outside of Sunday
             </h2>
             <p className="mt-4 text-slate-700">
               Young adult activities happen as life allows — game nights,

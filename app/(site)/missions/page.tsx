@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import site from "@/content/site.json";
 import PageHero from "@/components/PageHero";
 import Photo from "@/components/Photo";
 import NextStep from "@/components/NextStep";
@@ -7,7 +6,7 @@ import NextStep from "@/components/NextStep";
 export const metadata: Metadata = {
   title: "Missions",
   description:
-    "Faith Baptist Church of Chelsea supports missionaries around the world — see who we support and why missions is central to who we are.",
+    "Missions at Faith Baptist Church of Chelsea — supporting missionaries around the world, missions nights, and mission trips.",
 };
 
 export default function Missions() {
@@ -16,37 +15,38 @@ export default function Missions() {
       <PageHero
         eyebrow="To every nation"
         title="Missions"
-        intro="We believe the Church was given a great commission: proclaim the Gospel to all nations — going to them, not waiting for them to come to us. So we put our money and our prayers where that belief is."
+        intro="We believe the Church was given a great commission: proclaim the Gospel to all nations — going to them, not waiting for them to come to us. So we put our money, our prayers, and our people where that belief is."
       />
 
       <section className="px-4 py-14">
         <div className="mx-auto grid max-w-5xl items-center gap-10 md:grid-cols-2">
           <div>
             <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
-              The missionaries we support
+              What missions looks like here
             </h2>
             <p className="mt-4 text-slate-700">
-              We support a lot of missionaries — families serving across the
-              world, sent out and sustained by churches like ours. Each one is
-              prayed for by name here, and many visit and report back when
-              they&rsquo;re stateside.
+              <span className="font-semibold text-slate-900">We support missionaries around the world</span>{" "}
+              — families sent out to preach the gospel, sustained by our
+              church&rsquo;s giving and prayed for by name. When they&rsquo;re
+              stateside, they&rsquo;re often right here in our services,
+              reporting what God is doing on their fields.
             </p>
             <p className="mt-4 text-slate-700">
-              The full list, with fields and details for each, lives on our
-              Church Center page:
+              <span className="font-semibold text-slate-900">Missions is on our calendar, not just our budget.</span>{" "}
+              Fifth-Sunday Missions Nights turn an evening service toward the
+              work of the gospel around the world, and mission trips put our
+              own people on the field serving alongside the missionaries we
+              support.
             </p>
-            <a
-              href={site.links.missionaries}
-              className="mt-6 inline-block rounded-lg bg-brand-500 px-6 py-3 font-semibold text-white transition-colors hover:bg-brand-600"
-            >
-              Meet our missionaries
-            </a>
-            {/* Phase 5 investigates surfacing a few missionaries directly on
-                this page via the Church Center/Publishing API. */}
+            <p className="mt-4 text-slate-700">
+              And missions starts in Chelsea: the same gospel we send around
+              the world is preached here every week, to whoever walks through
+              the door.
+            </p>
           </div>
           <Photo
             src="/images/missions-map.jpg"
-            alt="Map or display of the missionaries we support"
+            alt="Display of the missionaries we support"
             width={1200}
             height={800}
           />
@@ -54,10 +54,10 @@ export default function Missions() {
       </section>
 
       <NextStep
-        title="Missions starts at home"
-        text="The same Gospel we send around the world is preached here every Sunday."
-        primary={{ label: "Plan Your Visit", href: "/plan-your-visit" }}
-        secondary={{ label: "What we believe", href: "/about#statement-of-faith" }}
+        title="Want to know more?"
+        text="Ask us about the missionaries we support or the next missions trip — we love talking about this."
+        primary={{ label: "Contact us", href: "/contact" }}
+        secondary={{ label: "What we believe about missions", href: "/about#statement-of-faith" }}
       />
     </main>
   );

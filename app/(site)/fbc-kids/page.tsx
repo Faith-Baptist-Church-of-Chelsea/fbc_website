@@ -41,11 +41,12 @@ export default function FbcKids() {
       <section className="px-4 py-14">
         <div className="mx-auto max-w-4xl">
           <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
-            When there&rsquo;s something for your child
+Class schedule
           </h2>
           <p className="mt-3 text-slate-600">
-            &ldquo;—&rdquo; means kids join their families in the service at
-            that hour — always welcome, wiggles included.
+            A &ldquo;—&rdquo; just means there&rsquo;s no separate class at
+            that hour — kids sit with their family in the service, and
+            they&rsquo;re always welcome there.
           </p>
           <div className="mt-6 overflow-x-auto">
             <table className="w-full min-w-[560px] border-collapse text-left">
@@ -129,10 +130,10 @@ export default function FbcKids() {
       </section>
 
       <NextStep
-        title="See it before you need it"
-        text="Come on a Sunday and walk through check-in with us — or ask us anything first."
+        title="Know what to expect"
+        text="We'll gladly show you our children's check-in process and answer any questions along the way."
         primary={{ label: "Plan Your Visit", href: "/plan-your-visit" }}
-        secondary={{ label: "About Family School (9:45)", href: "/family-school" }}
+        secondary={{ label: "Questions? Contact us", href: "/contact" }}
       />
     </main>
   );

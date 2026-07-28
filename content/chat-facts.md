@@ -62,5 +62,6 @@ answer, add the answer here.
   church directory. Registrations happen at fbcchelsea.churchcenter.com.
 - The church was established in 1996 by the Whitaker family. Pastor Adam
   Summers has led it since 2008; Steven Wireman is the assistant pastor.
-- The church supports many missionaries around the world; the list is at
-  fbcchelsea.churchcenter.com/pages/all-missionaries.
+- The church supports many missionaries around the world through giving and
+  prayer; missionaries often visit and report during services. Missions is
+  also on the calendar: Fifth-Sunday Missions Nights and mission trips.

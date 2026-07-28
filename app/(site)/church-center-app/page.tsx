@@ -41,10 +41,6 @@ export default function ChurchCenterApp() {
             <p className="mt-3 font-semibold text-slate-900">
               Scan with your phone camera
             </p>
-            <p className="text-sm text-slate-600">
-              It opens our church directly — big enough to scan from a pew, by
-              design.
-            </p>
           </div>
           <div>
             <h2 className="text-2xl font-bold text-slate-900">Get the app</h2>

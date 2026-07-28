@@ -40,12 +40,12 @@ async function featuredEvents(): Promise<CarouselItem[]> {
 // scrolling; Plan Your Visit is the most prominent element on the page.
 
 const ministries = [
-  { label: "Family School", href: "/family-school", desc: "All ages, one room, side by side — Sundays 9:45 AM", img: "/images/family-school-wide.jpg" },
-  { label: "FBC Kids", href: "/fbc-kids", desc: "Nursery through age 12, with secure check-in", img: "/images/kids-class.jpg" },
-  { label: "Youth Group", href: "/youth-group", desc: "Ages 12–18 — Wednesdays 7:00 PM", img: "/images/youth-group.jpg" },
-  { label: "Young Adults", href: "/young-adults", desc: "Ages 18–30 — home of the Unashamed conference", img: "/images/young-adults-activity.jpg" },
-  { label: "Special Music", href: "/special-music", desc: "Choir & orchestra — anyone can join", img: "/images/choir.jpg" },
-  { label: "Missions", href: "/missions", desc: "Supporting missionaries around the world", img: "/images/missions-map.jpg" },
+  { label: "Family School", href: "/family-school", desc: "All ages · Sundays 9:45 AM", img: "/images/family-school-wide.jpg" },
+  { label: "FBC Kids", href: "/fbc-kids", desc: "Nursery–age 12 · Sundays & Wednesdays", img: "/images/kids-class.jpg" },
+  { label: "Youth Group", href: "/youth-group", desc: "Ages 12–18 · Wednesdays 7:00 PM", img: "/images/youth-group.jpg" },
+  { label: "Young Adults", href: "/young-adults", desc: "Ages 18–30 · Sundays & beyond", img: "/images/young-adults-activity.jpg" },
+  { label: "Special Music", href: "/special-music", desc: "Choir & orchestra · No audition", img: "/images/choir.jpg" },
+  { label: "Missions", href: "/missions", desc: "At home & around the world", img: "/images/missions-map.jpg" },
 ];
 
 export default async function Home() {
@@ -76,13 +76,12 @@ export default async function Home() {
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-slate-950/60 to-slate-950" aria-hidden="true" />
         <div className="relative mx-auto max-w-4xl text-center">
           <h1 className="animate-rise animate-rise-1 text-5xl leading-none sm:text-7xl">
-            An extremely friendly church<br className="hidden sm:block" />
-            <span className="text-brand-400"> that digs into the Word.</span>
+            Rooted in the Word,<br className="hidden sm:block" />
+            <span className="text-brand-400"> growing in grace.</span>
           </h1>
           <p className="animate-rise animate-rise-2 mx-auto mt-5 max-w-2xl text-lg text-slate-300">
-            Expository Bible preaching, music that blends the old hymns with
-            newer songs, and people who will learn your name. In Chelsea, just
-            off {site.address.directionsNote}.
+            Biblical preaching. Godly worship. Genuine fellowship. Join us in
+            Chelsea, just off {site.address.directionsNote}.
           </p>
           <Link
             href="/plan-your-visit"
@@ -136,7 +135,7 @@ export default async function Home() {
         <section className="bg-slate-50 px-4 py-14">
           <div className="mx-auto max-w-6xl">
             <div className="flex items-end justify-between gap-4">
-              <h2 className="text-3xl text-slate-900 sm:text-4xl">Coming up</h2>
+              <h2 className="text-3xl text-slate-900 sm:text-4xl">Coming up at Faith</h2>
               <Link href="/events" className="shrink-0 font-semibold text-brand-700 underline-offset-4 hover:underline">
                 All events →
               </Link>
@@ -155,8 +154,8 @@ export default async function Home() {
             The latest message
           </h2>
           <p className="mx-auto mt-2 max-w-xl text-center text-slate-600">
-            Check out the preaching before you ever walk in — we&rsquo;d rather
-            you know exactly what you&rsquo;re coming to.
+            Listen before you visit — we believe you&rsquo;ll find our
+            preaching faithfully rooted in God&rsquo;s Word.
           </p>
           <div className="mt-6 overflow-hidden rounded-xl">
             <iframe
@@ -189,7 +188,7 @@ export default async function Home() {
       <section className="px-4 py-14">
         <div className="mx-auto max-w-5xl">
           <h2 className="text-center text-2xl font-bold text-slate-900 sm:text-3xl">
-            There&rsquo;s a place for everyone in your car
+            Bring the whole family. There&rsquo;s a place for everyone.
           </h2>
           <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {ministries.map((m) => (
@@ -198,7 +197,9 @@ export default async function Home() {
                 href={m.href}
                 className="group hover-lift overflow-hidden rounded-xl border border-slate-200 bg-white transition-shadow hover:shadow-lg"
               >
-                <Photo src={m.img} alt="" width={800} height={500} className="w-full" />
+                <div className="aspect-[8/5] w-full overflow-hidden">
+                  <Photo src={m.img} alt="" width={800} height={500} className="h-full w-full object-cover" />
+                </div>
                 <div className="p-5">
                   <h3 className="text-lg font-bold text-slate-900 group-hover:text-brand-700">
                     {m.label}
@@ -237,10 +238,10 @@ export default async function Home() {
           <p className="text-sm font-bold uppercase tracking-[0.3em] text-brand-400">
             — The most important question —
           </p>
-          <h2 className="font-accent mt-6 text-4xl italic sm:text-5xl">
+          <h2 className="font-accent mt-6 text-4xl sm:text-5xl">
             Do you know where you will spend eternity?
           </h2>
-          <blockquote className="font-accent mx-auto mt-8 max-w-2xl text-lg italic text-slate-300">
+          <blockquote className="mx-auto mt-8 max-w-2xl text-lg text-slate-200">
             &ldquo;For by grace are ye saved through faith; and that not of
             yourselves: it is the gift of God: Not of works, lest any man
             should boast.&rdquo;
@@ -272,12 +273,12 @@ export default async function Home() {
       </section>
 
       {/* Final CTA */}
-      <section className="bg-slate-900 px-4 py-16 text-center text-white">
+      <section className="bg-white px-4 py-16 text-center">
         <div className="mx-auto max-w-2xl">
-          <h2 className="text-3xl font-bold sm:text-4xl">
+          <h2 className="text-3xl font-bold text-slate-900 sm:text-4xl">
             The hardest part is the first Sunday.
           </h2>
-          <p className="mt-4 text-lg text-slate-300">
+          <p className="mt-4 text-lg text-slate-600">
             We know — we were all new here once. That&rsquo;s why we wrote down
             everything you might be wondering, from parking to what to wear.
           </p>
@@ -290,7 +291,7 @@ export default async function Home() {
             </Link>
             <Link
               href="/common-questions"
-              className="rounded-lg border border-slate-600 px-8 py-4 text-lg font-semibold text-slate-200 transition-colors hover:bg-slate-800"
+              className="rounded-lg border border-slate-300 px-8 py-4 text-lg font-semibold text-slate-700 transition-colors hover:bg-slate-50"
             >
               Common Questions
             </Link>

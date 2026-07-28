@@ -15,7 +15,7 @@ export default function YouthGroup() {
       <PageHero
         eyebrow="Ages 12–18 · Wednesdays · 7:00 PM"
         title="Youth Group"
-        intro="Real Bible teaching for teenagers, led by people who genuinely like teenagers."
+        intro="A youth group where God's Word is taught and every teenager matters."
       />
 
       {/* Trip feature */}

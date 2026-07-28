@@ -99,7 +99,7 @@ export default function FamilySchool() {
         title="Come sit in this Sunday"
         text="9:45 AM, an hour before the morning service. Show up once and see what it's like — no preparation needed."
         primary={{ label: "Plan Your Visit", href: "/plan-your-visit" }}
-        secondary={{ label: "What about older kids?", href: "/fbc-kids" }}
+        secondary={{ label: "Questions? Contact us", href: "/contact" }}
       />
     </main>
   );

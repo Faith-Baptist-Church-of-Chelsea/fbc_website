@@ -36,9 +36,8 @@ export default function PlanYourVisit() {
               ))}
             </ul>
             <p className="mt-4 text-slate-600">
-              Any of them is a great first visit — each service is completely
-              different, so come to whichever fits your week. Services run
-              about an hour and 15 minutes.
+              Any of them is a great first visit — each service is different.
+              Services run about an hour and 15 minutes.
             </p>
           </div>
           <div className="rounded-xl bg-slate-50 p-8">
@@ -94,7 +93,7 @@ export default function PlanYourVisit() {
               right inside the main entrance. There&rsquo;s a free gift waiting
               for you there, and it&rsquo;s the spot where any question gets
               answered — where the nursery is, where your kids&rsquo; classes
-              meet, where the coffee is.
+              meet, and anything else you&rsquo;re wondering.
             </p>
           </div>
           <div>
@@ -118,10 +117,9 @@ export default function PlanYourVisit() {
             <h2 className="text-xl font-bold text-slate-900">What&rsquo;s the service like?</h2>
             <p className="mt-3 text-slate-700">
               We sing — old hymns and newer spiritual songs, often with our
-              choir — and then the preaching digs into a passage of the Bible
-              and works through what it actually says. It&rsquo;s substantive
-              without being stuffy. You can follow along in any Bible; we
-              preach from the King James Version.
+              choir — and then the preaching works through a passage of the
+              Bible, digging into what it actually says. We preach from the
+              King James Version.
             </p>
           </div>
           <div>

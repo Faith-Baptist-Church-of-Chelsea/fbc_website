@@ -56,7 +56,7 @@ export default function SalvationPage() {
           <p className="text-sm font-bold uppercase tracking-[0.3em] text-brand-400">
             — The most important question —
           </p>
-          <h1 className="font-accent mt-6 text-4xl italic sm:text-6xl">
+          <h1 className="font-accent mt-6 text-4xl sm:text-6xl">
             Do you know where you will spend eternity?
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg text-slate-300">
@@ -73,7 +73,7 @@ export default function SalvationPage() {
               <p className="text-sm font-bold uppercase tracking-[0.2em] text-brand-400">
                 {i + 1}. {s.heading}
               </p>
-              <blockquote className="font-accent mt-3 text-xl italic leading-relaxed text-slate-100 sm:text-2xl">
+              <blockquote className="mt-3 text-xl leading-relaxed text-slate-100 sm:text-2xl">
                 &ldquo;{s.verse}&rdquo;
               </blockquote>
               <p className="mt-2 text-sm font-semibold text-slate-400">{s.ref}</p>
@@ -85,7 +85,7 @@ export default function SalvationPage() {
 
       <section className="px-4 py-16 text-center">
         <div className="mx-auto max-w-2xl">
-          <h2 className="font-accent text-3xl italic sm:text-4xl">
+          <h2 className="font-accent text-3xl sm:text-4xl">
             This is a conversation worth having today.
           </h2>
           <p className="mx-auto mt-5 text-slate-300">
