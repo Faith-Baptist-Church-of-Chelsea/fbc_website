@@ -3,11 +3,8 @@ import site from "@/content/site.json";
 import Photo from "@/components/Photo";
 import EventsCarousel, { type CarouselItem } from "@/components/EventsCarousel";
 import TestimonialRotator from "@/components/TestimonialRotator";
-import { getActiveAnnouncements, getTestimonials } from "@/lib/content";
+import { getActiveAnnouncements, getTestimonials, getUpcomingEvents } from "@/lib/content";
 import { getRecentVideos } from "@/lib/youtube";
-import { getUpcomingSignups } from "@/lib/pco";
-import { getUpcomingCalendarEvents } from "@/lib/calendar";
-import { churchCenterEventLink } from "@/lib/churchcenter";
 
 export const revalidate = 900;
 
@@ -17,49 +14,24 @@ const fullDate = new Intl.DateTimeFormat("en-US", {
   day: "numeric",
   timeZone: "America/Detroit",
 });
-const timeOnly = new Intl.DateTimeFormat("en-US", {
-  hour: "numeric",
-  minute: "2-digit",
-  timeZone: "America/Detroit",
-});
 const dayNumFmt = new Intl.DateTimeFormat("en-US", { day: "numeric", timeZone: "America/Detroit" });
 const monthFmt = new Intl.DateTimeFormat("en-US", { month: "short", timeZone: "America/Detroit" });
 
-/** Merges Registrations signups + calendar events into carousel cards. */
+/** Carousel cards from the church's own events (content/events). */
 async function featuredEvents(): Promise<CarouselItem[]> {
-  const [signups, calendar] = await Promise.all([
-    getUpcomingSignups(),
-    getUpcomingCalendarEvents(10),
-  ]);
-  const items: (CarouselItem & { sort: string })[] = [];
-  for (const s of signups) {
-    items.push({
-      title: s.name,
-      dateLabel: s.startsAt ? fullDate.format(new Date(s.startsAt)) : "Sign-ups open now",
-      meta: s.atCapacity ? "Currently full" : "Registration open",
-      href: s.registrationUrl ?? `${site.links.churchCenter}/registrations`,
-      image: s.logoUrl,
-      dayNum: s.startsAt ? dayNumFmt.format(new Date(s.startsAt)) : "•",
-      month: s.startsAt ? monthFmt.format(new Date(s.startsAt)) : "",
-      sort: s.startsAt ?? "9999",
-    });
-  }
-  for (const e of calendar) {
-    // Skip calendar duplicates of registrations already shown.
-    if (items.some((i) => i.title.toLowerCase().includes(e.title.toLowerCase().slice(0, 12)))) continue;
-    const d = new Date(e.start);
-    items.push({
+  const events = await getUpcomingEvents();
+  return events.slice(0, 8).map((e) => {
+    const d = new Date(e.date + "T12:00:00");
+    return {
       title: e.title,
-      dateLabel: `${fullDate.format(d)}${e.allDay ? "" : ` · ${timeOnly.format(d)}`}`,
-      meta: e.location,
-      href: await churchCenterEventLink(e.title, e.description),
-      image: null,
+      dateLabel: `${fullDate.format(d)}${e.time ? ` · ${e.time}` : ""}`,
+      meta: e.location || null,
+      href: `/events/${e.slug}`,
+      image: e.image,
       dayNum: dayNumFmt.format(d),
       month: monthFmt.format(d),
-      sort: e.start,
-    });
-  }
-  return items.sort((a, b) => a.sort.localeCompare(b.sort)).slice(0, 8);
+    };
+  });
 }
 
 // The homepage has one job: move a hesitant visitor one step closer to

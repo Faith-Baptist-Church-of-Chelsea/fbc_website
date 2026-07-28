@@ -21,6 +21,57 @@ export async function getActiveAnnouncements() {
     .sort((a, b) => (a.entry.expires ?? "9999").localeCompare(b.entry.expires ?? "9999"));
 }
 
+export type ChurchEvent = {
+  slug: string;
+  title: string;
+  date: string;
+  time: string;
+  showUntil: string | null;
+  location: string;
+  image: string | null;
+  signupLink: string | null;
+};
+
+/** Upcoming manually-entered events (content/events), soonest first. */
+export async function getUpcomingEvents(): Promise<ChurchEvent[]> {
+  const all = await reader.collections.events.all();
+  const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/Detroit" });
+  return all
+    .map(({ slug, entry }) => ({
+      slug,
+      title: entry.title,
+      date: entry.date ?? "",
+      time: entry.time ?? "",
+      showUntil: entry.showUntil ?? null,
+      location: entry.location ?? "",
+      image: entry.image ?? null,
+      signupLink: entry.signupLink ?? null,
+    }))
+    .filter((e) => e.date && (e.showUntil ?? e.date) >= today)
+    .sort((a, b) => a.date.localeCompare(b.date));
+}
+
+/** One event with its description text resolved into paragraphs. */
+export async function getEvent(slug: string) {
+  const entry = await reader.collections.events.read(slug);
+  if (!entry) return null;
+  const description = (await entry.description())
+    .replace(/\{\/\*[\s\S]*?\*\/\}/g, "")
+    .split(/\n\s*\n/)
+    .map((p) => p.replace(/\s+/g, " ").trim())
+    .filter(Boolean);
+  return {
+    title: entry.title,
+    date: entry.date ?? "",
+    time: entry.time ?? "",
+    showUntil: entry.showUntil ?? null,
+    location: entry.location ?? "",
+    image: entry.image ?? null,
+    signupLink: entry.signupLink ?? null,
+    description,
+  };
+}
+
 /** Homepage testimonials with their quote text resolved. */
 export async function getTestimonials() {
   const all = await reader.collections.testimonials.all();

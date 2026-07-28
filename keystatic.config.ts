@@ -12,7 +12,15 @@
 import { config, fields, singleton, collection } from "@keystatic/core";
 
 export default config({
-  storage: { kind: "local" },
+  // GitHub storage: /keystatic works in ANY browser on the deployed site —
+  // volunteers log in with GitHub, edits (including image uploads) become
+  // commits, and Vercel redeploys. Requires one-time GitHub App setup (the
+  // wizard appears at /keystatic in dev once NEXT_PUBLIC_KEYSTATIC_MODE=github
+  // is set); until then, or without the env var, it falls back to local mode.
+  storage:
+    process.env.NEXT_PUBLIC_KEYSTATIC_MODE === "github"
+      ? { kind: "github", repo: "stevenabi6912-prog/fbc_website" }
+      : { kind: "local" },
 
   ui: {
     brand: { name: "Faith Baptist Church" },
@@ -117,6 +125,41 @@ export default config({
   },
 
   collections: {
+    // Upcoming events → content/events/*.mdx + a graphic each.
+    // These drive the homepage carousel and the Events page.
+    events: collection({
+      label: "Events",
+      path: "content/events/*",
+      slugField: "title",
+      format: { contentField: "description" },
+      schema: {
+        title: fields.slug({ name: { label: "Event name" } }),
+        date: fields.date({ label: "Date", validation: { isRequired: true } }),
+        time: fields.text({
+          label: "Time (as shown)",
+          description: "e.g. \"6:30 PM\" or \"8:00 AM – 12:30 PM\" — leave blank for all-day",
+        }),
+        showUntil: fields.date({
+          label: "Keep showing until",
+          description: "Optional — for multi-day events. Otherwise it disappears the day after the date above.",
+        }),
+        location: fields.text({
+          label: "Location",
+          description: "Only needed when it's not at the church",
+        }),
+        image: fields.image({
+          label: "Event graphic",
+          directory: "public/images/events",
+          publicPath: "/images/events/",
+        }),
+        signupLink: fields.url({
+          label: "Sign-up link (optional)",
+          description: "A registration or sign-up URL, if the event has one",
+        }),
+        description: fields.mdx({ label: "About the event" }),
+      },
+    }),
+
     // Staff and ministry leader bios → content/staff/*.md + a photo each.
     staff: collection({
       label: "Staff & Leaders",

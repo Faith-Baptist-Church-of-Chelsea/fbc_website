@@ -14,7 +14,7 @@ const REPO = "stevenabi6912-prog/fbc_website";
 const BRANCH = "main";
 
 // Only these may be created or modified. Anything else is rejected.
-const EDITABLE = /^content\/(site\.json|statement-of-faith\.json|chat-facts\.md|(staff|announcements|testimonials)\/[a-z0-9-]+\.mdx)$/;
+const EDITABLE = /^content\/(site\.json|statement-of-faith\.json|chat-facts\.md|(staff|announcements|testimonials|events)\/[a-z0-9-]+\.mdx)$/;
 
 export type ProposedChange = { path: string; contents: string };
 export type Proposal = {
@@ -152,8 +152,8 @@ export function validateProposal(p: Proposal): void {
   }
   for (const d of p.deletions) {
     // Never allow deleting the two core files.
-    if (!/^content\/(staff|announcements|testimonials)\/[a-z0-9-]+\.mdx$/.test(d)) {
-      throw new Error(`Refusing to delete "${d}" — only staff, announcement, or testimonial entries may be removed.`);
+    if (!/^content\/(staff|announcements|testimonials|events)\/[a-z0-9-]+\.mdx$/.test(d)) {
+      throw new Error(`Refusing to delete "${d}" — only staff, announcement, testimonial, or event entries may be removed.`);
     }
   }
 }
@@ -217,6 +217,7 @@ The website reads everything from these files:
 - content/staff/*.mdx — one file per staff member (YAML frontmatter: name, role, order; body = bio)
 - content/announcements/*.mdx — homepage/events announcements (frontmatter: title, expires (YYYY-MM-DD), link; body = details)
 - content/testimonials/*.mdx — homepage testimonials (frontmatter: name, detail; body = the quote)
+- content/events/*.mdx — upcoming events (frontmatter: title, date (YYYY-MM-DD), time (display text like "6:30 PM"), showUntil (optional YYYY-MM-DD for multi-day), location, image (path, do not change), signupLink; body = description). Events disappear automatically after their date/showUntil. Graphics are uploaded in /keystatic, not here.
 - content/chat-facts.md — facts the website's chat assistant may use
 
 Rules:

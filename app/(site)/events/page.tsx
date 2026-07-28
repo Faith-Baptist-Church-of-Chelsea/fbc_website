@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import site from "@/content/site.json";
 import PageHero from "@/components/PageHero";
 import NextStep from "@/components/NextStep";
-import { getActiveAnnouncements } from "@/lib/content";
+import Link from "next/link";
+import { getUpcomingEvents } from "@/lib/content";
 import { getUpcomingSignups } from "@/lib/pco";
 import { getUpcomingCalendarEvents } from "@/lib/calendar";
 import { churchCenterEventLink } from "@/lib/churchcenter";
@@ -32,8 +32,8 @@ const timeFmt = new Intl.DateTimeFormat("en-US", {
 });
 
 export default async function Events() {
-  const [announcements, signups, rawCalendar] = await Promise.all([
-    getActiveAnnouncements(),
+  const [events, signups, rawCalendar] = await Promise.all([
+    getUpcomingEvents(),
     getUpcomingSignups(),
     getUpcomingCalendarEvents(12),
   ]);
@@ -55,11 +55,43 @@ export default async function Events() {
       />
 
       <section className="px-4 py-14">
-        <div className="mx-auto max-w-3xl space-y-12">
-          {/* Church calendar (Google Calendar, same source as Church Center) */}
+        <div className="mx-auto max-w-4xl space-y-14">
+          {/* Featured events — manually entered with graphics (Keystatic/admin) */}
+          {events.length > 0 && (
+            <div>
+              <div className="grid gap-8 sm:grid-cols-2">
+                {events.map((e) => (
+                  <Link
+                    key={e.slug}
+                    href={`/events/${e.slug}`}
+                    className="hover-lift group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
+                  >
+                    {e.image && (
+                      /* eslint-disable-next-line @next/next/no-img-element --
+                         volunteer-uploaded graphic with arbitrary aspect ratio */
+                      <img src={e.image} alt="" className="w-full" loading="lazy" />
+                    )}
+                    <div className="p-5">
+                      <p className="text-sm font-semibold uppercase tracking-wide text-brand-700">
+                        {dateFmt.format(new Date(e.date + "T12:00:00"))}
+                        {e.time && ` · ${e.time}`}
+                      </p>
+                      <h2 className="mt-1 !font-sans text-xl font-bold normal-case tracking-normal text-slate-900 group-hover:text-brand-700" style={{ fontFamily: "var(--font-sans)", textTransform: "none", letterSpacing: 0 }}>
+                        {e.title}
+                      </h2>
+                      {e.location && <p className="mt-1 text-sm text-slate-600">{e.location}</p>}
+                      <p className="mt-2 text-sm font-semibold text-brand-700">Details →</p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Church calendar (secondary — the full running list) */}
           {calendar.length > 0 && (
             <div>
-              <h2 className="text-2xl font-bold text-slate-900">On the calendar</h2>
+              <h2 className="text-2xl font-bold text-slate-900">Also on the church calendar</h2>
               <ul className="mt-4 divide-y divide-slate-200 rounded-xl border border-slate-200">
                 {calendar.map((e, i) => (
                   <li key={i}>
@@ -133,45 +165,14 @@ export default async function Events() {
             </div>
           )}
 
-          {/* Announcements from the admin panel */}
-          {announcements.length > 0 && (
-            <div>
-              <h2 className="text-2xl font-bold text-slate-900">Announcements</h2>
-              <ul className="mt-4 space-y-4">
-                {announcements.map(({ slug, entry }) => (
-                  <li key={slug} className="rounded-xl border-l-4 border-brand-500 bg-slate-50 p-5">
-                    <p className="font-bold text-slate-900">{entry.title}</p>
-                    {entry.link && (
-                      <a href={entry.link} className="mt-1 inline-block text-sm font-semibold text-brand-700 underline-offset-4 hover:underline">
-                        Details &amp; sign-up →
-                      </a>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
 
-          {calendar.length === 0 && signups.length === 0 && announcements.length === 0 && (
+          {events.length === 0 && calendar.length === 0 && signups.length === 0 && (
             <p className="text-center text-slate-600">
               Nothing special on the calendar right now — which means the best
               thing coming up is Sunday.
             </p>
           )}
 
-          <div className="rounded-xl bg-slate-900 p-8 text-center text-white">
-            <h2 className="text-xl font-bold">Also on Church Center</h2>
-            <p className="mt-2 text-slate-300">
-              Registrations and the full events list live in Church Center too
-              — especially handy in the app.
-            </p>
-            <a
-              href={`${site.links.churchCenter}/pages/upcoming-events`}
-              className="mt-5 inline-block rounded-lg bg-brand-500 px-6 py-3 font-semibold text-white transition-colors hover:bg-brand-600"
-            >
-              Upcoming events on Church Center
-            </a>
-          </div>
         </div>
       </section>
 
