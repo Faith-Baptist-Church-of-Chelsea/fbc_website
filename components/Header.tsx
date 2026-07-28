@@ -32,7 +32,7 @@ export default function Header() {
     }`;
 
   return (
-    <header className="sticky top-0 z-50 bg-slate-950/95 backdrop-blur supports-[backdrop-filter]:bg-slate-950/85">
+    <header className="sticky top-0 z-50 bg-navy/95 backdrop-blur supports-[backdrop-filter]:bg-navy/90">
       <nav
         aria-label="Main"
         className="mx-auto flex h-20 max-w-6xl items-center justify-between gap-2 px-4"
@@ -78,13 +78,13 @@ export default function Header() {
               </svg>
             </button>
             {ministriesOpen && (
-              <div className="absolute left-0 top-full w-48 rounded-b-lg bg-slate-900 py-2 shadow-lg">
+              <div className="absolute left-0 top-full w-48 rounded-b-lg bg-navy py-2 shadow-lg">
                 {ministries.links.map((l) => (
                   <Link
                     key={l.href}
                     href={l.href}
                     onClick={close}
-                    className="block px-4 py-2 text-sm text-slate-300 hover:bg-slate-800 hover:text-white"
+                    className="block px-4 py-2 text-sm text-slate-300 hover:bg-white/10 hover:text-white"
                   >
                     {l.label}
                   </Link>
@@ -139,7 +139,7 @@ export default function Header() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div id="mobile-menu" className="border-t border-slate-800 bg-slate-950 px-4 pb-6 pt-2 lg:hidden">
+        <div id="mobile-menu" className="border-t border-white/10 bg-navy px-4 pb-6 pt-2 lg:hidden">
           <Link
             href={planYourVisit.href}
             onClick={close}
@@ -149,7 +149,7 @@ export default function Header() {
           </Link>
           <div className="mt-4 space-y-1">
             {primaryLinks.map((l) => (
-              <Link key={l.href} href={l.href} onClick={close} className="block rounded px-2 py-2 text-base text-slate-200 hover:bg-slate-900">
+              <Link key={l.href} href={l.href} onClick={close} className="block rounded px-2 py-2 text-base text-slate-200 hover:bg-white/10">
                 {l.label}
               </Link>
             ))}
@@ -159,14 +159,14 @@ export default function Header() {
           </p>
           <div className="mt-1 space-y-1">
             {ministries.links.map((l) => (
-              <Link key={l.href} href={l.href} onClick={close} className="block rounded px-2 py-2 text-base text-slate-200 hover:bg-slate-900">
+              <Link key={l.href} href={l.href} onClick={close} className="block rounded px-2 py-2 text-base text-slate-200 hover:bg-white/10">
                 {l.label}
               </Link>
             ))}
           </div>
-          <div className="mt-4 space-y-1 border-t border-slate-800 pt-4">
+          <div className="mt-4 space-y-1 border-t border-white/10 pt-4">
             {secondaryLinks.map((l) => (
-              <Link key={l.href} href={l.href} onClick={close} className="block rounded px-2 py-2 text-base text-slate-300 hover:bg-slate-900">
+              <Link key={l.href} href={l.href} onClick={close} className="block rounded px-2 py-2 text-base text-slate-300 hover:bg-white/10">
                 {l.label}
               </Link>
             ))}
