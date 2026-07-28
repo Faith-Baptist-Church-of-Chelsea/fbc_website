@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { runPcoHealthChecks, type HealthCheck } from "@/lib/pco";
+import { youtubeKeyConfigured, getRecentVideos } from "@/lib/youtube";
 
 export const metadata: Metadata = {
   title: "Integration Health",
@@ -29,12 +30,23 @@ function statusRow(c: HealthCheck) {
 export default async function HealthPage() {
   const pco = await runPcoHealthChecks();
 
-  const staticChecks: HealthCheck[] = [
-    {
-      name: "YouTube integration",
+  let youtube: HealthCheck;
+  if (!youtubeKeyConfigured()) {
+    youtube = {
+      name: "YouTube",
       ok: true,
-      detail: "Phase 6 — currently using keyless playlist embeds, nothing to break.",
-    },
+      detail:
+        "Keyless mode: playlist embeds work, live banner runs on schedule alone (unverified wording). Add YOUTUBE_API_KEY to upgrade.",
+    };
+  } else {
+    const videos = await getRecentVideos(1);
+    youtube = videos.length
+      ? { name: "YouTube", ok: true, detail: "API key active — video list and live verification working." }
+      : { name: "YouTube", ok: false, detail: "API key is set but the video list request failed — check quota or key restrictions." };
+  }
+
+  const staticChecks: HealthCheck[] = [
+    youtube,
     {
       name: "Contact forms / email",
       ok: true,
