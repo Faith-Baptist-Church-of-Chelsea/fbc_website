@@ -25,7 +25,7 @@ export default function Header() {
   };
 
   const linkClass = (href: string) =>
-    `rounded px-3 py-2 text-sm font-medium transition-colors ${
+    `rounded px-3 py-2.5 text-sm font-medium transition-colors ${
       pathname === href
         ? "text-white"
         : "text-slate-300 hover:text-white"
@@ -70,7 +70,7 @@ export default function Header() {
               type="button"
               aria-expanded={ministriesOpen}
               onClick={() => setMinistriesOpen((o) => !o)}
-              className="flex items-center gap-1 rounded px-3 py-2 text-sm font-medium text-slate-300 transition-colors hover:text-white"
+              className="flex items-center gap-1 rounded px-3 py-2.5 text-sm font-medium text-slate-300 transition-colors hover:text-white"
             >
               {ministries.label}
               <svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10" className={`transition-transform ${ministriesOpen ? "rotate-180" : ""}`}>

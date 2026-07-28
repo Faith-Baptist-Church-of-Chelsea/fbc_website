@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import PageHero from "@/components/PageHero";
+import { FaqJsonLd } from "@/components/JsonLd";
 import NextStep from "@/components/NextStep";
 
 export const metadata: Metadata = {
@@ -117,9 +118,18 @@ const questions = [
   },
 ];
 
+const faqPlain = [
+  { q: "Are you KJV?", a: "Yes. We believe the word of God has every answer for life. We use only the King James Version, because we believe it is the most accurate translation we have today for English-speaking people. You're welcome to follow along in whatever Bible you bring." },
+  { q: "What is the music like?", a: "A beautiful blend: we love the old hymns and also sing newer spiritual songs. Our choir is a blessing every Sunday, and we have an orchestra too." },
+  { q: "What do you believe?", a: "We believe the Bible is the inspired, inerrant Word of God and the final authority for faith and life, and that salvation is God's gift received by personal faith in the Lord Jesus Christ. Our full statement of faith is published on our About page." },
+  { q: "What do you have for my kids?", a: "A staffed nursery for ages 0-3 at every service, classes for ages 3-12 on Sunday mornings at 11:00 and Wednesday nights at 7:00 with secure check-in, youth group for ages 12-18 on Wednesdays, and Family School on Sundays at 9:45 where all ages learn together." },
+  { q: "How do I get involved?", a: "Start by visiting. The choir and orchestra are open to anyone with no audition — just talk to Matthew Dowdy — and sign-ups and groups live in the Church Center app." },
+];
+
 export default function CommonQuestions() {
   return (
     <main className="flex-1">
+      <FaqJsonLd faqs={faqPlain} />
       <PageHero
         eyebrow="No question is too basic"
         title="Common Questions"

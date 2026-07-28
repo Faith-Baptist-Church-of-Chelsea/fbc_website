@@ -4,6 +4,7 @@ import site from "@/content/site.json";
 import NextStep from "@/components/NextStep";
 import { checkLiveNow, getRecentVideos, scrapeLiveNow } from "@/lib/youtube";
 import { nextService } from "@/lib/service-windows";
+import LiteYouTube from "@/components/LiteYouTube";
 
 export const metadata: Metadata = {
   title: "Watch Live",
@@ -84,14 +85,7 @@ export default async function LivePage() {
                     In the meantime — the latest message
                   </h2>
                   <div className="mt-4 overflow-hidden rounded-xl">
-                    <iframe
-                      className="aspect-video w-full"
-                      src={`https://www.youtube-nocookie.com/embed/${latest.videoId}`}
-                      title={latest.title}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      loading="lazy"
-                    />
+                    <LiteYouTube videoId={latest.videoId} title={latest.title} thumbnail={latest.thumbnail} />
                   </div>
                   <p className="mt-3 text-slate-300">{latest.title}</p>
                 </>

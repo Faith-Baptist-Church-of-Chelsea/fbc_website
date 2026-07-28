@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "Youth Group",
   description:
     "Youth group at Faith Baptist Church of Chelsea — ages 12–18, Wednesday nights at 7:00, led by Josiah & Ashley Jaworski.",
+  openGraph: { images: ["/images/youth-group.jpg"] },
 };
 
 export default function YouthGroup() {

@@ -2,9 +2,11 @@ import Link from "next/link";
 import site from "@/content/site.json";
 import Photo from "@/components/Photo";
 import EventsCarousel, { type CarouselItem } from "@/components/EventsCarousel";
+import LiteYouTube from "@/components/LiteYouTube";
 import TestimonialRotator from "@/components/TestimonialRotator";
 import { getActiveAnnouncements, getTestimonials, getUpcomingEvents } from "@/lib/content";
 import { getRecentVideos } from "@/lib/youtube";
+import { getGoogleReviews } from "@/lib/google-reviews";
 
 export const revalidate = 900;
 
@@ -49,12 +51,14 @@ const ministries = [
 ];
 
 export default async function Home() {
-  const [announcements, [latest], events, testimonials] = await Promise.all([
+  const [announcements, [latest], events, manualTestimonials, googleReviews] = await Promise.all([
     getActiveAnnouncements(),
     getRecentVideos(1),
     featuredEvents(),
     getTestimonials(),
+    getGoogleReviews(),
   ]);
+  const testimonials = [...manualTestimonials, ...googleReviews];
 
   return (
     <main className="flex-1">
@@ -70,6 +74,8 @@ export default async function Home() {
             alt=""
             aria-hidden="true"
             data-parallax="0.3"
+            loading="eager"
+            fetchPriority="high"
             className="absolute inset-0 h-full w-full scale-110 object-cover opacity-25 blur-md"
           />
         )}
@@ -158,18 +164,18 @@ export default async function Home() {
             preaching faithfully rooted in God&rsquo;s Word.
           </p>
           <div className="mt-6 overflow-hidden rounded-xl">
-            <iframe
-              className="aspect-video w-full"
-              src={
-                latest
-                  ? `https://www.youtube-nocookie.com/embed/${latest.videoId}`
-                  : `https://www.youtube-nocookie.com/embed/videoseries?list=${site.social.youtubeChannelId.replace(/^UC/, "UU")}`
-              }
-              title={latest?.title ?? "Latest sermon from Faith Baptist Church of Chelsea"}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              loading="lazy"
-            />
+            {latest ? (
+              <LiteYouTube videoId={latest.videoId} title={latest.title} thumbnail={latest.thumbnail} />
+            ) : (
+              <iframe
+                className="aspect-video w-full"
+                src={`https://www.youtube-nocookie.com/embed/videoseries?list=${site.social.youtubeChannelId.replace(/^UC/, "UU")}`}
+                title="Latest sermon from Faith Baptist Church of Chelsea"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                loading="lazy"
+              />
+            )}
           </div>
           {latest?.thumbnail && (
             <p className="mt-3 text-center text-slate-700">
@@ -197,8 +203,8 @@ export default async function Home() {
                 href={m.href}
                 className="group hover-lift overflow-hidden rounded-xl border border-slate-200 bg-white transition-shadow hover:shadow-lg"
               >
-                <div className="aspect-[8/5] w-full overflow-hidden">
-                  <Photo src={m.img} alt="" width={800} height={500} className="h-full w-full object-cover" />
+                <div className="relative aspect-[8/5] w-full overflow-hidden">
+                  <Photo src={m.img} alt="" width={800} height={500} fill sizes="(max-width: 640px) 100vw, 340px" />
                 </div>
                 <div className="p-5">
                   <h3 className="text-lg font-bold text-slate-900 group-hover:text-brand-700">

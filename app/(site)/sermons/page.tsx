@@ -3,6 +3,7 @@ import site from "@/content/site.json";
 import PageHero from "@/components/PageHero";
 import NextStep from "@/components/NextStep";
 import { getRecentVideos } from "@/lib/youtube";
+import LiteYouTube from "@/components/LiteYouTube";
 
 export const metadata: Metadata = {
   title: "Sermons",
@@ -41,18 +42,18 @@ export default async function Sermons() {
             {latest ? "The latest message" : "Latest messages"}
           </h2>
           <div className="mt-6 overflow-hidden rounded-xl">
-            <iframe
-              className="aspect-video w-full"
-              src={
-                latest
-                  ? `https://www.youtube-nocookie.com/embed/${latest.videoId}`
-                  : `https://www.youtube-nocookie.com/embed/videoseries?list=${uploadsPlaylist}`
-              }
-              title={latest ? latest.title : "Sermons from Faith Baptist Church of Chelsea — latest uploads"}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              loading="lazy"
-            />
+            {latest ? (
+              <LiteYouTube videoId={latest.videoId} title={latest.title} thumbnail={latest.thumbnail} />
+            ) : (
+              <iframe
+                className="aspect-video w-full"
+                src={`https://www.youtube-nocookie.com/embed/videoseries?list=${uploadsPlaylist}`}
+                title="Sermons from Faith Baptist Church of Chelsea — latest uploads"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                loading="lazy"
+              />
+            )}
           </div>
           {latest && (
             <p className="mt-3 text-slate-700">

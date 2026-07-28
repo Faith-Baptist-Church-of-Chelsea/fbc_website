@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Special Music",
   description:
     "The choir and orchestra of Faith Baptist Church of Chelsea — and how to join them. No audition required; just talk to Matthew Dowdy.",
+  openGraph: { images: ["/images/choir.jpg"] },
 };
 
 export default function SpecialMusic() {

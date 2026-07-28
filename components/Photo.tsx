@@ -14,6 +14,7 @@ export default function Photo({
   className = "",
   priority = false,
   sizes,
+  fill = false,
 }: {
   src: string;
   alt: string;
@@ -22,6 +23,7 @@ export default function Photo({
   className?: string;
   priority?: boolean;
   sizes?: string;
+  fill?: boolean;
 }) {
   const exists = fs.existsSync(path.join(process.cwd(), "public", src));
 
@@ -41,6 +43,18 @@ export default function Photo({
     );
   }
 
+  if (fill) {
+    return (
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        className={`object-cover ${className}`}
+        priority={priority}
+        sizes={sizes}
+      />
+    );
+  }
   return (
     <Image
       src={src}

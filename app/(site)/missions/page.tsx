@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "Missions",
   description:
     "Missions at Faith Baptist Church of Chelsea — supporting missionaries around the world, missions nights, and mission trips.",
+  openGraph: { images: ["/images/missions-map.jpg"] },
 };
 
 export default function Missions() {

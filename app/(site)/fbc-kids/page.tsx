@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   title: "FBC Kids",
   description:
     "Children's ministry at Faith Baptist Church of Chelsea: staffed nursery at every service and Bible classes for ages 3–12, with simple, secure check-in.",
+  openGraph: { images: ["/images/kids-class.jpg"] },
 };
 
 // The children's schedule. "—" means that age group is with their family

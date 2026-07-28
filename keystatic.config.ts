@@ -87,6 +87,10 @@ export default config({
               `${props.fields.day.value} ${props.fields.time.value} — ${props.fields.name.value}`,
           }
         ),
+        googlePlaceId: fields.text({
+          label: "Google Place ID",
+          description: "Technical ID for pulling Google reviews — leave alone",
+        }),
         social: fields.object(
           {
             facebook: fields.url({ label: "Facebook" }),

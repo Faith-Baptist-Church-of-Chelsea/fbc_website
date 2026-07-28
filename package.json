@@ -12,6 +12,7 @@
     "@anthropic-ai/sdk": "^0.115.0",
     "@keystatic/core": "^0.6.3",
     "@keystatic/next": "^5.0.4",
+    "@vercel/analytics": "^2.0.1",
     "next": "16.2.12",
     "node-ical": "^0.26.1",
     "react": "19.2.4",

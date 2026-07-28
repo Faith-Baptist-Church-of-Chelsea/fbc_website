@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import NextStep from "@/components/NextStep";
+import Image from "next/image";
 import Link from "next/link";
 import { getUpcomingEvents } from "@/lib/content";
 import { getUpcomingSignups } from "@/lib/pco";
@@ -71,9 +72,14 @@ export default async function Events() {
                     className="hover-lift group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm"
                   >
                     {e.image && (
-                      /* eslint-disable-next-line @next/next/no-img-element --
-                         volunteer-uploaded graphic with arbitrary aspect ratio */
-                      <img src={e.image} alt="" className="w-full" loading="lazy" />
+                      <Image
+                        src={e.image}
+                        alt=""
+                        width={1920}
+                        height={1080}
+                        sizes="(max-width: 640px) 100vw, 430px"
+                        className="w-full"
+                      />
                     )}
                     <div className="p-5">
                       <p className="text-sm font-semibold uppercase tracking-wide text-brand-700">

@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "Young Adults",
   description:
     "Young adults (18–30) at Faith Baptist Church of Chelsea — the Unashamed conference, activities organized by Matthew Dowdy, and a group worth belonging to.",
+  openGraph: { images: ["/images/young-adults-activity.jpg"] },
 };
 
 export const revalidate = 900;

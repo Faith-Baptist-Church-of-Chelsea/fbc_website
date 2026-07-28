@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 export type CarouselItem = {
@@ -47,9 +48,14 @@ export default function EventsCarousel({ items }: { items: CarouselItem[] }) {
           className="hover-lift group w-[19rem] shrink-0 snap-start overflow-hidden rounded-2xl bg-slate-900 text-white shadow-lg sm:w-[22rem]"
         >
           {e.image ? (
-            /* eslint-disable-next-line @next/next/no-img-element --
-               remote Planning Center image with unknown dimensions */
-            <img src={e.image} alt="" className="aspect-video w-full bg-slate-950 object-cover" loading="lazy" />
+            <Image
+              src={e.image}
+              alt=""
+              width={1920}
+              height={1080}
+              sizes="(max-width: 640px) 90vw, 384px"
+              className="aspect-video w-full bg-slate-950 object-cover"
+            />
           ) : (
             <div className="flex aspect-video w-full items-center justify-center bg-gradient-to-br from-brand-600 via-slate-800 to-slate-950">
               <div className="text-center">

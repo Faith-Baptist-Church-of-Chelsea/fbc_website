@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "Plan Your Visit",
   description:
     "Where to park, which door to use, what to wear, and what happens with your kids — everything you need to know before your first Sunday at Faith Baptist Church in Chelsea.",
+  openGraph: { images: ["/images/building-exterior.jpg"] },
 };
 
 export default function PlanYourVisit() {

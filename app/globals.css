@@ -13,8 +13,8 @@
  */
 @theme {
   --color-brand-400: #16beeb; /* bright cyan — accents on dark */
-  --color-brand-500: #0093ce; /* primary logo blue — buttons, large elements */
-  --color-brand-600: #007db0; /* hover state for brand-500 buttons */
+  --color-brand-500: #007db0; /* button blue — darkened from logo blue for AA contrast with white text */
+  --color-brand-600: #006d9a; /* hover state for brand-500 buttons */
   --color-brand-700: #006389; /* AA-safe link/text blue on white */
   --color-ink: #616a70; /* logo slate gray */
   --color-navy: #061031; /* header navy — darker than the hero sections */
@@ -120,7 +120,7 @@ body {
     transform: translateY(34px);
     animation: rise 1.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
-  .animate-rise-1 { animation-delay: 0.1s; }
+  .animate-rise-1 { animation-delay: 0s; animation-duration: 0.9s; }
   .animate-rise-2 { animation-delay: 0.35s; }
   .animate-rise-3 { animation-delay: 0.6s; }
   .animate-rise-4 { animation-delay: 0.85s; }

@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Contact",
   description:
     "Contact Faith Baptist Church of Chelsea — directions, office hours, prayer requests, and a direct line if you're new.",
+  openGraph: { images: ["/images/building-exterior.jpg"] },
 };
 
 export default function Contact() {

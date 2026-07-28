@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: "About Us",
   description:
     "The history, leadership, and beliefs of Faith Baptist Church of Chelsea, Michigan — established 1996, preaching the Bible expositionally.",
+  openGraph: { images: ["/images/building-exterior.jpg"] },
 };
 
 export default async function About() {

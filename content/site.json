@@ -72,5 +72,6 @@
     "appStoreChurchCenter": "https://apps.apple.com/us/app/church-center-app/id1357742931",
     "googlePlayChurchCenter": "https://play.google.com/store/apps/details?id=com.ministrycentered.churchcenter",
     "givingEmbed": "https://fbcchelsea.churchtrac.com/give/embed"
-  }
+  },
+  "googlePlaceId": ""
 }

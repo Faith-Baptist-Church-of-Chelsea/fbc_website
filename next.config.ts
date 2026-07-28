@@ -12,6 +12,19 @@ const nextConfig: NextConfig = {
   },
   // node-ical must stay a plain Node dependency (bundling breaks it).
   serverExternalPackages: ["node-ical"],
+  // Old WordPress URLs -> new pages, so links and search rankings carry
+  // over when fbcchelsea.org points here.
+  async redirects() {
+    return [
+      { source: "/statement-of-faith", destination: "/about#statement-of-faith", permanent: true },
+      { source: "/statement-of-faith/", destination: "/about#statement-of-faith", permanent: true },
+      { source: "/teachers", destination: "/fbc-kids", permanent: true },
+      { source: "/teachers/", destination: "/fbc-kids", permanent: true },
+      { source: "/about-us", destination: "/about", permanent: true },
+      { source: "/visit", destination: "/plan-your-visit", permanent: true },
+      { source: "/watch", destination: "/live", permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;

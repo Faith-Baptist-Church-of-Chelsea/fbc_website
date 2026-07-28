@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import Image from "next/image";
 import site from "@/content/site.json";
 import { getEvent, getUpcomingEvents } from "@/lib/content";
 import NextStep from "@/components/NextStep";
+import { EventJsonLd } from "@/components/JsonLd";
 
 // Summit-style event detail page: dark hero with the title, a card with
 // the description and graphic, When & Where, add-to-calendar, sign-up.
@@ -68,6 +70,15 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
 
   return (
     <main className="flex-1">
+      <EventJsonLd
+        title={event.title}
+        date={event.date}
+        endDate={event.showUntil}
+        image={event.image}
+        description={event.description.join(" ").slice(0, 300)}
+        slug={slug}
+        location={event.location}
+      />
       <section className="bg-slate-950 px-4 pb-24 pt-14 text-white">
         <div className="mx-auto max-w-4xl">
           <Link href="/events" className="text-sm font-semibold text-slate-300 hover:text-white">
@@ -114,9 +125,14 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
           </div>
           <div>
             {event.image && (
-              /* Managed by Keystatic; plain img keeps arbitrary aspect ratios intact */
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img src={event.image} alt={event.title} className="w-full rounded-xl border border-slate-200" />
+              <Image
+                src={event.image}
+                alt={event.title}
+                width={1920}
+                height={1080}
+                sizes="(max-width: 768px) 100vw, 320px"
+                className="w-full rounded-xl border border-slate-200"
+              />
             )}
           </div>
         </div>

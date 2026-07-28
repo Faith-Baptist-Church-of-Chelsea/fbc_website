@@ -72,8 +72,10 @@ export default function Footer() {
 
       <div className="border-t border-slate-800">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-4 py-6 sm:flex-row sm:justify-between">
-          <p className="text-xs text-slate-500">
-            © {new Date().getFullYear()} {site.name} of Chelsea
+          <p className="text-xs text-slate-400">
+            © {new Date().getFullYear()} {site.name} of Chelsea — an
+            independent Baptist church in Chelsea, Michigan. Expository
+            preaching, KJV, and a warm welcome.
           </p>
           <p className="flex gap-5 text-xs">
             <a href={site.social.facebook} className="text-slate-400 hover:text-white">
