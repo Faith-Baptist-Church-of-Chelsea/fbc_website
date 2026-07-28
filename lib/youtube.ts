@@ -48,6 +48,35 @@ export async function checkLiveNow(): Promise<{ live: boolean | null; videoId: s
   }
 }
 
+/**
+ * Free live check: reads the channel's public /live page and looks for
+ * YouTube's own "isLive" flag. Costs no API quota, so it can run around
+ * the clock — this is what lets the banner appear for special services
+ * without a schedule. Returns null when the page can't be read (then the
+ * caller falls back to the service-time schedule).
+ */
+export async function scrapeLiveNow(): Promise<{ live: boolean | null; videoId: string | null }> {
+  try {
+    const res = await fetch(`https://www.youtube.com/channel/${CHANNEL}/live`, {
+      next: { revalidate: 300 },
+      headers: {
+        "user-agent":
+          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36",
+      },
+    });
+    if (!res.ok) return { live: null, videoId: null };
+    const html = await res.text();
+    if (html.includes('"isLive":true')) {
+      const m = html.match(/"videoId":"([\w-]{6,20})"/);
+      return { live: true, videoId: m?.[1] ?? null };
+    }
+    return { live: false, videoId: null };
+  } catch (err) {
+    console.warn("[youtube] live scrape failed:", err instanceof Error ? err.message : err);
+    return { live: null, videoId: null };
+  }
+}
+
 export type SermonVideo = {
   videoId: string;
   title: string;

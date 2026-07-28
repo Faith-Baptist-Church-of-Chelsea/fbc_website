@@ -13,6 +13,7 @@ export type ServiceWindow = {
 };
 
 export const SERVICE_WINDOWS: ServiceWindow[] = [
+  { day: 0, startMinutes: 9 * 60 + 45, durationMinutes: 75, label: "Family School" },
   { day: 0, startMinutes: 11 * 60, durationMinutes: 105, label: "Sunday Morning Service" },
   { day: 0, startMinutes: 18 * 60, durationMinutes: 105, label: "Sunday Evening Service" },
   { day: 3, startMinutes: 19 * 60, durationMinutes: 105, label: "Midweek Service" },
