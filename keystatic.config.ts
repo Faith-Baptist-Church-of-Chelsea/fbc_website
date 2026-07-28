@@ -50,6 +50,12 @@ export default config({
           },
           { label: "Email addresses" }
         ),
+        formRecipients: fields.array(fields.text({ label: "Email address" }), {
+          label: "Form recipients",
+          description:
+            "Who receives contact & prayer form submissions. Add or remove staff freely — no code changes needed.",
+          itemLabel: (props) => props.value,
+        }),
         officeHours: fields.array(
           fields.object({
             days: fields.text({ label: "Day(s)" }),

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import site from "@/content/site.json";
 import PageHero from "@/components/PageHero";
 import NextStep from "@/components/NextStep";
+import ContactForm from "@/components/ContactForm";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -9,9 +10,6 @@ export const metadata: Metadata = {
     "Contact Faith Baptist Church of Chelsea — directions, office hours, prayer requests, and a direct line if you're new.",
 };
 
-// Interim contact page: direct email/phone paths. Phase 7 replaces the
-// mailto links with real forms (contact + prayer request) that email staff
-// and create the person in Planning Center People.
 export default function Contact() {
   const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(
     `${site.address.street}, ${site.address.city}, ${site.address.state} ${site.address.zip}`
@@ -25,8 +23,18 @@ export default function Contact() {
         intro="A question, a prayer request, or just figuring out if we're the right church to try — every one of those is worth a message."
       />
 
-      {/* Three paths */}
+      {/* The form — one form for everything, kind selector on top */}
       <section className="px-4 py-14">
+        <div className="mx-auto max-w-2xl">
+          <ContactForm />
+          <p className="mt-4 text-sm text-slate-500">
+            Prefer email? The direct addresses below work too.
+          </p>
+        </div>
+      </section>
+
+      {/* Three direct paths */}
+      <section className="bg-white px-4 pb-14">
         <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-3">
           <div className="rounded-xl bg-slate-50 p-6">
             <h2 className="text-lg font-bold text-slate-900">I&rsquo;m new here</h2>

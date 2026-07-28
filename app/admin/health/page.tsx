@@ -47,11 +47,18 @@ export default async function HealthPage() {
 
   const staticChecks: HealthCheck[] = [
     youtube,
-    {
-      name: "Contact forms / email",
-      ok: true,
-      detail: "Phase 7 — not built yet; contact page uses direct email links.",
-    },
+    process.env.RESEND_API_KEY
+      ? {
+          name: "Contact forms / email (Resend)",
+          ok: true,
+          detail: "API key present. Recipients are edited in /keystatic → Church Info → Form recipients.",
+        }
+      : {
+          name: "Contact forms / email (Resend)",
+          ok: false,
+          detail:
+            "RESEND_API_KEY is not set — form submissions still go into Planning Center People, but staff get NO email. Create a free resend.com account and add the key.",
+        },
   ];
 
   return (

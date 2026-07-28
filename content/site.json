@@ -15,6 +15,10 @@
     "assistantPastor": "pastorsteve@fbcchelsea.org",
     "office": "moriah@fbcchelsea.org"
   },
+  "formRecipients": [
+    "pastorsteve@fbcchelsea.org",
+    "moriah@fbcchelsea.org"
+  ],
   "officeHours": [
     { "days": "Monday–Thursday", "hours": "8:00 AM – 4:00 PM" },
     { "days": "Wednesday evening", "hours": "open through the evening service" },
