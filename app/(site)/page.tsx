@@ -52,7 +52,7 @@ async function featuredEvents(): Promise<CarouselItem[]> {
       title: e.title,
       dateLabel: `${fullDate.format(d)}${e.allDay ? "" : ` · ${timeOnly.format(d)}`}`,
       meta: e.location,
-      href: churchCenterEventLink(e.title, e.description),
+      href: await churchCenterEventLink(e.title, e.description),
       image: null,
       dayNum: dayNumFmt.format(d),
       month: monthFmt.format(d),

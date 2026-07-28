@@ -32,11 +32,19 @@ const timeFmt = new Intl.DateTimeFormat("en-US", {
 });
 
 export default async function Events() {
-  const [announcements, signups, calendar] = await Promise.all([
+  const [announcements, signups, rawCalendar] = await Promise.all([
     getActiveAnnouncements(),
     getUpcomingSignups(),
     getUpcomingCalendarEvents(12),
   ]);
+  // Verified Church Center links (never 404s — falls back to the
+  // upcoming-events page when no matching page exists).
+  const calendar = await Promise.all(
+    rawCalendar.map(async (e) => ({
+      ...e,
+      href: await churchCenterEventLink(e.title, e.description),
+    }))
+  );
 
   return (
     <main className="flex-1">
@@ -56,7 +64,7 @@ export default async function Events() {
                 {calendar.map((e, i) => (
                   <li key={i}>
                     <a
-                      href={churchCenterEventLink(e.title, e.description)}
+                      href={e.href}
                       className="group flex items-baseline gap-4 p-4 transition-colors hover:bg-slate-50"
                     >
                       <span className="w-32 shrink-0 text-sm font-semibold uppercase tracking-wide text-brand-700">
