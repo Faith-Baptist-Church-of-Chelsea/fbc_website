@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import site from "@/content/site.json";
 import { getEvent, getUpcomingEvents } from "@/lib/content";
 import NextStep from "@/components/NextStep";
-import Photo from "@/components/Photo";
 
 // Summit-style event detail page: dark hero with the title, a card with
 // the description and graphic, When & Where, add-to-calendar, sign-up.
@@ -114,12 +113,10 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
             </div>
           </div>
           <div>
-            {event.image ? (
+            {event.image && (
               /* Managed by Keystatic; plain img keeps arbitrary aspect ratios intact */
               /* eslint-disable-next-line @next/next/no-img-element */
               <img src={event.image} alt={event.title} className="w-full rounded-xl border border-slate-200" />
-            ) : (
-              <Photo src={`/images/events/${slug}.png`} alt={event.title} width={600} height={600} />
             )}
           </div>
         </div>
