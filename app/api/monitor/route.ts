@@ -12,9 +12,14 @@ export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 export async function GET(req: NextRequest) {
-  // When CRON_SECRET is set in Vercel, only Vercel's cron may trigger this.
+  // Only Vercel's cron may trigger this (CRON_SECRET when set, otherwise
+  // the cron user-agent). Random crawlers must not be able to run the
+  // checks — during an outage each hit would email the staff.
   const secret = process.env.CRON_SECRET;
-  if (secret && req.headers.get("authorization") !== `Bearer ${secret}`) {
+  const isCron = secret
+    ? req.headers.get("authorization") === `Bearer ${secret}`
+    : (req.headers.get("user-agent") ?? "").startsWith("vercel-cron");
+  if (!isCron) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
