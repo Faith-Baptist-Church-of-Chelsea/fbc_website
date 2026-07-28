@@ -13,6 +13,7 @@ export type CalendarEvent = {
   start: string; // ISO
   allDay: boolean;
   location: string | null;
+  description: string | null;
 };
 
 const LOOKAHEAD_DAYS = 90;
@@ -52,12 +53,12 @@ export async function getUpcomingCalendarEvents(limit = 12): Promise<CalendarEve
         );
         for (const occ of ev.rrule.between(now, horizon, true)) {
           if (exdates.has(occ.toDateString())) continue;
-          out.push({ title: text(ev.summary) || "Event", start: occ.toISOString(), allDay, location: text(ev.location) || null });
+          out.push({ title: text(ev.summary) || "Event", start: occ.toISOString(), allDay, location: text(ev.location) || null, description: text(ev.description) || null });
         }
       } else {
         const start = new Date(ev.start);
         if (start >= now && start <= horizon) {
-          out.push({ title: text(ev.summary) || "Event", start: start.toISOString(), allDay, location: text(ev.location) || null });
+          out.push({ title: text(ev.summary) || "Event", start: start.toISOString(), allDay, location: text(ev.location) || null, description: text(ev.description) || null });
         }
       }
     }

@@ -5,6 +5,7 @@ import NextStep from "@/components/NextStep";
 import { getActiveAnnouncements } from "@/lib/content";
 import { getUpcomingSignups } from "@/lib/pco";
 import { getUpcomingCalendarEvents } from "@/lib/calendar";
+import { churchCenterEventLink } from "@/lib/churchcenter";
 import { htmlToParagraphs } from "@/lib/html";
 
 export const metadata: Metadata = {
@@ -53,17 +54,23 @@ export default async function Events() {
               <h2 className="text-2xl font-bold text-slate-900">On the calendar</h2>
               <ul className="mt-4 divide-y divide-slate-200 rounded-xl border border-slate-200">
                 {calendar.map((e, i) => (
-                  <li key={i} className="flex items-baseline gap-4 p-4">
-                    <span className="w-32 shrink-0 text-sm font-semibold uppercase tracking-wide text-brand-700">
-                      {dateFmt.format(new Date(e.start))}
-                    </span>
-                    <span>
-                      <span className="font-semibold text-slate-900">{e.title}</span>
-                      <span className="text-sm text-slate-600">
-                        {!e.allDay && <> · {timeFmt.format(new Date(e.start))}</>}
-                        {e.location && <> · {e.location}</>}
+                  <li key={i}>
+                    <a
+                      href={churchCenterEventLink(e.title, e.description)}
+                      className="group flex items-baseline gap-4 p-4 transition-colors hover:bg-slate-50"
+                    >
+                      <span className="w-32 shrink-0 text-sm font-semibold uppercase tracking-wide text-brand-700">
+                        {dateFmt.format(new Date(e.start))}
                       </span>
-                    </span>
+                      <span>
+                        <span className="font-semibold text-slate-900 group-hover:text-brand-700">{e.title}</span>
+                        <span className="text-sm text-slate-600">
+                          {!e.allDay && <> · {timeFmt.format(new Date(e.start))}</>}
+                          {e.location && <> · {e.location}</>}
+                        </span>
+                        <span className="ml-2 text-sm font-semibold text-brand-700 opacity-0 transition-opacity group-hover:opacity-100">details →</span>
+                      </span>
+                    </a>
                   </li>
                 ))}
               </ul>

@@ -36,6 +36,23 @@ main h2 {
   line-height: 1.05;
 }
 
+/* Serif accent (gospel section, /salvation) — overrides the display rule. */
+.font-accent {
+  font-family: var(--font-playfair), Georgia, serif;
+  text-transform: none;
+  letter-spacing: 0;
+  line-height: 1.15;
+  font-weight: 700;
+}
+
+.testimonial-fade {
+  animation: testimonial-in 0.9s ease both;
+}
+@keyframes testimonial-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 body {
   background: #ffffff;
   color: var(--color-slate-800);
@@ -68,6 +85,28 @@ body {
   }
   html.js-reveal .revealed {
     opacity: 1;
+    transform: none;
+  }
+
+  /* Children of grids/lists cascade in one after another (delay set inline). */
+  html.js-reveal .stagger-child {
+    opacity: 0;
+    transform: translateY(28px) scale(0.985);
+    transition:
+      opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  html.js-reveal .stagger-child.stagger-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Images inside revealing sections settle from a slight zoom. */
+  html.js-reveal .reveal-pending img {
+    transform: scale(1.05);
+    transition: transform 1.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  html.js-reveal .revealed img {
     transform: none;
   }
 

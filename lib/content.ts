@@ -21,6 +21,22 @@ export async function getActiveAnnouncements() {
     .sort((a, b) => (a.entry.expires ?? "9999").localeCompare(b.entry.expires ?? "9999"));
 }
 
+/** Homepage testimonials with their quote text resolved. */
+export async function getTestimonials() {
+  const all = await reader.collections.testimonials.all();
+  return Promise.all(
+    all.map(async ({ slug, entry }) => ({
+      name: entry.name,
+      detail: entry.detail,
+      quote: (await entry.quote())
+        .replace(/\{\/\*[\s\S]*?\*\/\}/g, "")
+        .replace(/\s+/g, " ")
+        .trim(),
+      slug,
+    }))
+  );
+}
+
 /** Church facts (same data as importing content/site.json directly). */
 export async function getSite() {
   const site = await reader.singletons.site.read();

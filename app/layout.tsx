@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Anton, Inter } from "next/font/google";
+import { Anton, Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import site from "@/content/site.json";
 
@@ -13,6 +13,13 @@ const anton = Anton({
   variable: "--font-anton",
   weight: "400",
   subsets: ["latin"],
+});
+
+// Elegant serif accent — reserved for the gospel section and /salvation.
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+  style: ["normal", "italic"],
 });
 
 // The site's public URL, used to build absolute links for Facebook/social
@@ -46,7 +53,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${anton.variable} h-full antialiased`}>
+    <html lang="en" className={`${inter.variable} ${anton.variable} ${playfair.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

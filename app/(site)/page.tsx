@@ -1,10 +1,66 @@
 import Link from "next/link";
 import site from "@/content/site.json";
 import Photo from "@/components/Photo";
-import { getActiveAnnouncements } from "@/lib/content";
+import EventsCarousel, { type CarouselItem } from "@/components/EventsCarousel";
+import TestimonialRotator from "@/components/TestimonialRotator";
+import { getActiveAnnouncements, getTestimonials } from "@/lib/content";
 import { getRecentVideos } from "@/lib/youtube";
+import { getUpcomingSignups } from "@/lib/pco";
+import { getUpcomingCalendarEvents } from "@/lib/calendar";
+import { churchCenterEventLink } from "@/lib/churchcenter";
 
 export const revalidate = 900;
+
+const fullDate = new Intl.DateTimeFormat("en-US", {
+  weekday: "long",
+  month: "long",
+  day: "numeric",
+  timeZone: "America/Detroit",
+});
+const timeOnly = new Intl.DateTimeFormat("en-US", {
+  hour: "numeric",
+  minute: "2-digit",
+  timeZone: "America/Detroit",
+});
+const dayNumFmt = new Intl.DateTimeFormat("en-US", { day: "numeric", timeZone: "America/Detroit" });
+const monthFmt = new Intl.DateTimeFormat("en-US", { month: "short", timeZone: "America/Detroit" });
+
+/** Merges Registrations signups + calendar events into carousel cards. */
+async function featuredEvents(): Promise<CarouselItem[]> {
+  const [signups, calendar] = await Promise.all([
+    getUpcomingSignups(),
+    getUpcomingCalendarEvents(10),
+  ]);
+  const items: (CarouselItem & { sort: string })[] = [];
+  for (const s of signups) {
+    items.push({
+      title: s.name,
+      dateLabel: s.startsAt ? fullDate.format(new Date(s.startsAt)) : "Sign-ups open now",
+      meta: s.atCapacity ? "Currently full" : "Registration open",
+      href: s.registrationUrl ?? `${site.links.churchCenter}/registrations`,
+      image: s.logoUrl,
+      dayNum: s.startsAt ? dayNumFmt.format(new Date(s.startsAt)) : "•",
+      month: s.startsAt ? monthFmt.format(new Date(s.startsAt)) : "",
+      sort: s.startsAt ?? "9999",
+    });
+  }
+  for (const e of calendar) {
+    // Skip calendar duplicates of registrations already shown.
+    if (items.some((i) => i.title.toLowerCase().includes(e.title.toLowerCase().slice(0, 12)))) continue;
+    const d = new Date(e.start);
+    items.push({
+      title: e.title,
+      dateLabel: `${fullDate.format(d)}${e.allDay ? "" : ` · ${timeOnly.format(d)}`}`,
+      meta: e.location,
+      href: churchCenterEventLink(e.title, e.description),
+      image: null,
+      dayNum: dayNumFmt.format(d),
+      month: monthFmt.format(d),
+      sort: e.start,
+    });
+  }
+  return items.sort((a, b) => a.sort.localeCompare(b.sort)).slice(0, 8);
+}
 
 // The homepage has one job: move a hesitant visitor one step closer to
 // showing up on Sunday. Service times and address are visible without
@@ -20,9 +76,12 @@ const ministries = [
 ];
 
 export default async function Home() {
-  const announcements = await getActiveAnnouncements();
-  // The true latest video (sorted by real publish date — see lib/youtube).
-  const [latest] = await getRecentVideos(1);
+  const [announcements, [latest], events, testimonials] = await Promise.all([
+    getActiveAnnouncements(),
+    getRecentVideos(1),
+    featuredEvents(),
+    getTestimonials(),
+  ]);
 
   return (
     <main className="flex-1">
@@ -30,13 +89,14 @@ export default async function Home() {
           Until real photos land, the background is a frame from the most
           recent stream — real people, real room — under a heavy overlay. */}
       <section className="relative overflow-hidden bg-slate-950 px-4 pb-14 pt-12 text-white sm:pb-20 sm:pt-16">
-        {latest && (
+        {latest?.thumbnail && (
           /* eslint-disable-next-line @next/next/no-img-element --
              YouTube CDN thumbnail as a decorative background */
           <img
-            src={`https://i.ytimg.com/vi/${latest.videoId}/maxresdefault.jpg`}
+            src={latest.thumbnail ?? `https://i.ytimg.com/vi/${latest.videoId}/hqdefault.jpg`}
             alt=""
             aria-hidden="true"
+            data-parallax="0.3"
             className="absolute inset-0 h-full w-full scale-110 object-cover opacity-25 blur-md"
           />
         )}
@@ -97,6 +157,24 @@ export default async function Home() {
         </section>
       )}
 
+      {/* Featured events — auto-rotating cards from Registrations + the
+          church Google Calendar, each linking to its Church Center page */}
+      {events.length > 0 && (
+        <section className="bg-slate-50 px-4 py-14">
+          <div className="mx-auto max-w-6xl">
+            <div className="flex items-end justify-between gap-4">
+              <h2 className="text-3xl text-slate-900 sm:text-4xl">Coming up</h2>
+              <Link href="/events" className="shrink-0 font-semibold text-brand-700 underline-offset-4 hover:underline">
+                All events →
+              </Link>
+            </div>
+            <div className="mt-8">
+              <EventsCarousel items={events} />
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Latest sermon */}
       <section className={`px-4 py-12 ${announcements.length > 0 ? "bg-slate-50" : ""}`}>
         <div className="mx-auto max-w-4xl">
@@ -121,7 +199,7 @@ export default async function Home() {
               loading="lazy"
             />
           </div>
-          {latest && (
+          {latest?.thumbnail && (
             <p className="mt-3 text-center text-slate-700">
               <span className="font-semibold text-slate-900">{latest.title}</span>
             </p>
@@ -156,6 +234,66 @@ export default async function Home() {
                 </div>
               </Link>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials — real voices; add them in /keystatic or /admin */}
+      {testimonials.length > 0 && (
+        <section className="bg-slate-900 px-4 py-16">
+          <h2 className="text-center text-3xl text-white sm:text-4xl">
+            What visitors say
+          </h2>
+          <div className="mt-10">
+            <TestimonialRotator items={testimonials} />
+          </div>
+          <p className="mt-8 text-center">
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=Faith+Baptist+Church+4030+Kalmbach+Rd+Chelsea+MI"
+              className="text-sm font-semibold text-brand-400 underline-offset-4 hover:underline"
+            >
+              Read our reviews on Google →
+            </a>
+          </p>
+        </section>
+      )}
+
+      {/* The most important question */}
+      <section className="bg-slate-950 px-4 py-20 text-center text-white">
+        <div className="mx-auto max-w-3xl">
+          <p className="text-sm font-bold uppercase tracking-[0.3em] text-brand-400">
+            — The most important question —
+          </p>
+          <h2 className="font-accent mt-6 text-4xl italic sm:text-5xl">
+            Do you know where you will spend eternity?
+          </h2>
+          <blockquote className="font-accent mx-auto mt-8 max-w-2xl text-lg italic text-slate-300">
+            &ldquo;For by grace are ye saved through faith; and that not of
+            yourselves: it is the gift of God: Not of works, lest any man
+            should boast.&rdquo;
+          </blockquote>
+          <p className="mt-2 text-sm font-bold uppercase tracking-[0.2em] text-brand-400">
+            Ephesians 2:8–9
+          </p>
+          <p className="mx-auto mt-8 max-w-2xl text-slate-300">
+            The Bible has a clear answer to the most important question a
+            person can ask. Not church attendance, not good works — only the
+            finished work of Jesus Christ on the cross, and your personal
+            faith in Him.
+          </p>
+          <div className="mt-10 flex flex-wrap justify-center gap-4">
+            <Link
+              href="/salvation"
+              className="hover-lift rounded-lg bg-brand-500 px-8 py-4 font-bold uppercase tracking-wider text-white transition-colors hover:bg-brand-600"
+            >
+              What the Bible says
+            </Link>
+            <Link
+              href="/contact"
+              className="hover-lift rounded-lg border border-slate-600 px-8 py-4 font-bold uppercase tracking-wider text-slate-200 transition-colors hover:bg-slate-800"
+            >
+              Talk to someone
+            </Link>
           </div>
         </div>
       </section>

@@ -46,10 +46,10 @@ export default function Header() {
           <Image
             src="/images/logo-mark-white.png"
             alt=""
-            width={622}
-            height={358}
+            width={471}
+            height={254}
             priority
-            className="h-11 w-auto sm:h-12"
+            className="h-12 w-auto sm:h-14"
           />
           {/* Real text, not an image — readable at every size */}
           <span className="leading-none">

@@ -140,6 +140,22 @@ export default config({
       },
     }),
 
+    // Rotating homepage testimonials → content/testimonials/*.mdx
+    testimonials: collection({
+      label: "Testimonials",
+      path: "content/testimonials/*",
+      slugField: "name",
+      format: { contentField: "quote" },
+      schema: {
+        name: fields.slug({ name: { label: "Name (as shown, e.g. 'Sarah M.')" } }),
+        detail: fields.text({
+          label: "One-line context",
+          description: "e.g. 'Visiting since 2021' or 'Google review'",
+        }),
+        quote: fields.mdx({ label: "The quote" }),
+      },
+    }),
+
     // Short homepage announcements → content/announcements/*.md
     announcements: collection({
       label: "Announcements",
