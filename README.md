@@ -98,6 +98,57 @@ long edge. Get written permission for any recognizable child.
 | `NEXT_PUBLIC_SITE_URL` | The site's public URL. Used to build absolute links for Facebook/social previews. Optional — falls back to the production URL baked into `app/layout.tsx`. | Vercel → project → Settings → Environment Variables |
 | `PCO_APP_ID` | Planning Center Personal Access Token — the Application ID half. | Vercel env vars + `.env.local` |
 | `PCO_SECRET` | Planning Center Personal Access Token — the Secret half. Server-side only; never sent to browsers. | Vercel env vars + `.env.local` |
+| `RESEND_API_KEY` | Lets form submissions send email. Without it, forms still record people in Planning Center but staff get no email (red on /admin/health). | Vercel env vars + `.env.local` |
+| `YOUTUBE_API_KEY` | Optional upgrade: verified "We're live" banner + sermon grid with titles/dates. Without it everything still works in keyless mode. | Vercel env vars + `.env.local` |
+
+## How the contact form works
+
+One form on `/contact` handles questions, visit heads-ups, prayer requests
+(with a confidential checkbox), and choir/orchestra interest. Each submission:
+
+1. **Emails** everyone listed in `/keystatic` → Church Info → **Form
+   recipients** — add or remove staff there, no code involved.
+2. **Creates or finds the person in Planning Center People** (by email), so
+   follow-up happens where the church already works. Confidential prayer
+   content is never written to People — email only.
+
+Spam protection is a hidden honeypot field plus a 5-per-hour-per-IP rate
+limit. No CAPTCHA, on purpose.
+
+Until `fbcchelsea.org` is verified as a sending domain in Resend, emails come
+from `onboarding@resend.dev` (Resend's shared test sender) — fine for
+testing, but verify the domain before launch so emails come from
+`website@fbcchelsea.org` and land reliably in inboxes.
+
+## Setting up the two remaining API keys
+
+**Resend (email):** create a free account at resend.com (100 emails/day free,
+far more than we need) → API Keys → Create. Add it as `RESEND_API_KEY`.
+
+**YouTube (optional):** console.cloud.google.com → create a project ("FBC
+Website") → APIs & Services → Library → enable **YouTube Data API v3** →
+Credentials → Create credentials → API key. Restrict the key to the YouTube
+Data API. Add it as `YOUTUBE_API_KEY`.
+
+## Sermon audio podcast (not built — here's what it would take)
+
+We want one eventually. The pieces:
+
+1. **Audio extraction** — each week, pull the sermon audio out of the YouTube
+   upload (or better: export the audio directly from whatever records the
+   service). A small script can automate the YouTube route.
+2. **Hosting** — podcast audio needs a host that serves MP3s and generates an
+   RSS feed. The boring, cheap answers: Transistor.fm (~$19/mo),
+   Spotify for Creators (free), or self-hosting MP3s in this repo's public/
+   folder with a generated feed (free, more fiddly).
+3. **RSS feed** — the host usually provides this. Self-hosted, we'd generate
+   `/podcast.xml` from a JSON list of episodes — half a day of work.
+4. **Directories** — submit the feed once to Apple Podcasts and Spotify;
+   both take a few days to approve, then update automatically.
+
+Realistic total: one afternoon of setup plus a 10-minute weekly routine
+(upload audio, title it). The weekly routine is the real commitment — decide
+who owns it before building anything.
 
 ## How the Events page works
 
@@ -123,4 +174,12 @@ each Planning Center product live and tells you exactly what's wrong.
 
 ## Future ideas
 
-- Sermon audio podcast (details to be written in phase 8)
+- Sermon audio podcast (see the section above)
+- Volunteer editing through the live site (Keystatic GitHub mode — see
+  "Letting volunteers edit content")
+- Surface individual missionaries on /missions (needs manual content or a
+  Church Center change; their custom pages aren't in the API)
+- Sermon archive browsable by speaker (needs consistent YouTube title
+  format like "Title — Speaker — Date", or Publishing episodes)
+- Custom domain cutover: point fbcchelsea.org at Vercel when ready — DNS
+  change + update NEXT_PUBLIC_SITE_URL + verify domain in Resend
