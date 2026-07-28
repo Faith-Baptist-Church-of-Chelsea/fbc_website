@@ -41,7 +41,7 @@ export async function GET(req: NextRequest) {
   // GitHub token (powers the /admin editor)
   if (process.env.GITHUB_TOKEN) {
     try {
-      const gh = await fetch("https://api.github.com/repos/stevenabi6912-prog/fbc_website", {
+      const gh = await fetch("https://api.github.com/repos/Great-Lakes-Seedline/fbc_website", {
         headers: { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` },
         cache: "no-store",
       });

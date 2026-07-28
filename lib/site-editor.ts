@@ -10,7 +10,7 @@
 import "server-only";
 import Anthropic from "@anthropic-ai/sdk";
 
-const REPO = "stevenabi6912-prog/fbc_website";
+const REPO = "Great-Lakes-Seedline/fbc_website";
 const BRANCH = "main";
 
 // Only these may be created or modified. Anything else is rejected.
