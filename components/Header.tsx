@@ -37,15 +37,29 @@ export default function Header() {
         aria-label="Main"
         className="mx-auto flex h-20 max-w-6xl items-center justify-between gap-2 px-4"
       >
-        <Link href="/" onClick={close} className="flex shrink-0 items-center">
+        <Link
+          href="/"
+          onClick={close}
+          aria-label="Faith Baptist Church of Chelsea — home"
+          className="flex shrink-0 items-center gap-3"
+        >
           <Image
-            src="/images/logo-horizontal-light.png"
-            alt="Faith Baptist Church of Chelsea — home"
-            width={1200}
+            src="/images/logo-mark-white.png"
+            alt=""
+            width={622}
             height={358}
             priority
             className="h-11 w-auto sm:h-12"
           />
+          {/* Real text, not an image — readable at every size */}
+          <span className="leading-none">
+            <span className="block text-2xl font-extrabold tracking-wide text-white sm:text-[1.7rem]">
+              FAITH
+            </span>
+            <span className="mt-1 block text-[0.6rem] font-bold uppercase tracking-[0.3em] text-brand-400 sm:text-[0.65rem]">
+              Baptist Church
+            </span>
+          </span>
         </Link>
 
         {/* Desktop nav */}

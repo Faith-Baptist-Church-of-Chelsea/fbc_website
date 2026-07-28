@@ -95,6 +95,16 @@ subject centered. Don't go below about two-thirds of the ideal size.
 | `missions-map.jpg` | Missionary map/display | 3:2 landscape | 2400 × 1600 |
 | `church-center-screenshots.png` | Church Center app screenshots | 16:9 landscape | 1600 × 900 |
 | `staff/adam-summers.jpg` (etc.) | Staff headshots — consistent lighting; one per person, named after the file in `content/staff/` | square | 800 × 800 |
+| `teachers/nursery.jpg` | Nursery worker holding a child | square | 600 × 600 |
+| `teachers/ben-amanda-bolen.jpg` | The Bolens | square | 600 × 600 |
+| `teachers/haley-sackmann.jpg` | Haley Sackmann | square | 600 × 600 |
+| `teachers/abi-wireman.jpg` | Abi Wireman | square | 600 × 600 |
+| `teachers/scott-heather-turnbow.jpg` | The Turnbows | square | 600 × 600 |
+| `teachers/moriah-summers.jpg` | Moriah Summers | square | 600 × 600 |
+| `teachers/josiah-ashley-jaworski.jpg` | The Jaworskis | square | 600 × 600 |
+
+The `teachers/` photos also appear in the automatic welcome email sent to
+visiting families — the email skips any photo that isn't there yet.
 
 ## Environment variables
 

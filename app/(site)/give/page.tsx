@@ -34,7 +34,7 @@ export default function Give() {
               (one domain only — update it when we move to fbcchelsea.org). */}
           <div className="mt-6 overflow-hidden rounded-xl border border-slate-200">
             <iframe
-              src={site.links.giving}
+              src={site.links.givingEmbed}
               title="Give online to Faith Baptist Church (secure ChurchTrac form)"
               className="h-[52rem] w-full border-0"
               loading="lazy"

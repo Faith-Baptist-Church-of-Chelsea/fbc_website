@@ -73,25 +73,166 @@ export async function sendFormEmail(s: Submission): Promise<boolean> {
 
 // ---------- Visitor welcome email (sent when someone plans a visit) ----------
 
-// Maps a child's age to their Sunday/Wednesday classes and teachers.
-// Update alongside the FBC Kids page if classes or teachers change.
-function classesForAge(age: number): string | null {
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://fbc-website-delta.vercel.app";
+
+type TeacherCard = {
+  ageLabel: string;
+  who: string;
+  when: string;
+  note: string;
+  photo: string; // /images/teachers/… — only rendered if the file exists
+};
+
+// Maps a child's age to their classes and teachers. Update alongside the
+// FBC Kids page if classes or teachers change. Photos: drop files with
+// these names into public/images/teachers/ and they appear in the email.
+function teachersForAge(age: number): TeacherCard[] {
   if (age <= 3) {
-    return `age ${age}: our staffed nursery is open at every single service — drop in whenever you're ready, or keep your little one with you. Both are genuinely fine.`;
+    return [
+      {
+        ageLabel: `Your ${age}-year-old`,
+        who: "Our nursery team",
+        when: "Every service",
+        note: "A clean, staffed nursery is open at every single service — drop in whenever you're ready, or keep your little one with you. Both are genuinely fine.",
+        photo: "/images/teachers/nursery.jpg",
+      },
+    ];
   }
   if (age <= 4) {
-    return `age ${age}: Sundays at 11:00, Ben & Amanda Bolen's class — a couple with two kids of their own and a heart for helping young children understand God's Word. Wednesdays at 7:00 they'd join Scott & Heather Turnbow's lively class for ages 3–7.`;
+    return [
+      {
+        ageLabel: `Your ${age}-year-old`,
+        who: "Ben & Amanda Bolen",
+        when: "Sundays · 11:00 AM",
+        note: "A couple with two kids of their own and a heart for helping young children understand God's Word.",
+        photo: "/images/teachers/ben-amanda-bolen.jpg",
+      },
+      {
+        ageLabel: `Your ${age}-year-old`,
+        who: "Scott & Heather Turnbow",
+        when: "Wednesdays · 7:00 PM",
+        note: "A lively, nurturing class for ages 3–7 with a joyful approach.",
+        photo: "/images/teachers/scott-heather-turnbow.jpg",
+      },
+    ];
   }
   if (age <= 7) {
-    return `age ${age}: Sundays at 11:00 with Haley Sackmann, who is passionate about helping kids grow in their understanding of God's Word. Wednesdays at 7:00 with Scott & Heather Turnbow — a joyful, nurturing class.`;
+    return [
+      {
+        ageLabel: `Your ${age}-year-old`,
+        who: "Haley Sackmann",
+        when: "Sundays · 11:00 AM",
+        note: "Passionate about helping kids grow in their understanding of God's Word.",
+        photo: "/images/teachers/haley-sackmann.jpg",
+      },
+      {
+        ageLabel: `Your ${age}-year-old`,
+        who: "Scott & Heather Turnbow",
+        when: "Wednesdays · 7:00 PM",
+        note: "A joyful, nurturing class for ages 3–7.",
+        photo: "/images/teachers/scott-heather-turnbow.jpg",
+      },
+    ];
   }
   if (age <= 12) {
-    return `age ${age}: Sundays at 11:00 with Abi Wireman, who loves helping preteens grow in their faith. Wednesdays at 7:00 with Moriah Summers, who makes lessons practical and relatable.`;
+    return [
+      {
+        ageLabel: `Your ${age}-year-old`,
+        who: "Abi Wireman",
+        when: "Sundays · 11:00 AM",
+        note: "Loves helping preteens grow in their faith during these formative years.",
+        photo: "/images/teachers/abi-wireman.jpg",
+      },
+      {
+        ageLabel: `Your ${age}-year-old`,
+        who: "Moriah Summers",
+        when: "Wednesdays · 7:00 PM",
+        note: "Intentional about making lessons practical and relatable.",
+        photo: "/images/teachers/moriah-summers.jpg",
+      },
+    ];
   }
   if (age <= 18) {
-    return `age ${age}: our youth group (ages 12–18) meets Wednesdays at 7:00 PM with Josiah & Ashley Jaworski — they're passionate about investing in teens.`;
+    return [
+      {
+        ageLabel: `Your ${age}-year-old`,
+        who: "Josiah & Ashley Jaworski",
+        when: "Wednesdays · 7:00 PM",
+        note: "Youth group for ages 12–18 — they're passionate about investing in teens.",
+        photo: "/images/teachers/josiah-ashley-jaworski.jpg",
+      },
+    ];
   }
-  return null;
+  return [];
+}
+
+// A photo URL is only put in the email if the file actually exists,
+// so the email never shows broken images while photos are being gathered.
+function photoUrlIfExists(publicPath: string): string | null {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports -- avoid top-level fs in a file also used by route bundles
+    const fs = require("node:fs") as typeof import("node:fs");
+    return fs.existsSync(`${process.cwd()}/public${publicPath}`) ? `${SITE_URL}${publicPath}` : null;
+  } catch {
+    return null;
+  }
+}
+
+const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+/** Branded HTML version of the visitor welcome email (email-client-safe tables). */
+function welcomeEmailHtml(firstName: string, cards: TeacherCard[]): string {
+  const cardHtml = cards
+    .map((c) => {
+      const url = photoUrlIfExists(c.photo);
+      const img = url
+        ? `<td width="88" valign="top" style="padding:16px 0 16px 16px;"><img src="${url}" width="72" height="72" alt="${esc(c.who)}" style="border-radius:50%;display:block;object-fit:cover;" /></td>`
+        : "";
+      return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f8fafc;border-radius:12px;margin-top:12px;"><tr>${img}
+        <td valign="top" style="padding:16px;font-family:Arial,Helvetica,sans-serif;">
+          <p style="margin:0;font-size:12px;letter-spacing:1px;text-transform:uppercase;color:#006389;font-weight:bold;">${esc(c.ageLabel)} · ${esc(c.when)}</p>
+          <p style="margin:4px 0 0;font-size:17px;font-weight:bold;color:#0f172a;">${esc(c.who)}</p>
+          <p style="margin:6px 0 0;font-size:14px;line-height:1.5;color:#475569;">${esc(c.note)}</p>
+        </td></tr></table>`;
+    })
+    .join("");
+
+  return `<!DOCTYPE html><html><body style="margin:0;padding:0;background:#e2e8f0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#e2e8f0;padding:24px 8px;"><tr><td align="center">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:16px;overflow:hidden;">
+  <tr><td style="background:#0f172a;padding:28px 24px;" align="center">
+    <img src="${SITE_URL}/images/logo-horizontal-light.png" width="280" alt="Faith Baptist Church of Chelsea" style="display:block;max-width:280px;height:auto;" />
+  </td></tr>
+  <tr><td style="padding:32px 28px 8px;font-family:Arial,Helvetica,sans-serif;">
+    <h1 style="margin:0;font-size:24px;color:#0f172a;">We saved you a seat, ${esc(firstName)}.</h1>
+    <p style="margin:14px 0 0;font-size:15px;line-height:1.6;color:#334155;">We're so glad you're planning to visit — we'll be watching for you. Here's everything that makes the first visit easy:</p>
+    <table role="presentation" cellpadding="0" cellspacing="0" style="margin-top:16px;"><tr><td style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.9;color:#334155;">
+      🅿️ &nbsp;Park in the marked <strong>visitor parking</strong> — those spots are saved for you.<br/>
+      🎁 &nbsp;Come in the main entrance and stop at the <strong>welcome desk</strong> first — there's a free gift waiting, and every question gets answered there.<br/>
+      👕 &nbsp;Wear whatever you're comfortable in. Nobody will single you out.
+    </td></tr></table>
+  </td></tr>
+  ${
+    cards.length > 0
+      ? `<tr><td style="padding:20px 28px 4px;font-family:Arial,Helvetica,sans-serif;">
+    <h2 style="margin:0;font-size:18px;color:#0f172a;">Who'll be loving on your kids</h2>${cardHtml}
+    <p style="margin:14px 0 0;font-size:13px;line-height:1.6;color:#64748b;">Check-in is simple: your child gets a name tag and you get a matching pickup tag — the welcome desk will walk you right to it.</p>
+  </td></tr>`
+      : ""
+  }
+  <tr><td style="padding:24px 28px;font-family:Arial,Helvetica,sans-serif;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f1f5f9;border-radius:12px;"><tr><td style="padding:16px;font-family:Arial,Helvetica,sans-serif;font-size:14px;line-height:1.8;color:#334155;">
+      <strong style="color:#0f172a;">Service times</strong><br/>
+      ${site.services.map((sv) => `${sv.day} ${sv.time} — ${sv.name}`).join("<br/>")}<br/><br/>
+      <strong style="color:#0f172a;">Where</strong><br/>
+      ${site.address.street}, ${site.address.city}, ${site.address.state} ${site.address.zip} (${site.address.directionsNote})
+    </td></tr></table>
+    <table role="presentation" cellpadding="0" cellspacing="0" align="center" style="margin:22px auto 0;"><tr><td style="border-radius:10px;background:#0093ce;" align="center">
+      <a href="${SITE_URL}/plan-your-visit" style="display:inline-block;padding:14px 32px;font-family:Arial,Helvetica,sans-serif;font-size:16px;font-weight:bold;color:#ffffff;text-decoration:none;">Everything about your first visit →</a>
+    </td></tr></table>
+    <p style="margin:22px 0 0;font-size:13px;line-height:1.6;color:#64748b;" align="center">Questions before you come? Just reply to this email or call ${site.phone}.<br/>See you soon!</p>
+  </td></tr>
+</table></td></tr></table></body></html>`;
 }
 
 /**
@@ -107,25 +248,32 @@ export async function sendVisitorWelcomeEmail(s: Submission): Promise<boolean> {
   const ages = [...new Set((s.kidsAges ?? "").match(/\d{1,2}/g)?.map(Number) ?? [])]
     .filter((n) => n >= 0 && n <= 18)
     .sort((a, b) => a - b);
-  const kidLines = ages.map(classesForAge).filter(Boolean) as string[];
+  // One card per class; de-dup when siblings share a teacher.
+  const cards: TeacherCard[] = [];
+  for (const age of ages) {
+    for (const card of teachersForAge(age)) {
+      const existing = cards.find((c) => c.who === card.who && c.when === card.when);
+      if (existing) existing.ageLabel = "Your kids";
+      else cards.push({ ...card });
+    }
+  }
   const firstName = s.name.trim().split(/\s+/)[0];
 
+  // Plain-text fallback for email clients that don't render HTML.
   const text =
     `Hi ${firstName},\n\n` +
     `We're so glad you're planning to visit Faith Baptist Church — we'll be watching for you!\n\n` +
-    `A few things that make the first visit easy:\n` +
-    `- Look for the visitor parking signs; those spots are saved for you.\n` +
-    `- Come in the main entrance and stop at the WELCOME DESK first — there's a free gift waiting for you, and it's the place where every question gets answered.\n` +
-    `- Wear whatever you're comfortable in. Nobody will single you out or ask you to stand.\n\n` +
-    (kidLines.length > 0
-      ? `Since you mentioned your kids' ages, here's who will be loving on them:\n` +
-        kidLines.map((l) => `- For your child ${l}`).join("\n") +
-        `\n\nCheck-in is simple: your child gets a name tag and you get a matching pickup tag at the check-in station — the welcome desk will walk you right to it.\n\n`
+    `- Park in the marked visitor parking; those spots are saved for you.\n` +
+    `- Come in the main entrance and stop at the WELCOME DESK first — free gift, and every question answered.\n` +
+    `- Wear whatever you're comfortable in. Nobody will single you out.\n\n` +
+    (cards.length > 0
+      ? `Who'll be loving on your kids:\n` +
+        cards.map((c) => `- ${c.ageLabel} · ${c.when}: ${c.who} — ${c.note}`).join("\n") +
+        `\n\nCheck-in is simple: your child gets a name tag and you get a matching pickup tag.\n\n`
       : "") +
     `Service times:\n${site.services.map((sv) => `- ${sv.day} ${sv.time} — ${sv.name}`).join("\n")}\n\n` +
     `We're at ${site.address.street}, ${site.address.city}, ${site.address.state} ${site.address.zip} (${site.address.directionsNote}).\n\n` +
-    `Any questions before you come, just reply to this email or call ${site.phone}.\n\n` +
-    `See you soon,\nFaith Baptist Church of Chelsea\n${site.links.churchCenter}`;
+    `Questions? Reply to this email or call ${site.phone}.\n\nSee you soon,\nFaith Baptist Church of Chelsea`;
 
   try {
     const resend = new Resend(key);
@@ -135,6 +283,7 @@ export async function sendVisitorWelcomeEmail(s: Submission): Promise<boolean> {
       replyTo: site.emails.assistantPastor,
       subject: "We can't wait to meet you — your visit to Faith Baptist",
       text,
+      html: welcomeEmailHtml(firstName, cards),
     });
     if (error) {
       console.warn("[forms] visitor welcome email failed:", error.message);

@@ -125,6 +125,7 @@ export async function getRecentVideos(limit = 12): Promise<SermonVideo[]> {
         thumbnail: i.snippet?.thumbnails?.medium?.url ?? i.snippet?.thumbnails?.high?.url ?? null,
       }))
       .filter((v) => v.videoId && v.publishedAt)
+      .filter((v) => !/#shorts/i.test(v.title) && !/^copy of/i.test(v.title))
       .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
       .slice(0, limit);
   } catch (err) {

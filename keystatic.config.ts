@@ -99,6 +99,10 @@ export default config({
               description:
                 "Where the Give button sends people (currently ChurchTrac)",
             }),
+            givingEmbed: fields.url({
+              label: "Giving embed URL",
+              description: "The ChurchTrac embed form URL shown on /give",
+            }),
             missionaries: fields.url({ label: "Missionaries list" }),
             unashamedRegistration: fields.url({
               label: "Unashamed conference registration",

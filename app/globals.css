@@ -36,54 +36,43 @@ body {
 }
 
 /*
- * Subtle entrance motion: sections gently fade/rise as they scroll into
- * view. Pure CSS (scroll-driven animation) — browsers without support
- * (e.g. iOS Safari) and anyone with "reduce motion" enabled simply see
- * the page static, which is a perfectly good experience. Nothing moves
- * while someone is reading: the animation completes in the bottom 18%
- * of the viewport.
+ * Scroll-triggered section reveals. components/ScrollReveal.tsx adds the
+ * js-reveal class to <html> and marks each section .reveal-pending, then
+ * flips it to .revealed the moment it scrolls into view (each section
+ * animates when YOU reach it, not all at once). Without JavaScript, or
+ * with "reduce motion" enabled, everything is simply visible.
  */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    main > section {
-      animation: section-enter linear both;
-      animation-timeline: view();
-      animation-range: entry 0% entry 22%;
-    }
-  }
-}
-
-@keyframes section-enter {
-  from {
+@media (prefers-reduced-motion: no-preference) {
+  html.js-reveal .reveal-pending {
     opacity: 0;
-    transform: translateY(28px);
+    transform: translateY(40px);
+    transition:
+      opacity 1.3s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 1.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  to {
+  html.js-reveal .revealed {
     opacity: 1;
     transform: none;
   }
-}
 
-/*
- * Entrance animation for hero content: elements rise into place with a
- * stagger (.animate-rise-1 … -5 set the order). Defined only when motion
- * is allowed, so reduced-motion users simply see the content in place.
- */
-@media (prefers-reduced-motion: no-preference) {
+  /*
+   * Hero entrance: elements rise into place with an unhurried stagger
+   * (.animate-rise-1 … -5 set the order).
+   */
   .animate-rise {
     opacity: 0;
-    transform: translateY(26px);
-    animation: rise 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transform: translateY(34px);
+    animation: rise 1.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
-  .animate-rise-1 { animation-delay: 0.05s; }
-  .animate-rise-2 { animation-delay: 0.18s; }
-  .animate-rise-3 { animation-delay: 0.32s; }
-  .animate-rise-4 { animation-delay: 0.46s; }
-  .animate-rise-5 { animation-delay: 0.6s; }
+  .animate-rise-1 { animation-delay: 0.1s; }
+  .animate-rise-2 { animation-delay: 0.35s; }
+  .animate-rise-3 { animation-delay: 0.6s; }
+  .animate-rise-4 { animation-delay: 0.85s; }
+  .animate-rise-5 { animation-delay: 1.1s; }
 
   /* Cards and buttons lift gently on hover. */
   .hover-lift {
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
   }
   .hover-lift:hover {
     transform: translateY(-4px);

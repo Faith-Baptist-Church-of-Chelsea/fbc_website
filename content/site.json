@@ -19,22 +19,50 @@
     "stevenabi6912@gmail.com"
   ],
   "officeHours": [
-    { "days": "Monday–Thursday", "hours": "8:00 AM – 4:00 PM" },
-    { "days": "Wednesday evening", "hours": "open through the evening service" },
-    { "days": "Saturday", "hours": "8:00 AM – 12:00 PM" },
-    { "days": "Friday", "hours": "Closed" }
+    {
+      "days": "Monday\u2013Thursday",
+      "hours": "8:00 AM \u2013 4:00 PM"
+    },
+    {
+      "days": "Wednesday evening",
+      "hours": "open through the evening service"
+    },
+    {
+      "days": "Saturday",
+      "hours": "8:00 AM \u2013 12:00 PM"
+    },
+    {
+      "days": "Friday",
+      "hours": "Closed"
+    }
   ],
   "services": [
-    { "name": "Family School", "day": "Sunday", "time": "9:45 AM" },
-    { "name": "Morning Service", "day": "Sunday", "time": "11:00 AM" },
-    { "name": "Evening Service", "day": "Sunday", "time": "6:00 PM" },
-    { "name": "Midweek Service", "day": "Wednesday", "time": "7:00 PM" }
+    {
+      "name": "Family School",
+      "day": "Sunday",
+      "time": "9:45 AM"
+    },
+    {
+      "name": "Morning Service",
+      "day": "Sunday",
+      "time": "11:00 AM"
+    },
+    {
+      "name": "Evening Service",
+      "day": "Sunday",
+      "time": "6:00 PM"
+    },
+    {
+      "name": "Midweek Service",
+      "day": "Wednesday",
+      "time": "7:00 PM"
+    }
   ],
   "social": {
     "facebook": "https://www.facebook.com/profile.php?id=100091820160379",
     "instagram": "https://www.instagram.com/faith_baptist_church/",
     "youtube": "https://www.youtube.com/@faithbaptistchurchofchelsea",
-    "youtubeChannelId": "UC4Dd6gVW_6pCz_3a3e-wlRQ"
+    "youtubeChannelId": "UC7CCuV_LtGH1WIAHzXDhwKw"
   },
   "links": {
     "churchCenter": "https://fbcchelsea.churchcenter.com",
@@ -42,6 +70,7 @@
     "missionaries": "https://fbcchelsea.churchcenter.com/pages/all-missionaries",
     "unashamedRegistration": "https://fbcchelsea.churchcenter.com/registrations/events/3565632",
     "appStoreChurchCenter": "https://apps.apple.com/us/app/church-center-app/id1357742931",
-    "googlePlayChurchCenter": "https://play.google.com/store/apps/details?id=com.ministrycentered.churchcenter"
+    "googlePlayChurchCenter": "https://play.google.com/store/apps/details?id=com.ministrycentered.churchcenter",
+    "givingEmbed": "https://fbcchelsea.churchtrac.com/give/embed"
   }
 }
