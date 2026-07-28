@@ -72,24 +72,29 @@ doesn't touch git. Then fix the code at your leisure.
 ## Photos the site is waiting for
 
 Drop files into `public/images/` with exactly these names and the placeholders
-become photos on the next deploy — no code changes. Landscape, 2000px+ on the
-long edge. Get written permission for any recognizable child.
+become photos on the next deploy — no code changes. Get written permission for
+any recognizable child.
 
-| File | What it should show |
-|---|---|
-| `building-exterior.jpg` | Building from the road, bright day |
-| `main-entrance.jpg` | The door visitors should actually use |
-| `parking-lot.jpg` | Lot, showing parking relative to that door |
-| `family-school-wide.jpg` | All ages together in one room (wide) |
-| `kids-class.jpg` | Kids class in session |
-| `checkin-station.jpg` | Check-in station in use |
-| `youth-group.jpg` | Youth group on a Wednesday night |
-| `young-adults-activity.jpg` | Young adults at an activity |
-| `choir.jpg` | Choir mid-song |
-| `orchestra.jpg` | Orchestra mid-song |
-| `missions-map.jpg` | Missionary map/display |
-| `church-center-screenshots.png` | Church Center app screenshots |
-| `staff/adam-summers.jpg` (etc.) | Staff headshots — square, consistent lighting; one per person, named after the file in `content/staff/` |
+Sizes: the "ideal size" below is 2× what the layout displays, so photos stay
+sharp on phone screens. Bigger is always fine — the site resizes automatically
+— and if the shape isn't exact it gets cropped toward the center, so keep the
+subject centered. Don't go below about two-thirds of the ideal size.
+
+| File | What it should show | Shape | Ideal size (px) |
+|---|---|---|---|
+| `building-exterior.jpg` | Building from the road, bright day | 4:3 landscape | 1600 × 1200 |
+| `main-entrance.jpg` | The door visitors should actually use | 4:3 landscape | 1600 × 1200 |
+| `parking-lot.jpg` | Lot, showing parking relative to that door | 4:3 landscape | 1600 × 1200 |
+| `family-school-wide.jpg` | All ages together in one room (wide) | 3:2 landscape | 2400 × 1600 |
+| `kids-class.jpg` | Kids class in session | 16:10 landscape | 1600 × 1000 |
+| `checkin-station.jpg` | Check-in station in use | 3:2 landscape | 2400 × 1600 |
+| `youth-group.jpg` | Youth group on a Wednesday night | 3:2 landscape | 2400 × 1600 |
+| `young-adults-activity.jpg` | Young adults at an activity | 3:2 landscape | 2400 × 1600 |
+| `choir.jpg` | Choir mid-song | wide 12:7 | 2400 × 1400 |
+| `orchestra.jpg` | Orchestra mid-song | wide 12:7 | 2400 × 1400 |
+| `missions-map.jpg` | Missionary map/display | 3:2 landscape | 2400 × 1600 |
+| `church-center-screenshots.png` | Church Center app screenshots | 16:9 landscape | 1600 × 900 |
+| `staff/adam-summers.jpg` (etc.) | Staff headshots — consistent lighting; one per person, named after the file in `content/staff/` | square | 800 × 800 |
 
 ## Environment variables
 
