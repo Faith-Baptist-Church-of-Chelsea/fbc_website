@@ -144,7 +144,8 @@ export async function getChurchCenterFeaturedEvents(): Promise<CcFeaturedEvent[]
 
     const out: CcFeaturedEvent[] = [];
     for (const b of blocks) {
-      if (b.type !== "Image" || !b.attributes?.src) continue;
+      const src = b.attributes?.src;
+      if (b.type !== "Image" || !src || !b.attributes) continue;
       const a = b.attributes;
       const href =
         a.link_url_enabled && a.link_url
@@ -152,7 +153,7 @@ export async function getChurchCenterFeaturedEvents(): Promise<CcFeaturedEvent[]
             ? a.link_url
             : `${CC}${a.link_url}`
           : `${CC}/pages/upcoming-events`;
-      out.push({ title: titleFor(a), href, image: a.src });
+      out.push({ title: titleFor(a), href, image: src });
     }
     return out;
   } catch (err) {
