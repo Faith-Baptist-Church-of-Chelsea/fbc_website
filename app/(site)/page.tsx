@@ -22,9 +22,10 @@ async function featuredEvents(): Promise<CarouselItem[]> {
   const events = await getUpcomingEvents();
   return events.slice(0, 8).map((e) => {
     const d = new Date(e.date + "T12:00:00");
+    const end = e.showUntil && e.showUntil !== e.date ? new Date(e.showUntil + "T12:00:00") : null;
     return {
       title: e.title,
-      dateLabel: `${fullDate.format(d)}${e.time ? ` · ${e.time}` : ""}`,
+      dateLabel: `${fullDate.format(d)}${end ? ` – ${fullDate.format(end)}` : ""}${e.time ? ` · ${e.time}` : ""}`,
       meta: e.location || null,
       href: `/events/${e.slug}`,
       image: e.image,

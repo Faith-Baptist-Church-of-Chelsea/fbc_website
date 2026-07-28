@@ -74,6 +74,8 @@ export default async function Events() {
                     <div className="p-5">
                       <p className="text-sm font-semibold uppercase tracking-wide text-brand-700">
                         {dateFmt.format(new Date(e.date + "T12:00:00"))}
+                        {e.showUntil && e.showUntil !== e.date &&
+                          ` – ${dateFmt.format(new Date(e.showUntil + "T12:00:00"))}`}
                         {e.time && ` · ${e.time}`}
                       </p>
                       <h2 className="mt-1 !font-sans text-xl font-bold normal-case tracking-normal text-slate-900 group-hover:text-brand-700" style={{ fontFamily: "var(--font-sans)", textTransform: "none", letterSpacing: 0 }}>

@@ -140,8 +140,8 @@ export default config({
           description: "e.g. \"6:30 PM\" or \"8:00 AM – 12:30 PM\" — leave blank for all-day",
         }),
         showUntil: fields.date({
-          label: "Keep showing until",
-          description: "Optional — for multi-day events. Otherwise it disappears the day after the date above.",
+          label: "End date (multi-day events)",
+          description: "Optional — shows a date range like Sep 11 – 13 and keeps the event visible through this date.",
         }),
         location: fields.text({
           label: "Location",
