@@ -49,9 +49,9 @@ export default function EventsCarousel({ items }: { items: CarouselItem[] }) {
           {e.image ? (
             /* eslint-disable-next-line @next/next/no-img-element --
                remote Planning Center image with unknown dimensions */
-            <img src={e.image} alt="" className="h-44 w-full bg-slate-950 object-cover" loading="lazy" />
+            <img src={e.image} alt="" className="aspect-video w-full bg-slate-950 object-cover" loading="lazy" />
           ) : (
-            <div className="flex h-44 w-full items-center justify-center bg-gradient-to-br from-brand-600 via-slate-800 to-slate-950">
+            <div className="flex aspect-video w-full items-center justify-center bg-gradient-to-br from-brand-600 via-slate-800 to-slate-950">
               <div className="text-center">
                 <p className="font-display text-5xl leading-none">{e.dayNum}</p>
                 <p className="mt-1 text-sm font-bold uppercase tracking-[0.25em] text-brand-400">{e.month}</p>

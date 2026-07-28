@@ -106,6 +106,11 @@ subject centered. Don't go below about two-thirds of the ideal size.
 The `teachers/` photos also appear in the automatic welcome email sent to
 visiting families — the email skips any photo that isn't there yet.
 
+**Event graphics** (uploaded in /keystatic when creating an event): use
+**1920 × 1080 (16:9)** — the same size as projection/Church Center slides.
+Other shapes work, but 16:9 displays without any cropping. Keep important
+text away from the very edges.
+
 ## Environment variables
 
 | Variable | What it does | Where to set it |
