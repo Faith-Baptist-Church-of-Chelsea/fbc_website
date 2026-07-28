@@ -9,7 +9,25 @@ import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import site from "@/content/site.json";
 import { buildChurchKnowledge } from "@/lib/church-knowledge";
+import { sendUnansweredQuestionEmail } from "@/lib/forms";
 import { makeRateLimiter, requestIp } from "@/lib/rate-limit";
+
+// The model reports whether it could actually answer from church info;
+// unanswered questions get emailed to staff so the answer can be added
+// to content/chat-facts.md (the assistant learns it on the next deploy).
+const ANSWER_SCHEMA = {
+  type: "object" as const,
+  properties: {
+    answer: { type: "string" as const, description: "The reply shown to the visitor." },
+    answeredFromInfo: {
+      type: "boolean" as const,
+      description:
+        "true if the church information contained what was needed to answer. false if you had to say you don't know, or the question was about the church but the info was missing. Off-topic questions you decline count as true (nothing to learn).",
+    },
+  },
+  required: ["answer", "answeredFromInfo"],
+  additionalProperties: false,
+};
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -55,7 +73,10 @@ export async function POST(req: NextRequest) {
     const response = await client.beta.messages.create({
       model: "claude-opus-5",
       max_tokens: 4096, // shared by (minimal, low-effort) thinking + the answer
-      output_config: { effort: "low" },
+      output_config: {
+        effort: "low",
+        format: { type: "json_schema", schema: ANSWER_SCHEMA },
+      },
       betas: ["server-side-fallback-2026-07-01"],
       fallbacks: "default",
       system: [
@@ -88,7 +109,18 @@ ${knowledge}`,
       .map((b) => b.text)
       .join("")
       .trim();
-    return NextResponse.json({ answer: text || FALLBACK_ANSWER });
+    let answer = FALLBACK_ANSWER;
+    try {
+      const parsed = JSON.parse(text) as { answer?: string; answeredFromInfo?: boolean };
+      if (parsed.answer) answer = parsed.answer;
+      if (parsed.answeredFromInfo === false) {
+        // Fire-and-forget staff notification; never blocks the visitor.
+        void sendUnansweredQuestionEmail(question);
+      }
+    } catch {
+      if (text) answer = text; // model somehow returned plain text — still usable
+    }
+    return NextResponse.json({ answer });
   } catch (err) {
     console.warn("[ask] failed:", err instanceof Error ? err.message : err);
     return NextResponse.json({ answer: FALLBACK_ANSWER }, { status: 502 });

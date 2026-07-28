@@ -69,6 +69,32 @@ export async function sendFormEmail(s: Submission): Promise<boolean> {
   }
 }
 
+/**
+ * Notifies staff that the website's question assistant couldn't answer
+ * something. Best-effort — a failure here never affects the visitor.
+ */
+export async function sendUnansweredQuestionEmail(question: string): Promise<void> {
+  const key = process.env.RESEND_API_KEY;
+  if (!key) return;
+  try {
+    const resend = new Resend(key);
+    await resend.emails.send({
+      from: "Faith Baptist Website <onboarding@resend.dev>", // TODO: switch to website@fbcchelsea.org once the domain is verified in Resend
+      to: [...site.formRecipients],
+      subject: "[Website] The assistant couldn't answer a visitor's question",
+      text:
+        `A visitor asked the website's question bubble:\n\n` +
+        `  "${question}"\n\n` +
+        `The assistant didn't have this in its church info, so it pointed them to the office.\n\n` +
+        `To teach it the answer: go to /admin on the website and type, for example:\n` +
+        `  Add to the chat facts: <the answer>\n\n` +
+        `— Automated notice from the website.`,
+    });
+  } catch (err) {
+    console.warn("[ask] unanswered-question email failed:", err instanceof Error ? err.message : err);
+  }
+}
+
 // ---------- Planning Center People ----------
 
 type PcoPerson = { id: string };
