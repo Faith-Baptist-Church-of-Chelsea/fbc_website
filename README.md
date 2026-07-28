@@ -120,6 +120,7 @@ text away from the very edges.
 | `PCO_SECRET` | Planning Center Personal Access Token — the Secret half. Server-side only; never sent to browsers. | Vercel env vars + `.env.local` |
 | `RESEND_API_KEY` | Lets form submissions send email. Without it, forms still record people in Planning Center but staff get no email (red on /admin/health). | Vercel env vars + `.env.local` |
 | `YOUTUBE_API_KEY` | Optional upgrade: verified "We're live" banner + sermon grid with titles/dates. Without it everything still works in keyless mode. | Vercel env vars + `.env.local` |
+| `GOOGLE_PLACES_API_KEY` | Pulls the church's Google reviews for the homepage (Maps Platform API key). | Vercel env vars + `.env.local` |
 | `ANTHROPIC_API_KEY` | Powers the visitor question bubble and the /admin plain-English editor. Without it the bubble is hidden and /admin is disabled. | Vercel env vars + `.env.local` |
 | `ADMIN_PASSWORD` | The password volunteers type on /admin. Pick something long; share it only with people allowed to change the site. | Vercel env vars + `.env.local` |
 | `GITHUB_TOKEN` | Lets /admin commit content changes to the repo. Fine-grained personal access token, ONLY the `fbc_website` repo, ONLY Contents read/write permission. | Vercel env vars + `.env.local` |

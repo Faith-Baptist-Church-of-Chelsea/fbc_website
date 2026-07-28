@@ -14,7 +14,9 @@ export type GoogleReview = {
 };
 
 export async function getGoogleReviews(): Promise<GoogleReview[]> {
-  const key = process.env.YOUTUBE_API_KEY; // same Google Cloud key
+  // Prefer the dedicated Maps Platform key; fall back to the YouTube key
+  // if it happens to allow Places too.
+  const key = process.env.GOOGLE_PLACES_API_KEY ?? process.env.YOUTUBE_API_KEY;
   const placeId = site.googlePlaceId;
   if (!key || !placeId) return [];
   try {
