@@ -124,6 +124,27 @@ text away from the very edges.
 | `ANTHROPIC_API_KEY` | Powers the visitor question bubble and the /admin plain-English editor. Without it the bubble is hidden and /admin is disabled. | Vercel env vars + `.env.local` |
 | `ADMIN_PASSWORD` | The password volunteers type on /admin. Pick something long; share it only with people allowed to change the site. | Vercel env vars + `.env.local` |
 | `GITHUB_TOKEN` | Lets /admin commit content changes to the repo. Fine-grained personal access token, ONLY the `fbc_website` repo, ONLY Contents read/write permission. | Vercel env vars + `.env.local` |
+| `CRON_SECRET` | Optional but recommended: locks the two scheduled endpoints (`/api/monitor`, `/api/digest`) so only Vercel's cron can trigger them. Set it to any long random string — Vercel automatically sends it with each cron run. | Vercel env vars |
+
+## The site checks on itself (and emails you)
+
+Every day at 8 AM Eastern, Vercel runs `/api/monitor` (schedule lives in
+`vercel.json`). It re-runs everything on `/admin/health` — Planning Center,
+YouTube, the Google Calendar feed, the GitHub token behind /admin, and the
+API keys — and **emails the staff list only if something is broken**. No
+email means all is well. If a key expires or a feed dies, you'll know the
+same morning instead of finding out from a visitor.
+
+## "This Week at Faith" — the Monday digest email
+
+Every Monday at 8 AM Eastern the site composes a summary email from its own
+content — this week's events, active announcements, the latest message, and
+the service times — and sends it to the staff list, ready to forward to the
+congregation or copy into whatever email tool the church uses. There's also
+an "Email me this week's digest" button on `/admin` (admin password) for an
+instant copy after you add or change an event. Until the fbcchelsea.org
+domain is verified in Resend, it can only deliver to Steven's gmail — same
+limitation as the contact forms.
 
 ## The visitor question bubble
 

@@ -84,6 +84,40 @@ export default function PlanYourVisit() {
         </div>
       </section>
 
+      {/* Your first Sunday, minute by minute */}
+      <section className="px-4 py-14">
+        <div className="mx-auto max-w-2xl">
+          <h2 className="text-center text-2xl font-bold text-slate-900 sm:text-3xl">
+            Your first Sunday, minute by minute
+          </h2>
+          <p className="mt-3 text-center text-slate-600">
+            Here&rsquo;s the whole thing, so nothing is a surprise. (Times
+            shown for the 11:00 service — the rhythm is the same at any of
+            them.)
+          </p>
+          <ol className="mt-10 space-y-0">
+            {[
+              { time: "10:50", text: "Pull in and take a marked visitor parking spot — they're saved for you." },
+              { time: "10:52", text: "Come in the main entrance and stop at the welcome desk. Free gift, warm faces, and every question answered." },
+              { time: "10:55", text: "Kids? The welcome desk walks you to check-in: your child gets a name tag, you get the matching pickup tag. (Or keep them with you — both are fine.)" },
+              { time: "11:00", text: "Singing — old hymns and newer songs, often with the choir. Nobody will single you out or ask you to stand." },
+              { time: "11:25", text: "The preaching: working through a passage of the Bible, digging into what it actually says." },
+              { time: "12:15", text: "That's it. Slip out right away, or stay and talk — plenty of people will be glad you did." },
+            ].map((step, i, arr) => (
+              <li key={step.time} className="relative flex gap-5 pb-8 last:pb-0">
+                {i < arr.length - 1 && (
+                  <span aria-hidden="true" className="absolute left-[2.15rem] top-10 h-full w-0.5 bg-slate-200" />
+                )}
+                <span className="z-10 flex h-[4.3rem] w-[4.3rem] shrink-0 items-center justify-center rounded-full bg-slate-900 font-display text-lg text-white">
+                  {step.time}
+                </span>
+                <p className="pt-5 text-slate-700">{step.text}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
       {/* The honest answers section */}
       <section className="px-4 py-14">
         <div className="mx-auto max-w-3xl space-y-10">

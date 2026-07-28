@@ -9,11 +9,25 @@ const nextConfig: NextConfig = {
   // function explicitly.
   outputFileTracingIncludes: {
     "/api/ask": ["./content/**/*"],
+    "/api/digest": ["./content/**/*"],
   },
   // node-ical must stay a plain Node dependency (bundling breaks it).
   serverExternalPackages: ["node-ical"],
   // Old WordPress URLs -> new pages, so links and search rankings carry
   // over when fbcchelsea.org points here.
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+        ],
+      },
+    ];
+  },
   async redirects() {
     return [
       { source: "/statement-of-faith", destination: "/about#statement-of-faith", permanent: true },

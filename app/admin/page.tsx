@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import AdminEditor from "@/components/AdminEditor";
+import DigestButton from "@/components/DigestButton";
 
 export const metadata: Metadata = {
   title: "Website Admin",
@@ -21,6 +22,9 @@ export default function AdminPage() {
       </p>
       <div className="mt-8">
         <AdminEditor />
+      </div>
+      <div className="mt-12">
+        <DigestButton />
       </div>
       <div className="mt-12 border-t border-slate-200 pt-6 text-sm text-slate-500">
         <p>
