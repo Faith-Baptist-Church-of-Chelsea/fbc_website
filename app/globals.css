@@ -18,6 +18,22 @@
   --color-brand-700: #006389; /* AA-safe link/text blue on white */
   --color-ink: #616a70; /* logo slate gray */
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-anton), ui-sans-serif, system-ui, sans-serif;
+}
+
+/*
+ * Display typography: page titles and section headings use the condensed
+ * uppercase display face — the "big confident type" feel. Anton reads
+ * larger than Inter at the same size, and needs a little extra breathing
+ * room, hence the letter-spacing and line-height.
+ */
+h1,
+main h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.05;
 }
 
 body {

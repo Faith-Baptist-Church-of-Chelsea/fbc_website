@@ -26,11 +26,25 @@ export default async function Home() {
 
   return (
     <main className="flex-1">
-      {/* Hero: times + address above the fold, Plan Your Visit dominant */}
-      <section className="bg-slate-900 px-4 pb-14 pt-12 text-white sm:pb-20 sm:pt-16">
-        <div className="mx-auto max-w-4xl text-center">
-          <h1 className="animate-rise animate-rise-1 text-4xl font-bold leading-tight sm:text-6xl">
-            An extremely friendly church that digs into the Word.
+      {/* Hero: times + address above the fold, Plan Your Visit dominant.
+          Until real photos land, the background is a frame from the most
+          recent stream — real people, real room — under a heavy overlay. */}
+      <section className="relative overflow-hidden bg-slate-950 px-4 pb-14 pt-12 text-white sm:pb-20 sm:pt-16">
+        {latest && (
+          /* eslint-disable-next-line @next/next/no-img-element --
+             YouTube CDN thumbnail as a decorative background */
+          <img
+            src={`https://i.ytimg.com/vi/${latest.videoId}/maxresdefault.jpg`}
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 h-full w-full scale-110 object-cover opacity-25 blur-md"
+          />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-slate-950/60 to-slate-950" aria-hidden="true" />
+        <div className="relative mx-auto max-w-4xl text-center">
+          <h1 className="animate-rise animate-rise-1 text-5xl leading-none sm:text-7xl">
+            An extremely friendly church<br className="hidden sm:block" />
+            <span className="text-brand-400"> that digs into the Word.</span>
           </h1>
           <p className="animate-rise animate-rise-2 mx-auto mt-5 max-w-2xl text-lg text-slate-300">
             Expository Bible preaching, music that blends the old hymns with
@@ -45,7 +59,7 @@ export default async function Home() {
           </Link>
           <div className="animate-rise animate-rise-4 mx-auto mt-10 grid max-w-3xl grid-cols-2 gap-3 text-left sm:grid-cols-4">
             {site.services.map((s) => (
-              <div key={`${s.day}-${s.time}`} className="rounded-lg bg-slate-800/70 p-3 text-center">
+              <div key={`${s.day}-${s.time}`} className="rounded-lg bg-slate-900/70 p-3 text-center backdrop-blur-sm">
                 <p className="text-xs font-semibold uppercase tracking-wide text-brand-400">{s.day}</p>
                 <p className="text-lg font-bold">{s.time}</p>
                 <p className="text-xs text-slate-300">{s.name}</p>
