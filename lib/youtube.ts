@@ -95,7 +95,10 @@ export type SermonVideo = {
 export async function getRecentVideos(limit = 12): Promise<SermonVideo[]> {
   if (!KEY) return [];
   try {
-    const playlist = CHANNEL.replace(/^UC/, "UU");
+    // UULF = the channel's "Videos" tab only (their published uploads with
+    // proper thumbnails) — NOT raw live-stream VODs (whose auto thumbnail
+    // is the outro frame) and not shorts.
+    const playlist = CHANNEL.replace(/^UC/, "UULF");
     const url =
       `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet,contentDetails&playlistId=${playlist}` +
       `&maxResults=50&key=${KEY}`;
@@ -118,14 +121,16 @@ export async function getRecentVideos(limit = 12): Promise<SermonVideo[]> {
     return (json.items ?? [])
       .map((i) => ({
         videoId: i.snippet?.resourceId?.videoId ?? "",
-        title: i.snippet?.title ?? "Untitled",
+        // Some uploads are duplicated from streams as "Copy of …" — the
+        // copy is the published version; hide the prefix.
+        title: (i.snippet?.title ?? "Untitled").replace(/^copy of\s*/i, ""),
         // contentDetails carries the video's true publish time; snippet's
         // publishedAt is only "when it was added to the playlist".
         publishedAt: i.contentDetails?.videoPublishedAt ?? i.snippet?.publishedAt ?? "",
         thumbnail: i.snippet?.thumbnails?.medium?.url ?? i.snippet?.thumbnails?.high?.url ?? null,
       }))
       .filter((v) => v.videoId && v.publishedAt)
-      .filter((v) => !/#shorts/i.test(v.title) && !/^copy of/i.test(v.title))
+      .filter((v) => !/#shorts/i.test(v.title))
       .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
       .slice(0, limit);
   } catch (err) {
