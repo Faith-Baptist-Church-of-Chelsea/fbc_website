@@ -48,8 +48,7 @@ export default function SpecialMusic() {
             <p className="mt-4 text-slate-700">
               No audition. No tryout. No music degree. If you can carry a tune
               — or used to play an instrument and think you&rsquo;re too rusty
-              — the seat is already there. The barrier people imagine is much
-              higher than the real one, which is a single conversation with{" "}
+              — the seat is already there. Simply speak with{" "}
               <span className="font-semibold text-slate-900">Matthew Dowdy</span>,
               our music director.
             </p>
@@ -87,7 +86,7 @@ export default function SpecialMusic() {
 
       <NextStep
         title="Come hear it live"
-        text="A recording doesn't do a full choir justice. Sunday at 11."
+        text="A recording doesn't do a full choir justice. Come listen on Sunday at 11."
         primary={{ label: "Plan Your Visit", href: "/plan-your-visit" }}
         secondary={{ label: "More on our music", href: "/common-questions" }}
       />

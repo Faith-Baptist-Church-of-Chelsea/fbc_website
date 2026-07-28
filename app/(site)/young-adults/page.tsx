@@ -120,13 +120,13 @@ Connecting outside of Sunday
             Get on the list
           </h2>
           <p className="mt-3 text-slate-700">
-            Two ways, both easy: grab the{" "}
+            Two ways, both easy: download the{" "}
             <a href={site.links.churchCenter} className="font-semibold text-brand-700 underline-offset-4 hover:underline">
               Church Center app
             </a>{" "}
-            and you&rsquo;ll see young adult events as they&rsquo;re posted —
-            or just talk to Matthew on a Sunday and he&rsquo;ll make sure you
-            hear about the next one.
+            and join the young adults group to see young adult events as
+            they&rsquo;re posted — or just talk to Matthew on a Sunday and
+            he&rsquo;ll make sure you hear about the next one.
           </p>
         </div>
       </section>
