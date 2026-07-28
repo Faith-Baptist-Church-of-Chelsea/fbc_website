@@ -3,12 +3,18 @@
 // POST — manual "send it now" from /admin, guarded by the admin password.
 import crypto from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { sendDigest } from "@/lib/digest";
+import { composeDigest, sendDigest } from "@/lib/digest";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
 
 export async function GET(req: NextRequest) {
+  // ?preview=1 renders the email in the browser instead of sending it.
+  // No auth needed: it's the same public content as the website itself.
+  if (req.nextUrl.searchParams.has("preview")) {
+    const { html } = await composeDigest();
+    return new NextResponse(html, { headers: { "Content-Type": "text/html; charset=utf-8" } });
+  }
   const secret = process.env.CRON_SECRET;
   if (secret && req.headers.get("authorization") !== `Bearer ${secret}`) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
