@@ -20,19 +20,33 @@ export default function LiveBanner() {
     // Add ?preview-live to any page URL to see the banner without being
     // live — for checking the design, not shown to normal visitors.
     const preview = window.location.search.includes("preview-live");
-    (preview
-      ? Promise.resolve({ show: true, verified: true, label: "Sunday Morning Service (preview)" })
-      : fetch("/api/live")
-          .then((r) => (r.ok ? r.json() : { show: false }))
-    )
-      .then((s: LiveState) => {
-        if (!cancelled) setState(s);
-      })
-      .catch(() => {
-        if (!cancelled) setState({ show: false });
-      });
+    const check = () => {
+      (preview
+        ? Promise.resolve({ show: true, verified: true, label: "Sunday Morning Service (preview)" })
+        : fetch("/api/live")
+            .then((r) => (r.ok ? r.json() : { show: false }))
+      )
+        .then((s: LiveState) => {
+          if (!cancelled) setState(s);
+        })
+        .catch(() => {
+          if (!cancelled) setState((prev) => prev ?? { show: false });
+        });
+    };
+    check();
+    // A tab opened before the service starts should still get the banner:
+    // re-check every 90s while visible, and immediately on tab refocus.
+    const interval = setInterval(() => {
+      if (document.visibilityState === "visible") check();
+    }, 90_000);
+    const onVisible = () => {
+      if (document.visibilityState === "visible") check();
+    };
+    document.addEventListener("visibilitychange", onVisible);
     return () => {
       cancelled = true;
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", onVisible);
     };
   }, []);
 
