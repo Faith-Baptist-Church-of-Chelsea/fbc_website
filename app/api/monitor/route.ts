@@ -6,7 +6,6 @@ import { Resend } from "resend";
 import site from "@/content/site.json";
 import { runPcoHealthChecks, type HealthCheck } from "@/lib/pco";
 import { getRecentVideos } from "@/lib/youtube";
-import { getUpcomingCalendarEvents } from "@/lib/calendar";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -35,13 +34,8 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  // Google Calendar feed
-  const cal = await getUpcomingCalendarEvents(1);
-  checks.push({
-    name: "Google Calendar",
-    ok: cal.length > 0,
-    detail: cal.length > 0 ? "OK" : "Calendar feed empty or unreachable",
-  });
+  // (Google Calendar check removed 2026-07 along with the calendar list
+  // on /events — a broken feed no longer affects anything visitors see.)
 
   // GitHub token (powers the /admin editor)
   if (process.env.GITHUB_TOKEN) {

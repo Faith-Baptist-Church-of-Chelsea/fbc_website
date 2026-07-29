@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { getUpcomingEvents } from "@/lib/content";
 import { getUpcomingSignups } from "@/lib/pco";
-import { getUpcomingCalendarEvents } from "@/lib/calendar";
 import { htmlToParagraphs } from "@/lib/html";
 
 export const metadata: Metadata = {
@@ -14,9 +13,10 @@ export const metadata: Metadata = {
     "What's coming up at Faith Baptist Church of Chelsea — the church calendar, open registrations, and announcements.",
 };
 
-// Regenerate at most every 15 minutes. Three sources, all fail-soft:
-// the church Google Calendar (ICS), Planning Center Registrations, and
-// Keystatic announcements.
+// Regenerate at most every 15 minutes. Two sources, both fail-soft:
+// manually-entered events (Keystatic/admin) and Planning Center
+// Registrations. (The Google Calendar list was removed 2026-07 — it
+// mostly duplicated the featured events.)
 export const revalidate = 900;
 
 const dateFmt = new Intl.DateTimeFormat("en-US", {
@@ -25,31 +25,8 @@ const dateFmt = new Intl.DateTimeFormat("en-US", {
   day: "numeric",
   timeZone: "America/Detroit",
 });
-const timeFmt = new Intl.DateTimeFormat("en-US", {
-  hour: "numeric",
-  minute: "2-digit",
-  timeZone: "America/Detroit",
-});
-
 export default async function Events() {
-  const [events, signups, rawCalendar] = await Promise.all([
-    getUpcomingEvents(),
-    getUpcomingSignups(),
-    getUpcomingCalendarEvents(12),
-  ]);
-  // Calendar rows link to OUR event pages when a matching featured event
-  // exists (by title-word overlap); otherwise they render unlinked.
-  const tokens = (t: string) =>
-    new Set(t.toLowerCase().replace(/[^a-z0-9\s]/g, " ").split(/\s+/).filter((w) => w.length > 2));
-  const calendar = rawCalendar.map((e) => {
-    const ct = tokens(e.title);
-    const match = events.find((ev) => {
-      const et = tokens(ev.title);
-      const shared = [...et].filter((w) => ct.has(w)).length;
-      return shared >= Math.min(et.size, ct.size) * 0.6 && shared > 0;
-    });
-    return { ...e, href: match ? `/events/${match.slug}` : null };
-  });
+  const [events, signups] = await Promise.all([getUpcomingEvents(), getUpcomingSignups()]);
 
   return (
     <main className="flex-1">
@@ -97,45 +74,6 @@ export default async function Events() {
                   </Link>
                 ))}
               </div>
-            </div>
-          )}
-
-          {/* Church calendar (secondary — the full running list) */}
-          {calendar.length > 0 && (
-            <div>
-              <h2 className="text-2xl font-bold text-slate-900">Also on the church calendar</h2>
-              <ul className="mt-4 divide-y divide-slate-200 rounded-xl border border-slate-200">
-                {calendar.map((e, i) => (
-                  <li key={i}>
-                    {(() => {
-                      const inner = (
-                        <>
-                          <span className="w-32 shrink-0 text-sm font-semibold uppercase tracking-wide text-brand-700">
-                            {dateFmt.format(new Date(e.start))}
-                          </span>
-                          <span>
-                            <span className={`font-semibold text-slate-900${e.href ? " group-hover:text-brand-700" : ""}`}>{e.title}</span>
-                            <span className="text-sm text-slate-600">
-                              {!e.allDay && <> · {timeFmt.format(new Date(e.start))}</>}
-                              {e.location && <> · {e.location}</>}
-                            </span>
-                            {e.href && (
-                              <span className="ml-2 text-sm font-semibold text-brand-700 opacity-0 transition-opacity group-hover:opacity-100">details →</span>
-                            )}
-                          </span>
-                        </>
-                      );
-                      return e.href ? (
-                        <Link href={e.href} className="group flex items-baseline gap-4 p-4 transition-colors hover:bg-slate-50">
-                          {inner}
-                        </Link>
-                      ) : (
-                        <div className="flex items-baseline gap-4 p-4">{inner}</div>
-                      );
-                    })()}
-                  </li>
-                ))}
-              </ul>
             </div>
           )}
 
@@ -188,7 +126,7 @@ export default async function Events() {
           )}
 
 
-          {events.length === 0 && calendar.length === 0 && signups.length === 0 && (
+          {events.length === 0 && signups.length === 0 && (
             <p className="text-center text-slate-600">
               Nothing special on the calendar right now — which means the best
               thing coming up is Sunday.
