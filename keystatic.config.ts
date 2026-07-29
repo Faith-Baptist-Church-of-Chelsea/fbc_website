@@ -19,7 +19,7 @@ export default config({
   // is set); until then, or without the env var, it falls back to local mode.
   storage:
     process.env.NEXT_PUBLIC_KEYSTATIC_MODE === "github"
-      ? { kind: "github", repo: "Great-Lakes-Seedline/fbc_website" }
+      ? { kind: "github", repo: "Faith-Baptist-Church-of-Chelsea/fbc_website" }
       : { kind: "local" },
 
   ui: {
