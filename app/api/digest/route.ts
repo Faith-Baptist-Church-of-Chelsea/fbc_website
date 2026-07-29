@@ -9,7 +9,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { composeDigest, sendDigest } from "@/lib/digest";
 
 export const dynamic = "force-dynamic";
-export const maxDuration = 60;
+// The Monday run also syncs new Planning Center contacts (rate-limited to
+// ~2/s), so give it room beyond the usual 60s.
+export const maxDuration = 300;
 
 function isVercelCron(req: NextRequest): boolean {
   const secret = process.env.CRON_SECRET;

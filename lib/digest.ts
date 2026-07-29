@@ -145,12 +145,17 @@ export async function sendDigest(
   });
   if (error) return { sent: false, detail: error.message };
   let detail = `Sent to ${site.formRecipients.join(", ")}`;
-  // Monday cron also broadcasts to the mailing list — but only once
+  // Monday cron: first pull anyone newly added to Planning Center into
+  // the mailing list, then broadcast — but broadcasting only happens once
   // DIGEST_BROADCAST=1 (needs verified domain + full-access key + plan).
   if (opts.broadcast) {
-    const { sendDigestBroadcast } = await import("@/lib/mailing-list");
+    const { syncPcoContacts, sendDigestBroadcast } = await import("@/lib/mailing-list");
+    const sync = await syncPcoContacts().catch((e) => ({
+      added: 0,
+      detail: `sync failed: ${e instanceof Error ? e.message : e}`,
+    }));
     const b = await sendDigestBroadcast(subject, html);
-    detail += `; ${b.detail}`;
+    detail += `; ${sync.detail}; ${b.detail}`;
   }
   return { sent: true, detail };
 }
