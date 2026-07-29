@@ -63,22 +63,22 @@ export default async function Home() {
   return (
     <main className="flex-1">
       {/* Hero: times + address above the fold, Plan Your Visit dominant.
-          Until real photos land, the background is a frame from the most
-          recent stream — real people, real room — under a heavy overlay. */}
+          Background is a quiet stock loop (public/videos/hero.mp4 — swap
+          the file to change it) under a heavy overlay; the poster frame
+          serves phones-on-data and anyone with reduced motion enabled. */}
       <section className="relative overflow-hidden bg-slate-950 px-4 pb-14 pt-12 text-white sm:pb-20 sm:pt-16">
-        {latest?.thumbnail && (
-          /* eslint-disable-next-line @next/next/no-img-element --
-             YouTube CDN thumbnail as a decorative background */
-          <img
-            src={latest.thumbnail ?? `https://i.ytimg.com/vi/${latest.videoId}/hqdefault.jpg`}
-            alt=""
-            aria-hidden="true"
-            data-parallax="0.3"
-            loading="eager"
-            fetchPriority="high"
-            className="absolute inset-0 h-full w-full scale-110 object-cover opacity-25 blur-md"
-          />
-        )}
+        <video
+          className="hero-video absolute inset-0 h-full w-full scale-105 object-cover opacity-30"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          poster="/images/hero-poster.jpg"
+          aria-hidden="true"
+        >
+          <source src="/videos/hero.mp4" type="video/mp4" />
+        </video>
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-slate-950/60 to-slate-950" aria-hidden="true" />
         <div className="relative mx-auto max-w-4xl text-center">
           <h1 className="animate-rise animate-rise-1 text-5xl leading-none sm:text-7xl">
