@@ -169,7 +169,11 @@ export async function sendDigestBroadcast(
   html: string
 ): Promise<{ sent: boolean; detail: string }> {
   if (process.env.DIGEST_BROADCAST !== "1") {
-    return { sent: false, detail: "broadcast disabled (DIGEST_BROADCAST unset)" };
+    return {
+      sent: false,
+      detail:
+        "Congregation sending isn't switched on yet — it needs the fbcchelsea.org domain verified in Resend and the paid Resend plan. The review copies still work.",
+    };
   }
   if (!fullKey()) return { sent: false, detail: "RESEND_FULL_API_KEY not set" };
   const audienceId = await ensureAudience();

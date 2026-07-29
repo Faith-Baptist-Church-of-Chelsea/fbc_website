@@ -6,7 +6,7 @@
 // POST — manual "send it now" from /admin, guarded by the admin password.
 import crypto from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
-import { composeDigest, sendDigest } from "@/lib/digest";
+import { approveAndBroadcast, composeDigest, sendDigest } from "@/lib/digest";
 
 export const dynamic = "force-dynamic";
 // The Monday run also syncs new Planning Center contacts (rate-limited to
@@ -21,7 +21,7 @@ function isVercelCron(req: NextRequest): boolean {
 
 export async function GET(req: NextRequest) {
   if (isVercelCron(req) && !req.nextUrl.searchParams.has("preview")) {
-    const result = await sendDigest({ broadcast: true });
+    const result = await sendDigest({ sync: true });
     return NextResponse.json(result, { status: result.sent ? 200 : 500 });
   }
   // Anyone else sees the preview — same public content as the website.
@@ -34,12 +34,18 @@ export async function POST(req: NextRequest) {
   if (!expected) {
     return NextResponse.json({ error: "ADMIN_PASSWORD not configured." }, { status: 503 });
   }
-  const body = (await req.json().catch(() => ({}))) as { password?: string };
+  const body = (await req.json().catch(() => ({}))) as {
+    password?: string;
+    action?: string;
+  };
   const a = crypto.createHash("sha256").update(String(body.password ?? "")).digest();
   const b = crypto.createHash("sha256").update(expected).digest();
   if (!crypto.timingSafeEqual(a, b)) {
     return NextResponse.json({ error: "Wrong password." }, { status: 401 });
   }
-  const result = await sendDigest();
+  // "approve" = the human sign-off: recompose fresh and broadcast to the
+  // mailing list. Anything else = send the staff review copy.
+  const result =
+    body.action === "approve" ? await approveAndBroadcast() : await sendDigest();
   return NextResponse.json(result, { status: result.sent ? 200 : 500 });
 }

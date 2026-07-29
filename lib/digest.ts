@@ -55,7 +55,9 @@ function eventCard(e: ChurchEvent): string {
     </td></tr></table>`;
 }
 
-export async function composeDigest(): Promise<{ subject: string; html: string }> {
+export async function composeDigest(
+  opts: { review?: boolean } = {}
+): Promise<{ subject: string; html: string }> {
   const [events, announcements, videos] = await Promise.all([
     getUpcomingEvents(),
     getActiveAnnouncements(),
@@ -101,18 +103,31 @@ export async function composeDigest(): Promise<{ subject: string; html: string }
       </td></tr></table>`;
   }
 
+  // The staff review copy gets an approval banner up top; the version
+  // that actually goes to the congregation never includes it.
+  const reviewBanner = opts.review
+    ? `<tr><td style="background:#fffbeb;border-bottom:1px solid #fde68a;padding:18px 24px;font-family:Arial,Helvetica,sans-serif;" align="center">
+    <p style="margin:0;font-size:13px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;color:#92400e;">Review copy — nothing sent to the congregation yet</p>
+    <p style="margin:8px 0 0;font-size:14px;line-height:1.6;color:#78350f;">Check the dates and times below. Fix anything at ${SITE_URL}/admin first if needed — the email rebuilds itself with the latest info when you send it.</p>
+    <table role="presentation" cellpadding="0" cellspacing="0" align="center" style="margin:14px auto 0;"><tr><td style="border-radius:10px;background:#0093ce;" align="center">
+      <a href="${SITE_URL}/admin" style="display:inline-block;padding:12px 26px;font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:bold;color:#ffffff;text-decoration:none;">Looks right → approve &amp; send</a>
+    </td></tr></table>
+  </td></tr>`
+    : "";
+
   const monday = prettyDate(today);
   return {
-    subject: `This Week at Faith — ${monday}`,
+    subject: `${opts.review ? "[Review] " : ""}This Week at Faith — ${monday}`,
     html: `<!DOCTYPE html><html><body style="margin:0;padding:0;background:#e2e8f0;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#e2e8f0;padding:24px 8px;"><tr><td align="center">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:16px;overflow:hidden;">
+  ${reviewBanner}
   <tr><td style="background:#0f172a;padding:28px 24px;" align="center">
     <img src="${SITE_URL}/images/logo-horizontal-light.png" width="280" alt="Faith Baptist Church of Chelsea" style="display:block;max-width:280px;height:auto;" />
   </td></tr>
   <tr><td style="padding:32px 28px 8px;font-family:Arial,Helvetica,sans-serif;">
     <h1 style="margin:0;font-size:24px;color:#0f172a;">This Week at Faith</h1>
-    <p style="margin:10px 0 0;font-size:15px;line-height:1.6;color:#334155;">${esc(monday)} — composed automatically from the website. Forward it on, or copy what you need.</p>
+    <p style="margin:10px 0 0;font-size:15px;line-height:1.6;color:#334155;">${esc(monday)}${opts.review ? " — composed automatically from the website." : " — what's happening at Faith Baptist Church of Chelsea this week."}</p>
     ${body}
   </td></tr>
   <tr><td style="padding:24px 28px;font-family:Arial,Helvetica,sans-serif;">
@@ -125,17 +140,23 @@ export async function composeDigest(): Promise<{ subject: string; html: string }
     <table role="presentation" cellpadding="0" cellspacing="0" align="center" style="margin:22px auto 0;"><tr><td style="border-radius:10px;background:#0093ce;" align="center">
       <a href="${SITE_URL}/events" style="display:inline-block;padding:14px 32px;font-family:Arial,Helvetica,sans-serif;font-size:16px;font-weight:bold;color:#ffffff;text-decoration:none;">All events on the website →</a>
     </td></tr></table>
-    <p style="margin:22px 0 0;font-size:12px;line-height:1.6;color:#94a3b8;" align="center">Sent automatically every Monday. Edit events and announcements at ${SITE_URL}/admin to change next week's email.</p>
+    <p style="margin:22px 0 0;font-size:12px;line-height:1.6;color:#94a3b8;" align="center">${
+      opts.review
+        ? `Sent automatically every Monday. Edit events and announcements at ${SITE_URL}/admin to change this email, then approve it from the same page.`
+        : `You&rsquo;re receiving this weekly email from Faith Baptist Church of Chelsea · ${esc(site.address.street)}, ${esc(site.address.city)}, ${esc(site.address.state)} ${esc(site.address.zip)}`
+    }</p>
   </td></tr>
 </table></td></tr></table></body></html>`,
   };
 }
 
 export async function sendDigest(
-  opts: { broadcast?: boolean } = {}
+  opts: { sync?: boolean } = {}
 ): Promise<{ sent: boolean; detail: string }> {
   if (!process.env.RESEND_API_KEY) return { sent: false, detail: "RESEND_API_KEY not set" };
-  const { subject, html } = await composeDigest();
+  // Staff always get the REVIEW copy — the congregation never gets
+  // anything until a human approves it (approveAndBroadcast below).
+  const { subject, html } = await composeDigest({ review: true });
   const resend = new Resend(process.env.RESEND_API_KEY);
   const { error } = await resend.emails.send({
     from: "Faith Baptist Website <onboarding@resend.dev>", // TODO: switch after domain verification
@@ -144,18 +165,28 @@ export async function sendDigest(
     html,
   });
   if (error) return { sent: false, detail: error.message };
-  let detail = `Sent to ${site.formRecipients.join(", ")}`;
-  // Monday cron: first pull anyone newly added to Planning Center into
-  // the mailing list, then broadcast — but broadcasting only happens once
-  // DIGEST_BROADCAST=1 (needs verified domain + full-access key + plan).
-  if (opts.broadcast) {
-    const { syncPcoContacts, sendDigestBroadcast } = await import("@/lib/mailing-list");
+  let detail = `Review copy sent to ${site.formRecipients.join(", ")}`;
+  // Monday cron: also pull anyone newly added to Planning Center into the
+  // mailing list, so the list is current by the time someone approves.
+  if (opts.sync) {
+    const { syncPcoContacts } = await import("@/lib/mailing-list");
     const sync = await syncPcoContacts().catch((e) => ({
       added: 0,
       detail: `sync failed: ${e instanceof Error ? e.message : e}`,
     }));
-    const b = await sendDigestBroadcast(subject, html);
-    detail += `; ${sync.detail}; ${b.detail}`;
+    detail += `; ${sync.detail}`;
   }
   return { sent: true, detail };
+}
+
+/**
+ * The human "yes, send it" step: recomposes the digest FRESH (so any
+ * date/time fixes made after the review copy are picked up) and
+ * broadcasts it to the mailing list. Called from /admin, password-gated
+ * at the route. Still requires DIGEST_BROADCAST=1 (domain + plan ready).
+ */
+export async function approveAndBroadcast(): Promise<{ sent: boolean; detail: string }> {
+  const { subject, html } = await composeDigest();
+  const { sendDigestBroadcast } = await import("@/lib/mailing-list");
+  return sendDigestBroadcast(subject, html);
 }

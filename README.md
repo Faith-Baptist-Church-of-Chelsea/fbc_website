@@ -139,12 +139,15 @@ same morning instead of finding out from a visitor.
 
 Every Monday at 8 AM Eastern the site composes a summary email from its own
 content — this week's events, active announcements, the latest message, and
-the service times — and sends it to the staff list, ready to forward to the
-congregation or copy into whatever email tool the church uses. There's also
-an "Email me this week's digest" button on `/admin` (admin password) for an
-instant copy after you add or change an event. Until the fbcchelsea.org
-domain is verified in Resend, it can only deliver to Steven's gmail — same
-limitation as the contact forms.
+the service times — and emails the staff a **review copy** with an amber
+"nothing sent yet" banner. **The congregation never gets anything
+automatically.** A human checks the dates, fixes anything on `/admin` or
+`/keystatic` if needed, then clicks "Approve & send to the congregation" on
+`/admin` (admin password + a second are-you-sure click). Approving always
+rebuilds the email from the website's current content, so fixes made after
+the review copy are included. Until the fbcchelsea.org domain is verified
+in Resend, review copies only deliver to Steven's gmail — same limitation
+as the contact forms.
 
 ### The mailing list (congregation-wide sending)
 
