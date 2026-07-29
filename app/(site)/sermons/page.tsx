@@ -3,7 +3,9 @@ import site from "@/content/site.json";
 import PageHero from "@/components/PageHero";
 import NextStep from "@/components/NextStep";
 import { getRecentVideos } from "@/lib/youtube";
+import { parseSermon } from "@/lib/sermons";
 import LiteYouTube from "@/components/LiteYouTube";
+import SermonBrowser from "@/components/SermonBrowser";
 
 export const metadata: Metadata = {
   title: "Sermons",
@@ -25,8 +27,9 @@ const dateFmt = new Intl.DateTimeFormat("en-US", {
 // playlist embed. Both degrade to the YouTube channel link.
 export default async function Sermons() {
   const uploadsPlaylist = site.social.youtubeChannelId.replace(/^UC/, "UU");
-  const videos = await getRecentVideos(13);
+  const videos = await getRecentVideos(48);
   const [latest, ...rest] = videos;
+  const browsable = rest.map(parseSermon);
 
   return (
     <main className="flex-1">
@@ -78,28 +81,13 @@ export default async function Sermons() {
         <section className="bg-slate-50 px-4 py-14">
           <div className="mx-auto max-w-5xl">
             <h2 className="text-2xl font-bold text-slate-900">Recent messages</h2>
-            <ul className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {rest.map((v) => (
-                <li key={v.videoId}>
-                  <a
-                    href={`https://www.youtube.com/watch?v=${v.videoId}`}
-                    className="group block overflow-hidden rounded-xl border border-slate-200 bg-white transition-shadow hover:shadow-lg"
-                  >
-                    {v.thumbnail && (
-                      /* eslint-disable-next-line @next/next/no-img-element --
-                         YouTube CDN thumbnail, fixed size, not worth proxying */
-                      <img src={v.thumbnail} alt="" className="aspect-video w-full object-cover" loading="lazy" />
-                    )}
-                    <div className="p-4">
-                      <p className="font-semibold text-slate-900 group-hover:text-brand-700">{v.title}</p>
-                      {v.publishedAt && (
-                        <p className="mt-1 text-sm text-slate-500">{dateFmt.format(new Date(v.publishedAt))}</p>
-                      )}
-                    </div>
-                  </a>
-                </li>
-              ))}
-            </ul>
+            <p className="mt-2 text-slate-600">
+              Search a passage (&ldquo;Genesis 3&rdquo;), a topic
+              (&ldquo;grace&rdquo;), or filter by service.
+            </p>
+            <div className="mt-6">
+              <SermonBrowser sermons={browsable} />
+            </div>
             <p className="mt-6 text-slate-600">
               Looking for something older? The complete archive lives on{" "}
               <a href={site.social.youtube} className="font-semibold text-brand-700 underline-offset-4 hover:underline">
