@@ -19,7 +19,7 @@ function isVercelCron(req: NextRequest): boolean {
 
 export async function GET(req: NextRequest) {
   if (isVercelCron(req) && !req.nextUrl.searchParams.has("preview")) {
-    const result = await sendDigest();
+    const result = await sendDigest({ broadcast: true });
     return NextResponse.json(result, { status: result.sent ? 200 : 500 });
   }
   // Anyone else sees the preview — same public content as the website.

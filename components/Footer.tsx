@@ -1,5 +1,6 @@
 import Link from "next/link";
 import site from "@/content/site.json";
+import SubscribeForm from "@/components/SubscribeForm";
 
 // Site-wide footer, kept deliberately light: service times, address/contact,
 // and a short list of the links people actually look for. The full page list
@@ -16,6 +17,19 @@ const quickLinks = [
 export default function Footer() {
   return (
     <footer className="bg-slate-950 text-slate-300">
+      <div className="border-b border-slate-800">
+        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-8 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-white">
+              This Week at Faith
+            </h2>
+            <p className="mt-1 text-sm text-slate-400">
+              One email every Monday — that week&rsquo;s events and the latest message.
+            </p>
+          </div>
+          <SubscribeForm dark />
+        </div>
+      </div>
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:grid-cols-3">
         <div>
           <h2 className="text-sm font-semibold uppercase tracking-wider text-white">

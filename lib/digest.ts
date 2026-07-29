@@ -131,7 +131,9 @@ export async function composeDigest(): Promise<{ subject: string; html: string }
   };
 }
 
-export async function sendDigest(): Promise<{ sent: boolean; detail: string }> {
+export async function sendDigest(
+  opts: { broadcast?: boolean } = {}
+): Promise<{ sent: boolean; detail: string }> {
   if (!process.env.RESEND_API_KEY) return { sent: false, detail: "RESEND_API_KEY not set" };
   const { subject, html } = await composeDigest();
   const resend = new Resend(process.env.RESEND_API_KEY);
@@ -142,5 +144,13 @@ export async function sendDigest(): Promise<{ sent: boolean; detail: string }> {
     html,
   });
   if (error) return { sent: false, detail: error.message };
-  return { sent: true, detail: `Sent to ${site.formRecipients.join(", ")}` };
+  let detail = `Sent to ${site.formRecipients.join(", ")}`;
+  // Monday cron also broadcasts to the mailing list — but only once
+  // DIGEST_BROADCAST=1 (needs verified domain + full-access key + plan).
+  if (opts.broadcast) {
+    const { sendDigestBroadcast } = await import("@/lib/mailing-list");
+    const b = await sendDigestBroadcast(subject, html);
+    detail += `; ${b.detail}`;
+  }
+  return { sent: true, detail };
 }

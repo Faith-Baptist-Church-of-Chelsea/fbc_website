@@ -146,6 +146,25 @@ instant copy after you add or change an event. Until the fbcchelsea.org
 domain is verified in Resend, it can only deliver to Steven's gmail — same
 limitation as the contact forms.
 
+### The mailing list (congregation-wide sending)
+
+There's a signup form in the site footer, and `scripts/import-pco-contacts.mjs`
+imports every active adult with an email from Planning Center (run it once,
+dry-run by default). Both feed a Resend "audience"; the Monday cron then
+broadcasts the digest to it with automatic per-person unsubscribe links.
+Three switches must be on before real sending happens:
+
+1. `RESEND_FULL_API_KEY` env var — a **full access** key from
+   resend.com/api-keys (the original key is sending-only and can't manage
+   the contact list). Until it exists, the footer form politely says
+   signups aren't open yet.
+2. fbcchelsea.org verified in Resend (same blocker as the forms).
+3. `DIGEST_BROADCAST=1` env var — the deliberate on-switch, because ~265
+   contacts exceeds Resend's free tier (100 emails/day): flipping this on
+   means the church is on the $20/mo Resend plan.
+
+Until all three are true the Monday digest just goes to staff as before.
+
 ## The visitor question bubble
 
 Every page has a chat bubble (bottom-right) where visitors can ask questions
