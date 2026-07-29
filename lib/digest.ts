@@ -6,6 +6,7 @@
 // Styled to match the visitor welcome email in lib/forms.ts: email-client-
 // safe tables, navy logo header, rounded cards, brand-blue button.
 import "server-only";
+import crypto from "node:crypto";
 import { Resend } from "resend";
 import site from "@/content/site.json";
 import { getUpcomingEvents, getActiveAnnouncements, type ChurchEvent } from "@/lib/content";
@@ -36,6 +37,18 @@ function imageUrlIfExists(publicPath: string | null): string | null {
   } catch {
     return null;
   }
+}
+
+/**
+ * Signed token for the "send me a fresh review copy" link in the review
+ * email. Lets staff re-trigger a review copy straight from their inbox —
+ * no password typing — without opening the endpoint to the world. Only
+ * ever sends review copies to the staff list, never to the congregation.
+ */
+export function reviewResendToken(): string | null {
+  const pw = process.env.ADMIN_PASSWORD;
+  if (!pw) return null;
+  return crypto.createHmac("sha256", pw).update("digest-review-resend").digest("hex").slice(0, 32);
 }
 
 function sectionLabel(text: string): string {
@@ -105,13 +118,23 @@ export async function composeDigest(
 
   // The staff review copy gets an approval banner up top; the version
   // that actually goes to the congregation never includes it.
+  const resendLink = reviewResendToken()
+    ? `${SITE_URL}/api/digest?resend=${reviewResendToken()}`
+    : `${SITE_URL}/admin`;
   const reviewBanner = opts.review
     ? `<tr><td style="background:#fffbeb;border-bottom:1px solid #fde68a;padding:18px 24px;font-family:Arial,Helvetica,sans-serif;" align="center">
     <p style="margin:0;font-size:13px;font-weight:bold;letter-spacing:1px;text-transform:uppercase;color:#92400e;">Review copy — nothing sent to the congregation yet</p>
-    <p style="margin:8px 0 0;font-size:14px;line-height:1.6;color:#78350f;">Check the dates and times below. Fix anything at ${SITE_URL}/admin first if needed — the email rebuilds itself with the latest info when you send it.</p>
-    <table role="presentation" cellpadding="0" cellspacing="0" align="center" style="margin:14px auto 0;"><tr><td style="border-radius:10px;background:#0093ce;" align="center">
-      <a href="${SITE_URL}/admin" style="display:inline-block;padding:12px 26px;font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:bold;color:#ffffff;text-decoration:none;">Looks right → approve &amp; send</a>
-    </td></tr></table>
+    <p style="margin:8px 0 0;font-size:14px;line-height:1.6;color:#78350f;">Check the dates and times below.</p>
+    <table role="presentation" cellpadding="0" cellspacing="0" align="center" style="margin:14px auto 0;"><tr>
+      <td style="border-radius:10px;background:#0093ce;" align="center">
+        <a href="${SITE_URL}/admin" style="display:inline-block;padding:12px 22px;font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:bold;color:#ffffff;text-decoration:none;">Looks right → approve &amp; send</a>
+      </td>
+      <td style="width:10px;"></td>
+      <td style="border-radius:10px;border:2px solid #d97706;" align="center">
+        <a href="${resendLink}" style="display:inline-block;padding:10px 22px;font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:bold;color:#92400e;text-decoration:none;">Something&rsquo;s wrong</a>
+      </td>
+    </tr></table>
+    <p style="margin:10px 0 0;font-size:12px;line-height:1.6;color:#a16207;">Something&rsquo;s wrong? Fix the event at ${SITE_URL}/admin (or /keystatic), then click the amber button — a fresh review copy with your fixes will land in this inbox for another look. Nothing goes out until you approve.</p>
   </td></tr>`
     : "";
 
