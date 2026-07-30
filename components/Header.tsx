@@ -9,14 +9,28 @@ import {
   planYourVisit,
   primaryLinks,
   secondaryLinks,
+  type NavLink,
 } from "@/lib/nav";
 
 // Site-wide header. Client component only because the mobile menu and the
 // Ministries dropdown need open/closed state — everything else is static.
-export default function Header() {
+//
+// extraMinistries / extraSecondary are menu entries from the "Pages"
+// collection in /keystatic — the layout reads them server-side and passes
+// them in, so volunteer-created pages can appear in the menu with no code
+// change.
+export default function Header({
+  extraMinistries = [],
+  extraSecondary = [],
+}: {
+  extraMinistries?: NavLink[];
+  extraSecondary?: NavLink[];
+}) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [ministriesOpen, setMinistriesOpen] = useState(false);
   const pathname = usePathname();
+  const ministryLinks = [...ministries.links, ...extraMinistries];
+  const moreLinks = [...secondaryLinks, ...extraSecondary];
 
   // Close the mobile menu when a link is chosen.
   const close = () => {
@@ -79,7 +93,7 @@ export default function Header() {
             </button>
             {ministriesOpen && (
               <div className="absolute left-0 top-full w-48 rounded-b-lg bg-navy py-2 shadow-lg">
-                {ministries.links.map((l) => (
+                {ministryLinks.map((l) => (
                   <Link
                     key={l.href}
                     href={l.href}
@@ -158,14 +172,14 @@ export default function Header() {
             {ministries.label}
           </p>
           <div className="mt-1 space-y-1">
-            {ministries.links.map((l) => (
+            {ministryLinks.map((l) => (
               <Link key={l.href} href={l.href} onClick={close} className="block rounded px-2 py-2 text-base text-slate-200 hover:bg-white/10">
                 {l.label}
               </Link>
             ))}
           </div>
           <div className="mt-4 space-y-1 border-t border-white/10 pt-4">
-            {secondaryLinks.map((l) => (
+            {moreLinks.map((l) => (
               <Link key={l.href} href={l.href} onClick={close} className="block rounded px-2 py-2 text-base text-slate-300 hover:bg-white/10">
                 {l.label}
               </Link>

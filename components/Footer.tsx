@@ -14,7 +14,9 @@ const quickLinks = [
   { label: "Contact", href: "/contact" },
 ];
 
-export default function Footer() {
+// extraLinks: menu entries from volunteer-created pages ("Pages" in
+// /keystatic set to "Footer links") — passed in by the layout.
+export default function Footer({ extraLinks = [] }: { extraLinks?: { label: string; href: string }[] }) {
   return (
     <footer className="bg-slate-950 text-slate-300">
       <div className="border-b border-slate-800">
@@ -73,7 +75,7 @@ export default function Footer() {
             Quick Links
           </h2>
           <ul className="mt-4 space-y-2 text-sm">
-            {quickLinks.map((l) => (
+            {[...quickLinks, ...extraLinks].map((l) => (
               <li key={l.href}>
                 <Link href={l.href} className="hover:text-white">
                   {l.label}

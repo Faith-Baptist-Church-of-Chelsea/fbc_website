@@ -51,15 +51,38 @@ bio → Save. Or copy an existing file in `content/staff/` and edit it.
 the homepage automatically after that date, so you never have to remember to
 take it down.
 
-### Letting volunteers edit content (not set up yet)
+### Adding or editing whole pages (the page builder)
 
-Right now `/keystatic` only works on a computer running the dev server, because
-Keystatic is in "local" storage mode. To let volunteers edit through the live
-website we switch `keystatic.config.ts` to GitHub storage mode, which requires a
-one-time setup: Keystatic walks you through creating a GitHub App on the repo,
-and volunteers then log in at `fbcchelsea… /keystatic` with GitHub accounts that
-have access to the repo. Their edits become git commits, same as everything
-else. Ask Claude Code to do this when you're ready to onboard a volunteer.
+/keystatic → **Pages**. A page is a name (which becomes its web address, e.g.
+"Nursery" → `/nursery`), the dark hero at the top (small line, title, intro),
+and a stack of **sections** you add and reorder like building blocks:
+
+- **Text** — heading + rich text (bold, links, lists, photos in the flow)
+- **Photo beside text** — the classic two-column band; pick which side
+- **Photo** — full-width photo with an optional caption
+- **Buttons** — one or more buttons, solid or outlined
+- **YouTube video** — paste any YouTube link
+
+"Show in the site menu?" places the page in the Ministries dropdown or the
+footer; otherwise it's reachable only by its link. Every page ends with the
+dark call-to-action section — leave it blank for the standard "Plan Your
+Visit" ending or write your own. Photos uploaded here are automatically
+compressed and sized for visitors' screens.
+
+**/missions is built this way** — open /keystatic → Pages → missions for a
+worked example. If a page name matches a built-in page (About, Events, Give…),
+the built-in page wins and the new one never shows — pick another name.
+
+The /admin plain-English editor can edit these pages too ("On the missions
+page, add a paragraph about the El Paso trip") and can create new ones, but
+photo uploads happen in /keystatic.
+
+### Letting volunteers edit content (live)
+
+`/keystatic` on the deployed site runs in GitHub storage mode: volunteers log
+in with GitHub accounts that have repo access, and their edits become commits
+that auto-deploy. (On a dev machine without `NEXT_PUBLIC_KEYSTATIC_MODE=github`
+it falls back to local mode and writes straight to the files.)
 
 ## Deploying and rolling back
 

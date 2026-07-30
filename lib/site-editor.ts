@@ -14,7 +14,7 @@ const REPO = "Faith-Baptist-Church-of-Chelsea/fbc_website";
 const BRANCH = "main";
 
 // Only these may be created or modified. Anything else is rejected.
-const EDITABLE = /^content\/(site\.json|statement-of-faith\.json|chat-facts\.md|(staff|announcements|testimonials|events)\/[a-z0-9-]+\.mdx)$/;
+const EDITABLE = /^content\/(site\.json|statement-of-faith\.json|chat-facts\.md|(staff|announcements|testimonials|events)\/[a-z0-9-]+\.mdx|pages\/[a-z0-9-]+\.yaml)$/;
 
 export type ProposedChange = { path: string; contents: string };
 export type Proposal = {
@@ -152,8 +152,8 @@ export function validateProposal(p: Proposal): void {
   }
   for (const d of p.deletions) {
     // Never allow deleting the two core files.
-    if (!/^content\/(staff|announcements|testimonials|events)\/[a-z0-9-]+\.mdx$/.test(d)) {
-      throw new Error(`Refusing to delete "${d}" — only staff, announcement, testimonial, or event entries may be removed.`);
+    if (!/^content\/((staff|announcements|testimonials|events)\/[a-z0-9-]+\.mdx|pages\/[a-z0-9-]+\.yaml)$/.test(d)) {
+      throw new Error(`Refusing to delete "${d}" — only staff, announcement, testimonial, event, or custom-page entries may be removed.`);
     }
   }
 }
@@ -219,13 +219,15 @@ The website reads everything from these files:
 - content/testimonials/*.mdx — homepage testimonials (frontmatter: name, detail; body = the quote)
 - content/events/*.mdx — upcoming events (frontmatter: title, date (YYYY-MM-DD), time (display text like "6:30 PM"), showUntil (optional YYYY-MM-DD for multi-day), location, image (path, do not change), signupLink; body = description). Events disappear automatically after their date/showUntil. Graphics are uploaded in /keystatic, not here.
 - content/chat-facts.md — facts the website's chat assistant may use
+- content/pages/*.yaml — build-your-own pages, shown at /<filename> (title, eyebrow, intro, menu (none|ministries|footer), menuOrder, sections (a list of {discriminant, value} blocks: text {heading, body=markdown}, imageText {heading, body, image path — do not change, imageSide left|right}, image {image path — do not change, caption}, buttons {buttons: [{label, link, style primary|secondary}]}, video {url=YouTube link}), nextStep {title, text, primaryLabel, primaryLink, secondaryLabel, secondaryLink — all-empty means the standard ending}). Copy the structure of an existing page file exactly; body fields are markdown. Photos are uploaded in /keystatic, not here.
 
 Rules:
 - Return the COMPLETE new contents for every file you change — not a diff.
 - Only change what the instruction asks for. Keep formatting, keys, and untouched entries exactly as they are.
 - New staff/announcement files: kebab-case filenames matching the pattern shown by existing files.
 - If the instruction is ambiguous, make the most reasonable interpretation and record the assumption in warnings.
-- If the instruction asks for something these files cannot express (new page, design change, photos), make no change for that part and explain in warnings that it needs the developer.
+- New pages go in content/pages/ (kebab-case .yaml filename = the web address). Do NOT create a page whose filename matches a built-in page (about, events, give, sermons, live, contact, plan-your-visit, salvation, fbc-kids, youth-group, young-adults, family-school, special-music, church-center-app, common-questions) — the built-in page would win and the new one would never show.
+- If the instruction asks for something these files cannot express (design change, uploading photos), make no change for that part and explain in warnings that it needs /keystatic or the developer.
 - Church voice: warm, plain, honest. Never invent facts — if the instruction lacks a needed fact (a date, a name), note it in warnings instead of guessing.`,
     messages: [
       {

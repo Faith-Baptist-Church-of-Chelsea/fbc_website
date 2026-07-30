@@ -1,0 +1,29 @@
+title: Missions
+eyebrow: To every nation
+intro: >-
+  We believe the Church was given a great commission: proclaim the Gospel to
+  all nations — going to them, not waiting for them to come to us. So we put
+  our money, our prayers, and our people where that belief is.
+menu: ministries
+menuOrder: 99
+sections:
+  - discriminant: imageText
+    value:
+      heading: What missions looks like here
+      body: |
+        **We support missionaries around the world** — families sent out to preach the gospel, sustained by our church's giving and prayed for by name. When they're stateside, they're often right here in our services, reporting what God is doing on their fields.
+
+        **Missions is on our calendar, not just our budget.** Fifth-Sunday Missions Nights turn an evening service toward the work of the gospel around the world, and mission trips put our own people on the field serving alongside the missionaries we support.
+
+        And missions starts in Chelsea: the same gospel we send around the world is preached here every week, to whoever walks through the door.
+      image: /images/pages/missions/sections/0/value/image.jpg
+      imageSide: right
+nextStep:
+  title: Want to know more?
+  text: >-
+    Ask us about the missionaries we support or the next missions trip — we
+    love talking about this.
+  primaryLabel: Contact us
+  primaryLink: /contact
+  secondaryLabel: What we believe about missions
+  secondaryLink: /about#statement-of-faith

@@ -4,6 +4,9 @@
 export type NavLink = { label: string; href: string };
 export type NavGroup = { label: string; links: NavLink[] };
 
+// NOTE: Missions is not listed here — it's a CMS-built page now
+// (content/pages/missions.yaml with menu: ministries), so it joins this
+// dropdown through the layout. Custom pages append after these.
 export const ministries: NavGroup = {
   label: "Ministries",
   links: [
@@ -12,7 +15,6 @@ export const ministries: NavGroup = {
     { label: "Youth Group", href: "/youth-group" },
     { label: "Young Adults", href: "/young-adults" },
     { label: "Special Music", href: "/special-music" },
-    { label: "Missions", href: "/missions" },
   ],
 };
 

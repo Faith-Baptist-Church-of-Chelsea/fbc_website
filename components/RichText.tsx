@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import Image, { type StaticImageData } from "next/image";
 import Link from "next/link";
 import type { RootContent } from "mdast";
-import { parseRichText } from "@/lib/richtext";
+import { parseRichText, safeUrl } from "@/lib/richtext";
 
 // Renders the rich text volunteers write in Keystatic (event descriptions,
 // staff bios, announcements) so the live page matches the editor: bold,
@@ -13,22 +13,6 @@ import { parseRichText } from "@/lib/richtext";
 // sanitize and no `dangerouslySetInnerHTML` — React escapes every text node.
 // The two things markdown can smuggle in are handled explicitly below:
 // raw `html` nodes are dropped, and link/image URLs go through `safeUrl`.
-
-/** URL schemes we're willing to put in an href or src. */
-const SAFE_SCHEME = /^(?:https?:|mailto:|tel:)/i;
-
-/**
- * Returns the URL if it's safe to emit, otherwise null. Blocks `javascript:`,
- * `data:` and friends — cheap insurance, since anyone who can edit content
- * could otherwise plant a script URL in an ordinary-looking link.
- */
-function safeUrl(url: string): string | null {
-  const trimmed = url.trim();
-  if (!trimmed) return null;
-  // Site-relative links and same-page anchors.
-  if (/^[/#?]/.test(trimmed) && !trimmed.startsWith("//")) return trimmed;
-  return SAFE_SCHEME.test(trimmed) ? trimmed : null;
-}
 
 /** Where Keystatic drops images pasted into a rich-text field. */
 const CONTENT_IMAGE_PREFIX = "/images/content/";

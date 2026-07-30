@@ -161,6 +161,159 @@ export default config({
   },
 
   collections: {
+    // Build-your-own pages → content/pages/*.yaml, rendered at /<page-name>.
+    // Each page = hero + a stack of sections (text, photos, buttons, video)
+    // that volunteers arrange in the editor, GoDaddy-builder style. Pages
+    // built in code (About, Plan Your Visit, …) always win if a name
+    // collides — this collection can't overwrite them.
+    pages: collection({
+      label: "Pages",
+      path: "content/pages/*",
+      slugField: "title",
+      format: { data: "yaml" },
+      schema: {
+        title: fields.slug({
+          name: {
+            label: "Page name",
+            description:
+              "Also sets the web address. If it matches a built-in page (About, Events, Give…), the built-in page wins.",
+          },
+        }),
+        eyebrow: fields.text({
+          label: "Small line above the title",
+          description: "Optional — e.g. \"To every nation\"",
+        }),
+        intro: fields.text({
+          label: "Intro sentence(s) under the title",
+          multiline: true,
+        }),
+        menu: fields.select({
+          label: "Show in the site menu?",
+          options: [
+            { label: "Not in the menu (share the link directly)", value: "none" },
+            { label: "Ministries dropdown", value: "ministries" },
+            { label: "Footer links", value: "footer" },
+          ],
+          defaultValue: "none",
+        }),
+        menuOrder: fields.integer({
+          label: "Menu position",
+          description: "Lower numbers appear first among custom pages",
+          defaultValue: 99,
+        }),
+        sections: fields.blocks(
+          {
+            text: {
+              label: "Text",
+              itemLabel: (props) =>
+                `Text${props.fields.heading.value ? `: ${props.fields.heading.value}` : ""}`,
+              schema: fields.object({
+                heading: fields.text({ label: "Heading (optional)" }),
+                body: fields.mdx.inline({
+                  label: "Text",
+                  options: { image: contentImages },
+                }),
+              }),
+            },
+            imageText: {
+              label: "Photo beside text",
+              itemLabel: (props) =>
+                `Photo + text${props.fields.heading.value ? `: ${props.fields.heading.value}` : ""}`,
+              schema: fields.object({
+                heading: fields.text({ label: "Heading (optional)" }),
+                body: fields.mdx.inline({
+                  label: "Text",
+                  options: { image: contentImages },
+                }),
+                image: fields.image({
+                  label: "Photo",
+                  directory: "public/images/pages",
+                  publicPath: "/images/pages/",
+                }),
+                imageSide: fields.select({
+                  label: "Photo on which side?",
+                  options: [
+                    { label: "Right", value: "right" },
+                    { label: "Left", value: "left" },
+                  ],
+                  defaultValue: "right",
+                }),
+              }),
+            },
+            image: {
+              label: "Photo",
+              itemLabel: (props) => `Photo${props.fields.caption.value ? `: ${props.fields.caption.value}` : ""}`,
+              schema: fields.object({
+                image: fields.image({
+                  label: "Photo",
+                  directory: "public/images/pages",
+                  publicPath: "/images/pages/",
+                }),
+                caption: fields.text({ label: "Caption (optional)" }),
+              }),
+            },
+            buttons: {
+              label: "Buttons",
+              itemLabel: (props) =>
+                `Buttons: ${props.fields.buttons.elements.map((b) => b.fields.label.value).join(", ") || "(empty)"}`,
+              schema: fields.object({
+                buttons: fields.array(
+                  fields.object({
+                    label: fields.text({ label: "Button text" }),
+                    link: fields.text({
+                      label: "Where it goes",
+                      description:
+                        "A full web address (https://…) or a page on this site (/contact)",
+                    }),
+                    style: fields.select({
+                      label: "Style",
+                      options: [
+                        { label: "Solid blue (main action)", value: "primary" },
+                        { label: "Outlined (secondary)", value: "secondary" },
+                      ],
+                      defaultValue: "primary",
+                    }),
+                  }),
+                  {
+                    label: "Buttons",
+                    itemLabel: (props) => props.fields.label.value || "Button",
+                  }
+                ),
+              }),
+            },
+            video: {
+              label: "YouTube video",
+              itemLabel: () => "YouTube video",
+              schema: fields.object({
+                url: fields.text({
+                  label: "YouTube link",
+                  description: "Paste the video's address, e.g. https://youtube.com/watch?v=…",
+                }),
+              }),
+            },
+          },
+          { label: "Page sections" }
+        ),
+        nextStep: fields.object(
+          {
+            title: fields.text({
+              label: "Heading",
+              description: "Leave blank for the standard \"Plan Your Visit\" ending",
+            }),
+            text: fields.text({ label: "Sentence under it", multiline: true }),
+            primaryLabel: fields.text({ label: "Main button text" }),
+            primaryLink: fields.text({ label: "Main button link" }),
+            secondaryLabel: fields.text({ label: "Second button text (optional)" }),
+            secondaryLink: fields.text({ label: "Second button link" }),
+          },
+          {
+            label: "Bottom call-to-action",
+            description: "The dark closing section every page ends with",
+          }
+        ),
+      },
+    }),
+
     // Upcoming events → content/events/*.mdx + a graphic each.
     // These drive the homepage carousel and the Events page.
     events: collection({
