@@ -11,6 +11,38 @@
 // volunteers edit content" for the one-time setup that requires.
 import { config, fields, singleton, collection } from "@keystatic/core";
 
+/**
+ * Where images pasted INTO a rich-text field (event description, staff bio,
+ * announcement) are stored.
+ *
+ * Keystatic's default is a folder beside the .mdx file under content/, which
+ * nothing serves over HTTP — so those images silently 404 on the live site.
+ * Putting them under public/ with a matching publicPath means the markdown
+ * records a real URL (/images/content/photo.png) that the site can serve.
+ *
+ * Every rich-text field shares ONE folder on purpose: components/RichText.tsx
+ * imports from that exact path to read each image's real dimensions, and the
+ * bundler needs a single static prefix to do that.
+ *
+ * Filenames are slugified because volunteers upload things like
+ * "David Brown.png", and spaces have to be percent-encoded in every URL.
+ */
+const contentImages = {
+  directory: "public/images/content",
+  publicPath: "/images/content/",
+  transformFilename: (filename: string) => {
+    const dot = filename.lastIndexOf(".");
+    const base = dot === -1 ? filename : filename.slice(0, dot);
+    const ext = dot === -1 ? "" : filename.slice(dot).toLowerCase();
+    const slug =
+      base
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "") || "image";
+    return slug + ext;
+  },
+};
+
 export default config({
   // GitHub storage: /keystatic works in ANY browser on the deployed site —
   // volunteers log in with GitHub, edits (including image uploads) become
@@ -160,7 +192,15 @@ export default config({
           label: "Sign-up link (optional)",
           description: "A registration or sign-up URL, if the event has one",
         }),
-        description: fields.mdx({ label: "About the event" }),
+        // Images dropped into the description must land somewhere the site
+        // can actually serve them. Without this, Keystatic writes them next
+        // to the .mdx file under content/, which is never served over HTTP —
+        // the editor preview looks right but the live page shows a broken
+        // image. publicPath is what gets written into the markdown.
+        description: fields.mdx({
+          label: "About the event",
+          options: { image: contentImages },
+        }),
       },
     }),
 
@@ -183,7 +223,10 @@ export default config({
           directory: "public/images/staff",
           publicPath: "/images/staff/",
         }),
-        bio: fields.mdx({ label: "Bio" }),
+        bio: fields.mdx({
+          label: "Bio",
+          options: { image: contentImages },
+        }),
       },
     }),
 
@@ -219,7 +262,10 @@ export default config({
           label: "Link (optional)",
           description: "Where clicking the announcement goes (e.g. a registration page)",
         }),
-        body: fields.mdx({ label: "Details" }),
+        body: fields.mdx({
+          label: "Details",
+          options: { image: contentImages },
+        }),
       },
     }),
   },

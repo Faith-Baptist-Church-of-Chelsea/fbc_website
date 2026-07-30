@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import PageHero from "@/components/PageHero";
 import Photo from "@/components/Photo";
 import NextStep from "@/components/NextStep";
+import RichText from "@/components/RichText";
 import { getStaff } from "@/lib/content";
 import sof from "@/content/statement-of-faith.json";
 
@@ -109,25 +110,18 @@ export default async function About() {
   );
 }
 
-// Renders a staff member's bio as plain paragraphs. Keystatic's reader
-// hands back the raw MDX source string; bios are simple prose, so we strip
-// MDX comments and split on blank lines. Revisit if bios ever need rich
-// formatting (bold, links).
+// Renders a staff member's bio. Keystatic's reader hands back raw markdown
+// source, so it goes through <RichText> — today's bios are plain prose and
+// look identical, but a volunteer who bolds a word or adds a link in the
+// editor now gets that on the page instead of literal `**asterisks**`.
 async function StaffBio({ slug }: { slug: string }) {
   const { reader } = await import("@/lib/content");
   const entry = await reader.collections.staff.read(slug);
   if (!entry) return null;
-  const source = await entry.bio();
-  const paragraphs = source
-    .replace(/\{\/\*[\s\S]*?\*\/\}/g, "") // drop MDX comments (our TODOs)
-    .split(/\n\s*\n/)
-    .map((p) => p.replace(/\s+/g, " ").trim())
-    .filter(Boolean);
   return (
-    <div className="mt-2 space-y-2 text-sm text-slate-600">
-      {paragraphs.map((p, i) => (
-        <p key={i}>{p}</p>
-      ))}
-    </div>
+    <RichText
+      source={await entry.bio()}
+      className="mt-2 text-sm text-slate-600 [&>p]:mt-2 [&>p]:text-slate-600"
+    />
   );
 }

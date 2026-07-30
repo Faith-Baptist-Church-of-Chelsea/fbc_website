@@ -3,6 +3,7 @@
 // admin panel enforces. Only import this from server components.
 import { createReader } from "@keystatic/core/reader";
 import keystaticConfig from "@/keystatic.config";
+import { richTextToPlainText } from "@/lib/richtext";
 
 export const reader = createReader(process.cwd(), keystaticConfig);
 
@@ -51,16 +52,22 @@ export async function getUpcomingEvents(): Promise<ChurchEvent[]> {
     .sort((a, b) => a.date.localeCompare(b.date));
 }
 
-/** One event with its description text resolved into paragraphs. */
+/**
+ * One event.
+ *
+ * `description` is the raw rich-text source exactly as Keystatic stored it —
+ * markdown, not HTML and not plain text. Render it with <RichText>, never as
+ * a bare string: printing it directly is what showed literal `**bold**` and
+ * `![](photo.png)` on the live event pages. `descriptionText` is the
+ * formatting-stripped version for metadata and structured data.
+ */
 export async function getEvent(slug: string) {
   const entry = await reader.collections.events.read(slug);
   if (!entry) return null;
-  const description = (await entry.description())
-    .replace(/\{\/\*[\s\S]*?\*\/\}/g, "")
-    .split(/\n\s*\n/)
-    .map((p) => p.replace(/\s+/g, " ").trim())
-    .filter(Boolean);
+  const description = await entry.description();
   return {
+    description,
+    descriptionText: richTextToPlainText(description),
     title: entry.title,
     date: entry.date ?? "",
     time: entry.time ?? "",
@@ -68,7 +75,6 @@ export async function getEvent(slug: string) {
     location: entry.location ?? "",
     image: entry.image ?? null,
     signupLink: entry.signupLink ?? null,
-    description,
   };
 }
 

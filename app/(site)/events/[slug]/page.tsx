@@ -5,6 +5,8 @@ import Image from "next/image";
 import site from "@/content/site.json";
 import { getEvent, getUpcomingEvents } from "@/lib/content";
 import NextStep from "@/components/NextStep";
+import RichText from "@/components/RichText";
+import { isRichTextEmpty } from "@/lib/richtext";
 import { EventJsonLd } from "@/components/JsonLd";
 
 // Summit-style event detail page: dark hero with the title, a card with
@@ -75,7 +77,7 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
         date={event.date}
         endDate={event.showUntil}
         image={event.image}
-        description={event.description.join(" ").slice(0, 300)}
+        description={event.descriptionText.slice(0, 300)}
         slug={slug}
         location={event.location}
       />
@@ -91,12 +93,8 @@ export default async function EventPage({ params }: { params: Promise<{ slug: st
       <section className="px-4 pb-14">
         <div className="mx-auto -mt-12 grid max-w-4xl gap-8 rounded-2xl bg-white p-8 shadow-xl md:grid-cols-[1fr_20rem]">
           <div>
-            {event.description.length > 0 ? (
-              event.description.map((p, i) => (
-                <p key={i} className={`text-slate-700 ${i > 0 ? "mt-4" : ""}`}>
-                  {p}
-                </p>
-              ))
+            {!isRichTextEmpty(event.description) ? (
+              <RichText source={event.description} />
             ) : (
               <p className="text-slate-600">Details coming soon — check back, or contact the office.</p>
             )}
