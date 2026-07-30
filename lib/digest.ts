@@ -84,7 +84,7 @@ export async function composeDigest(
   const thisWeek = events.filter((e) => e.date <= weekOut);
   const later = events.filter((e) => e.date > weekOut).slice(0, 3);
   const latest = videos[0];
-  const latestThumb = latest?.thumbnail ?? null;
+  const latestThumb = latest?.thumbSmall ?? latest?.thumbnail ?? null;
 
   let body = "";
 

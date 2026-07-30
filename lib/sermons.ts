@@ -89,7 +89,7 @@ export function parseSermon(v: SermonVideo): ParsedSermon {
   return {
     videoId: v.videoId,
     publishedAt: v.publishedAt,
-    thumbnail: v.thumbnail,
+    thumbnail: v.thumbSmall ?? v.thumbnail,
     raw,
     title,
     passage,

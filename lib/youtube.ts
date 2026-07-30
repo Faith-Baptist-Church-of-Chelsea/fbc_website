@@ -81,7 +81,10 @@ export type SermonVideo = {
   videoId: string;
   title: string;
   publishedAt: string;
+  /** Largest thumbnail YouTube reports — for big featured players. */
   thumbnail: string | null;
+  /** Small (320px) thumbnail — for grid cards and emails. */
+  thumbSmall: string | null;
 };
 
 /**
@@ -113,7 +116,12 @@ export async function getRecentVideos(limit = 12): Promise<SermonVideo[]> {
           title?: string;
           publishedAt?: string;
           resourceId?: { videoId?: string };
-          thumbnails?: { medium?: { url?: string }; high?: { url?: string } };
+          thumbnails?: {
+            medium?: { url?: string };
+            high?: { url?: string };
+            standard?: { url?: string };
+            maxres?: { url?: string };
+          };
         };
         contentDetails?: { videoPublishedAt?: string };
       }[];
@@ -127,7 +135,15 @@ export async function getRecentVideos(limit = 12): Promise<SermonVideo[]> {
         // contentDetails carries the video's true publish time; snippet's
         // publishedAt is only "when it was added to the playlist".
         publishedAt: i.contentDetails?.videoPublishedAt ?? i.snippet?.publishedAt ?? "",
-        thumbnail: i.snippet?.thumbnails?.medium?.url ?? i.snippet?.thumbnails?.high?.url ?? null,
+        // The API only lists sizes that actually exist, so preferring
+        // maxres never 404s the way hardcoding maxresdefault.jpg did.
+        thumbnail:
+          i.snippet?.thumbnails?.maxres?.url ??
+          i.snippet?.thumbnails?.standard?.url ??
+          i.snippet?.thumbnails?.high?.url ??
+          i.snippet?.thumbnails?.medium?.url ??
+          null,
+        thumbSmall: i.snippet?.thumbnails?.medium?.url ?? i.snippet?.thumbnails?.high?.url ?? null,
       }))
       .filter((v) => v.videoId && v.publishedAt)
       .filter((v) => !/#shorts/i.test(v.title))
