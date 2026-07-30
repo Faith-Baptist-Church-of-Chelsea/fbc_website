@@ -1,0 +1,17 @@
+title: test
+eyebrow: teste esa tge rewa
+intro: j eahjoiefsj a;o iuyoitewj ao; hfgodszjpj t
+menu: footer
+menuOrder: 99
+sections:
+  - discriminant: buttons
+    value:
+      buttons:
+        - label: 'fdsafg '
+          link: https://fbc-website-delta.vercel.app/live
+          style: primary
+  - discriminant: image
+    value:
+      image: /images/pages/test/sections/1/value/image.png
+      caption: fdsafdsa
+nextStep: {}
