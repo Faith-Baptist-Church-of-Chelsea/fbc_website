@@ -1,0 +1,60 @@
+title: The Church Center App
+browserTitle: Church Center App
+eyebrow: Free · iPhone & Android
+intro: >-
+  Most of our church family already lives in this app. If you're around Faith
+  Baptist for more than a week or two, it's worth the two minutes it takes to
+  set up.
+description: >-
+  The Church Center app is Faith Baptist Church in your pocket — events,
+  sign-ups, groups, directory, and check-in. Free on iPhone and Android.
+menu: none
+menuOrder: 99
+sections:
+  - discriminant: imageText
+    value:
+      heading: Get the app
+      body: |
+        Download Church Center, search for **Faith Baptist Church, Chelsea MI** (or scan the QR code and skip the search), and you’re in.
+
+        **Scan the code with your phone camera** — it opens our church directly.
+      image: /images/pages/church-center-app/sections/0/value/image.png
+      imageSide: left
+      tint: false
+  - discriminant: buttons
+    value:
+      buttons:
+        - label: " App Store"
+          link: https://apps.apple.com/us/app/church-center-app/id1357742931
+          style: primary
+        - label: ▶ Google Play
+          link: https://play.google.com/store/apps/details?id=com.ministrycentered.churchcenter
+          style: secondary
+  - discriminant: cards
+    value:
+      heading: What you’ll actually use it for
+      cards:
+        - eyebrow: ""
+          title: Events & sign-ups
+          body: See what's coming and register in a couple of taps — no paper forms.
+        - eyebrow: ""
+          title: Faster kids check-in
+          body: Pre-check your children from your phone and skip the line at the station.
+        - eyebrow: ""
+          title: Our missionaries
+          body: Browse the missionaries we support, with updates from the field.
+        - eyebrow: ""
+          title: Directory & groups
+          body: Find people, join groups, and stay connected between Sundays.
+      tint: true
+  - discriminant: image
+    value:
+      image: /images/pages/church-center-app/sections/3/value/image.png
+      caption: ""
+nextStep:
+  title: Prefer a browser?
+  text: Everything in the app also works at our Church Center website.
+  primaryLabel: Open Church Center
+  primaryLink: https://fbcchelsea.churchcenter.com
+  secondaryLabel: Back to planning a visit
+  secondaryLink: /plan-your-visit

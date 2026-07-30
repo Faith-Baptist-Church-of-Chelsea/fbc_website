@@ -26,11 +26,13 @@ export async function generateMetadata({
   const page = await getCustomPage(slug);
   if (!page) return {};
 
-  // Meta description: the intro, or the first words of the first text block.
+  // Meta description: the dedicated field, the intro, or the first words
+  // of the first text block — in that order.
   const firstText = page.sections.find(
     (s) => s.discriminant === "text" || s.discriminant === "imageText"
   );
   const description =
+    page.description ||
     page.intro ||
     (firstText ? richTextToPlainText(firstText.value.body).slice(0, 160) : undefined);
 
@@ -42,7 +44,7 @@ export async function generateMetadata({
     .find(Boolean);
 
   return {
-    title: page.title,
+    title: page.browserTitle || page.title,
     description,
     openGraph: firstImage ? { images: [firstImage] } : undefined,
   };

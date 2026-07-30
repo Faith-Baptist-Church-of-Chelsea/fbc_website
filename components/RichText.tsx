@@ -220,10 +220,12 @@ function renderNode(node: RootContent, key: number): ReactNode {
     case "break":
       return <br key={key} />;
 
+    // Tables get the same look as the hand-built schedule tables: dark
+    // header row, zebra body, scrollable when narrow.
     case "table":
       return (
         <div key={key} className="mt-4 overflow-x-auto">
-          <table className="w-full border-collapse text-left text-slate-700">
+          <table className="w-full min-w-[560px] border-collapse text-left text-slate-700 [&_tr:first-child]:bg-slate-900 [&_tr:first-child_td]:p-3 [&_tr:first-child_td]:text-sm [&_tr:first-child_td]:font-semibold [&_tr:first-child_td]:text-white [&_tr:first-child_td:first-child]:rounded-tl-lg [&_tr:first-child_td:last-child]:rounded-tr-lg [&_tr:nth-child(odd):not(:first-child)]:bg-slate-50">
             <tbody>{renderAll(node.children)}</tbody>
           </table>
         </div>
@@ -238,7 +240,7 @@ function renderNode(node: RootContent, key: number): ReactNode {
 
     case "tableCell":
       return (
-        <td key={key} className="px-3 py-2">
+        <td key={key} className="p-3">
           {renderAll(node.children)}
         </td>
       );

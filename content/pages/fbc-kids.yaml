@@ -1,0 +1,75 @@
+title: FBC Kids
+eyebrow: Nursery through age 12
+intro: >-
+  Your kids are not an interruption here. Every class exists so that children
+  hear the Bible taught at their level — by people who know them by name.
+description: >-
+  Children's ministry at Faith Baptist Church of Chelsea: staffed nursery at
+  every service and Bible classes for ages 3–12, with simple, secure
+  check-in.
+menu: none
+menuOrder: 99
+sections:
+  - discriminant: text
+    value:
+      heading: Class schedule
+      body: |
+        A “—” just means there’s no separate class at that hour — kids sit with their family in the service, and they’re always welcome there.
+
+        | Age group | Sun 9:45 | Sun 11:00 | Sun 6:00 | Wed 7:00 |
+        | --- | --- | --- | --- | --- |
+        | **Nursery (0–3)** | Open | Open | Open | Open |
+        | **Ages 3–4** | — | Class | — | Class (with 5–7) |
+        | **Ages 5–7** | — | Class | — | Class |
+        | **Ages 8–12** | — | Class | — | Class |
+        | **Youth (12–18)** | — | — | — | Youth Group |
+      tint: false
+  - discriminant: imageText
+    value:
+      heading: How check-in works
+      body: |
+        We use Planning Center Check-Ins, the same system used by thousands of churches. At the check-in station your child gets a printed name tag, and you get a matching pickup tag — your child is released only to the person holding it. It takes about a minute, and a real person is at the station to help the first time.
+      image: /images/pages/fbc-kids/sections/1/value/image.jpg
+      imageSide: right
+      tint: true
+  - discriminant: text
+    value:
+      heading: Who’s in the room
+      body: |
+        Every class has a teacher and a helper — two adults, every time. When a child has special needs, we add additional helpers so that every kid can be part of the class.
+      tint: false
+  - discriminant: cards
+    value:
+      heading: ""
+      cards:
+        - eyebrow: Ages 3–4 · Sunday 11:00
+          title: Ben & Amanda Bolen
+          body: a couple with two kids of their own and a heart for helping young children understand God's Word
+        - eyebrow: Ages 5–7 · Sunday 11:00
+          title: Haley Sackmann
+          body: passionate about helping kids grow in their understanding of God's Word
+        - eyebrow: Ages 8–12 · Sunday 11:00
+          title: Abi Wireman
+          body: loves helping preteens grow in their faith during these formative years
+        - eyebrow: Ages 3–7 · Wednesday 7:00
+          title: Scott & Heather Turnbow
+          body: a lively, nurturing class with a joyful approach
+        - eyebrow: Ages 8–12 · Wednesday 7:00
+          title: Moriah Summers
+          body: intentional about making lessons practical and relatable
+      tint: false
+  - discriminant: text
+    value:
+      heading: ""
+      body: |
+        What does the hour look like? Bible teaching at their level, scripture memory, singing, and yes — some fun. The goal is that your child walks out able to tell you what the Bible said, not just what the craft was.
+      tint: false
+nextStep:
+  title: Know what to expect
+  text: >-
+    We'll gladly show you our children's check-in process and answer any
+    questions along the way.
+  primaryLabel: Plan Your Visit
+  primaryLink: /plan-your-visit
+  secondaryLabel: Questions? Contact us
+  secondaryLink: /contact

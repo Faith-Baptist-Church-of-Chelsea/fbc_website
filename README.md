@@ -30,6 +30,19 @@ run it before pushing if you've edited code by hand.
 
 ## Editing content — two paths, same files
 
+**Almost every page on the site is now fully editable in the browser** under
+"Pages" in /keystatic — About, Plan Your Visit, Common Questions, FBC Kids,
+Family School, Youth Group, Young Adults, Special Music, Missions, Give,
+Contact, and the Church Center App page. Each is a stack of sections (text,
+photos, cards, Q&A, timeline, buttons, video, form, embed…) you can reorder
+or edit; the automatic sections (staff grid, statement of faith, service
+times, map/hours, Planning Center sign-ups) fill themselves in from church
+data. Four pages stay code-only on purpose: the homepage, Sermons, Live, and
+Events (they update themselves), plus /salvation (locked pending pastor
+review — doctrine shouldn't be one accidental edit away).
+
+
+
 **Path 1 (browser):** run `npm run dev`, open http://localhost:3000/keystatic.
 Edit Church Info (service times, address, links), Staff & Leaders, or
 Announcements. Saving writes to the files under `content/` — then commit and push.

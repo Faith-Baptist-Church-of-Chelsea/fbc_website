@@ -1,0 +1,45 @@
+title: Give
+eyebrow: Cheerfully, not under compulsion
+intro: >-
+  Giving is how our church family supports the work of the church — the
+  ministry here and the missionaries we send. It's an act of worship, not a
+  fee.
+description: >-
+  Give online to Faith Baptist Church of Chelsea — simple and secure. Giving
+  is for our church family; visitors are our guests.
+menu: none
+menuOrder: 99
+sections:
+  - discriminant: text
+    value:
+      heading: Give online
+      body: |
+        Online giving runs through ChurchTrac, our secure giving provider. You can give once or set up recurring giving — right here, without leaving the page.
+      tint: false
+  - discriminant: embed
+    value:
+      url: https://fbcchelsea.churchtrac.com/give/embed
+      heightRem: 52
+      title: Give online to Faith Baptist Church (secure ChurchTrac form)
+      fallbackLabel: Open the secure giving page directly
+      fallbackLink: https://fbcchelsea.churchtrac.com/give
+  - discriminant: text
+    value:
+      heading: ""
+      body: |
+        Prefer to give in person? There’s an offering at every service — cash or check, envelopes available.
+      tint: false
+  - discriminant: highlight
+    value:
+      eyebrow: ""
+      heading: ""
+      body: |
+        **If you’re a visitor:** please don’t feel any obligation to give. You’re our guest. This page exists for our church family.
+      look: soft
+nextStep:
+  title: Questions about giving?
+  text: We're glad to talk it through — including where the money goes.
+  primaryLabel: Contact us
+  primaryLink: /contact
+  secondaryLabel: What we believe about giving
+  secondaryLink: /about#statement-of-faith

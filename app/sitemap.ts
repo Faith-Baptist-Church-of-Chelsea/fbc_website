@@ -36,7 +36,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: (p === "/events" || p === "/sermons" ? "weekly" : "monthly") as "weekly" | "monthly",
       priority: p === "" ? 1 : p === "/plan-your-visit" ? 0.9 : 0.6,
     })),
-    ...customPages.map((p) => ({
+    ...customPages
+      .filter((p) => !pages.includes(`/${p.slug}`))
+      .map((p) => ({
       url: `${base}/${p.slug}`,
       changeFrequency: "monthly" as const,
       priority: 0.6,

@@ -18,10 +18,8 @@ export type CustomPage = NonNullable<Awaited<ReturnType<typeof getCustomPage>>>;
  * places that list custom pages (menus, sitemap) skip them entirely.
  */
 export const RESERVED_SLUGS = new Set([
-  "about", "church-center-app", "common-questions", "contact", "events",
-  "family-school", "fbc-kids", "give", "live", "plan-your-visit",
-  "salvation", "sermons", "special-music", "young-adults", "youth-group",
-  "admin", "api", "keystatic",
+  "events", "live", "salvation", "sermons",
+  "admin", "api", "keystatic", "videos",
 ]);
 
 /** All custom pages that actually resolve (reserved names filtered out). */

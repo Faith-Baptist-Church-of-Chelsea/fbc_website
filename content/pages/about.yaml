@@ -1,0 +1,37 @@
+title: An extremely friendly church that digs into the Word
+browserTitle: About Us
+eyebrow: Who we are
+intro: >-
+  We preach the Bible in an expository style — working through the text
+  rather than skimming over it — and we do it among people who will genuinely
+  be glad you came.
+description: >-
+  The history, leadership, and beliefs of Faith Baptist Church of Chelsea,
+  Michigan — established 1996, preaching the Bible expositionally.
+menu: none
+menuOrder: 99
+sections:
+  - discriminant: text
+    value:
+      heading: Our story
+      body: |
+        Faith Baptist Church was established in 1996 by the Whitaker family and a handful of others who wanted a Bible-preaching church in Chelsea. Pastor Adam Summers has led the congregation since 2008 — his wife Melody grew up in that founding family, saved at age five right here in Chelsea.
+
+        Nearly thirty years later we’re still doing the same things: preaching through the Scriptures, singing together, supporting missionaries around the world, and welcoming whoever walks through the door.
+      tint: false
+  - discriminant: staffGrid
+    value:
+      heading: Staff
+  - discriminant: statementOfFaith
+    value:
+      heading: Statement of Faith
+      intro: >-
+        This is what we believe, in full — not a summary. Take your time with
+        it; it’s worth knowing exactly where a church stands.
+nextStep:
+  title: The best way to know us is to meet us
+  text: Doctrine matters — and so does whether you're welcome. Come find out.
+  primaryLabel: Plan Your Visit
+  primaryLink: /plan-your-visit
+  secondaryLabel: Common Questions
+  secondaryLink: /common-questions

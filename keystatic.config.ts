@@ -187,6 +187,17 @@ export default config({
           label: "Intro sentence(s) under the title",
           multiline: true,
         }),
+        browserTitle: fields.text({
+          label: "Browser-tab title (optional)",
+          description:
+            "Shown in the browser tab and Google results. Leave blank to reuse the page name — set it when the big on-page title is a phrase (e.g. page name \"We saved you a seat.\", tab title \"Plan Your Visit\").",
+        }),
+        description: fields.text({
+          label: "Google search snippet (optional)",
+          description:
+            "The sentence shown under this page in Google results. Leave blank to reuse the intro.",
+          multiline: true,
+        }),
         menu: fields.select({
           label: "Show in the site menu?",
           options: [
@@ -213,6 +224,10 @@ export default config({
                   label: "Text",
                   options: { image: contentImages },
                 }),
+                tint: fields.checkbox({
+                  label: "Light gray background",
+                  defaultValue: false,
+                }),
               }),
             },
             imageText: {
@@ -237,6 +252,10 @@ export default config({
                     { label: "Left", value: "left" },
                   ],
                   defaultValue: "right",
+                }),
+                tint: fields.checkbox({
+                  label: "Light gray background",
+                  defaultValue: false,
                 }),
               }),
             },
@@ -289,6 +308,195 @@ export default config({
                   label: "YouTube link",
                   description: "Paste the video's address, e.g. https://youtube.com/watch?v=…",
                 }),
+              }),
+            },
+            highlight: {
+              label: "Highlight box",
+              itemLabel: (props) => `Highlight: ${props.fields.heading.value || "(text only)"}`,
+              schema: fields.object({
+                eyebrow: fields.text({
+                  label: "Small line on top",
+                  description: "e.g. a date — \"August 4–6\"",
+                }),
+                heading: fields.text({ label: "Heading" }),
+                body: fields.mdx.inline({ label: "Text", options: { image: contentImages } }),
+                look: fields.select({
+                  label: "Look",
+                  options: [
+                    { label: "Bold blue (announcements)", value: "blue" },
+                    { label: "Soft gray (gentle notes)", value: "soft" },
+                  ],
+                  defaultValue: "blue",
+                }),
+              }),
+            },
+            cards: {
+              label: "Cards (side-by-side boxes)",
+              itemLabel: (props) => `Cards: ${props.fields.heading.value || `${props.fields.cards.elements.length} card(s)`}`,
+              schema: fields.object({
+                heading: fields.text({ label: "Heading above the cards (optional)" }),
+                cards: fields.array(
+                  fields.object({
+                    eyebrow: fields.text({
+                      label: "Small line on top (optional)",
+                      description: "e.g. \"Ages 3–4 · Sunday 11:00\"",
+                    }),
+                    title: fields.text({ label: "Card title" }),
+                    body: fields.mdx.inline({ label: "Card text", options: { image: contentImages } }),
+                  }),
+                  { label: "Cards", itemLabel: (props) => props.fields.title.value || "Card" }
+                ),
+                tint: fields.checkbox({
+                  label: "Light gray background",
+                  defaultValue: false,
+                }),
+              }),
+            },
+            faq: {
+              label: "Questions & answers",
+              itemLabel: (props) => `Q&A: ${props.fields.items.elements.length} question(s)`,
+              schema: fields.object({
+                googleResults: fields.checkbox({
+                  label: "Offer these to Google as FAQ results",
+                  description: "Leave on for real frequently-asked questions; turn off for other headed text.",
+                  defaultValue: true,
+                }),
+                items: fields.array(
+                  fields.object({
+                    question: fields.text({ label: "Question / heading" }),
+                    answer: fields.mdx.inline({ label: "Answer", options: { image: contentImages } }),
+                  }),
+                  { label: "Questions", itemLabel: (props) => props.fields.question.value || "Question" }
+                ),
+                tint: fields.checkbox({
+                  label: "Light gray background",
+                  defaultValue: false,
+                }),
+              }),
+            },
+            gallery: {
+              label: "Photo row (2–3 photos with captions)",
+              itemLabel: (props) => `Photo row: ${props.fields.photos.elements.length} photo(s)`,
+              schema: fields.object({
+                heading: fields.text({ label: "Heading (optional)" }),
+                photos: fields.array(
+                  fields.object({
+                    image: fields.image({
+                      label: "Photo",
+                      directory: "public/images/pages",
+                      publicPath: "/images/pages/",
+                    }),
+                    caption: fields.text({ label: "Caption (optional)" }),
+                  }),
+                  { label: "Photos", itemLabel: (props) => props.fields.caption.value || "Photo" }
+                ),
+              }),
+            },
+            timeline: {
+              label: "Timeline (minute-by-minute steps)",
+              itemLabel: (props) => `Timeline: ${props.fields.heading.value || `${props.fields.steps.elements.length} step(s)`}`,
+              schema: fields.object({
+                heading: fields.text({ label: "Heading (optional)" }),
+                intro: fields.text({ label: "Sentence under the heading (optional)", multiline: true }),
+                steps: fields.array(
+                  fields.object({
+                    label: fields.text({ label: "Time / label", description: "e.g. \"10:50\"" }),
+                    text: fields.text({ label: "What happens", multiline: true }),
+                  }),
+                  { label: "Steps", itemLabel: (props) => `${props.fields.label.value} — ${props.fields.text.value.slice(0, 40)}` }
+                ),
+                tint: fields.checkbox({
+                  label: "Light gray background",
+                  defaultValue: false,
+                }),
+              }),
+            },
+            staffGrid: {
+              label: "Staff (automatic)",
+              itemLabel: () => "Staff grid — fills in from Staff & Leaders",
+              schema: fields.object({
+                heading: fields.text({ label: "Heading", defaultValue: "Staff" }),
+              }),
+            },
+            statementOfFaith: {
+              label: "Statement of Faith (automatic)",
+              itemLabel: () => "Statement of Faith — the full text",
+              schema: fields.object({
+                heading: fields.text({ label: "Heading", defaultValue: "Statement of Faith" }),
+                intro: fields.text({ label: "Sentence under the heading (optional)", multiline: true }),
+              }),
+            },
+            serviceTimes: {
+              label: "Service times & address (automatic)",
+              itemLabel: () => "When we meet / where we are boxes",
+              schema: fields.object({
+                note: fields.text({
+                  label: "Extra sentence in the times box (optional)",
+                  multiline: true,
+                }),
+                whereNote: fields.text({
+                  label: "Extra sentence in the address box (optional)",
+                  multiline: true,
+                }),
+              }),
+            },
+            mapHours: {
+              label: "Map & office hours (automatic)",
+              itemLabel: () => "Google map + office hours",
+              schema: fields.object({}),
+            },
+            contactForm: {
+              label: "Contact form",
+              itemLabel: (props) => `Contact form (${props.fields.kind.value})`,
+              schema: fields.object({
+                kind: fields.select({
+                  label: "Which form?",
+                  options: [
+                    { label: "General question", value: "question" },
+                    { label: "Planning a visit", value: "visit" },
+                    { label: "Prayer request", value: "prayer" },
+                    { label: "Join choir/orchestra", value: "music" },
+                  ],
+                  defaultValue: "question",
+                }),
+                note: fields.text({ label: "Small line under the form (optional)" }),
+              }),
+            },
+            embed: {
+              label: "Embedded form/page (advanced)",
+              itemLabel: (props) => `Embed: ${props.fields.url.value || "(no address)"}`,
+              schema: fields.object({
+                url: fields.text({
+                  label: "Web address to embed",
+                  description: "Must start with https:// — e.g. the ChurchTrac giving form",
+                }),
+                heightRem: fields.integer({
+                  label: "Height (in rem, ~16px each)",
+                  defaultValue: 52,
+                }),
+                title: fields.text({
+                  label: "Accessible title",
+                  description: "Read by screen readers — e.g. \"Give online (secure form)\"",
+                }),
+                fallbackLabel: fields.text({ label: "\"Not loading?\" link text (optional)" }),
+                fallbackLink: fields.text({ label: "\"Not loading?\" link address (optional)" }),
+              }),
+            },
+            signupFeature: {
+              label: "Sign-up spotlight (from Planning Center)",
+              itemLabel: (props) => `Sign-up spotlight: ${props.fields.keyword.value || "(no keyword)"}`,
+              schema: fields.object({
+                keyword: fields.text({
+                  label: "Registration name contains…",
+                  description: "Finds the open Planning Center registration whose name contains this word (e.g. \"unashamed\")",
+                }),
+                eyebrow: fields.text({ label: "Small line on top", description: "e.g. \"Our conference\" — the date is added automatically" }),
+                fallbackTitle: fields.text({ label: "Title if no registration is open" }),
+                fallbackText: fields.text({ label: "Text if no registration is open", multiline: true }),
+                registerLabel: fields.text({ label: "Register button text", defaultValue: "Register" }),
+                fallbackRegisterLink: fields.text({ label: "Register link if no registration is open (optional)" }),
+                secondaryLabel: fields.text({ label: "Second button text (optional)" }),
+                secondaryLink: fields.text({ label: "Second button link (optional)" }),
               }),
             },
           },

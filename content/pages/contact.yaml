@@ -1,0 +1,52 @@
+title: Contact Us
+browserTitle: Contact
+eyebrow: We answer
+intro: >-
+  A question, a prayer request, or just figuring out if we're the right
+  church to try — every one of those is worth a message.
+description: >-
+  Contact Faith Baptist Church of Chelsea — directions, office hours, prayer
+  requests, and a direct line if you're new.
+menu: none
+menuOrder: 99
+sections:
+  - discriminant: contactForm
+    value:
+      kind: question
+      note: Prefer email? The direct addresses below work too.
+  - discriminant: cards
+    value:
+      heading: ""
+      cards:
+        - eyebrow: ""
+          title: I’m new here
+          body: |
+            Planning a visit, or just have questions about what we’re like? Pastor Steve reads these himself.
+
+            [pastorsteve@fbcchelsea.org](mailto:pastorsteve@fbcchelsea.org?subject=I'm%20new%20—%20question%20before%20visiting)
+        - eyebrow: ""
+          title: Prayer request
+          body: |
+            We take these seriously and handle them with care. Mark it confidential if you’d like it kept to the pastors.
+
+            [pastorsummers@fbcchelsea.org](mailto:pastorsummers@fbcchelsea.org?subject=Prayer%20request)
+        - eyebrow: ""
+          title: Church office
+          body: |
+            Everything else — scheduling, questions, ministry contacts.
+
+            [moriah@fbcchelsea.org](mailto:moriah@fbcchelsea.org)
+
+            [(734) 433-1360](tel:7344331360)
+      tint: false
+  - discriminant: mapHours
+    value: {}
+nextStep:
+  title: Or skip the email entirely
+  text: >-
+    The conversation is better in person anyway. Sunday at 11 is a great
+    place to start.
+  primaryLabel: Plan Your Visit
+  primaryLink: /plan-your-visit
+  secondaryLabel: Common Questions
+  secondaryLink: /common-questions

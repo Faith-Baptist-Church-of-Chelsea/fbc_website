@@ -1,0 +1,33 @@
+title: Youth Group
+eyebrow: Ages 12–18 · Wednesdays · 7:00 PM
+intro: A youth group where God's Word is taught and every teenager matters.
+description: >-
+  Youth group at Faith Baptist Church of Chelsea — ages 12–18, Wednesday
+  nights at 7:00, led by Josiah & Ashley Jaworski.
+menu: none
+menuOrder: 99
+sections:
+  - discriminant: highlight
+    value:
+      eyebrow: August 4–6
+      heading: Creation Museum & Ark Encounter Trip
+      body: |
+        Three days in Kentucky at the Creation Museum and the life-size Ark Encounter. If you’re 12–18, you don’t want to miss this one — talk to the Jaworskis on a Wednesday night for details and to get signed up.
+      look: blue
+  - discriminant: imageText
+    value:
+      heading: Wednesday nights
+      body: |
+        While the adults are in the midweek service, the youth meet for their own time in the Word — teaching that takes teenagers seriously enough to open the Bible and work through it, plus time to just be together.
+
+        The group is led by **Josiah & Ashley Jaworski**, who are passionate about investing in the next generation and helping teens live out their faith boldly — not someday, now.
+      image: /images/pages/youth-group/sections/1/value/image.jpg
+      imageSide: right
+      tint: true
+nextStep:
+  title: Just show up on a Wednesday
+  text: 7:00 PM. Bring a friend — half the group probably started that way.
+  primaryLabel: Plan Your Visit
+  primaryLink: /plan-your-visit
+  secondaryLabel: Questions? Contact us
+  secondaryLink: /contact

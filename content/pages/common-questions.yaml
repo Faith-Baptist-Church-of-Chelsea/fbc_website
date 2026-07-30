@@ -1,0 +1,52 @@
+title: Common Questions
+eyebrow: No question is too basic
+intro: >-
+  These are the questions people actually ask us before they visit. Plain
+  answers, no runaround.
+description: >-
+  Are you KJV? What's the music like? What do you believe? Plain answers to
+  the questions people actually ask about Faith Baptist Church in Chelsea.
+menu: none
+menuOrder: 99
+sections:
+  - discriminant: faq
+    value:
+      googleResults: true
+      tint: false
+      items:
+        - question: Are you KJV?
+          answer: |
+            Yes. We believe that the word of God has every answer for life. We use only the King James Version, because we believe it is the most accurate translation we have today for English-speaking people.
+
+            You’re welcome to follow along in whatever Bible you bring — nobody will look sideways at you.
+        - question: What is the music like?
+          answer: |
+            We have a beautiful blend of music at our church. We love the old hymns, and we also sing newer spiritual songs. Our choir is a blessing every Sunday, and we have an orchestra too.
+
+            [Hear it for yourself on the Special Music page →](/special-music)
+        - question: What do you believe?
+          answer: |
+            The short version: we believe the Bible is the inspired, inerrant Word of God and the final authority for faith and life. We believe salvation is God’s gift, received by personal faith in the Lord Jesus Christ. And we preach the Bible expositionally — working through the text and digging into what it actually says.
+
+            The long version is written down, all of it. [Read our full statement of faith →](/about#statement-of-faith)
+        - question: What do you have for my kids?
+          answer: |
+            A staffed nursery for ages 0–3 at every single service, and classes for ages 3–12 on Sunday mornings at 11:00 and Wednesday nights at 7:00 — with a simple, secure check-in system. Teens (12–18) have their own youth group on Wednesday nights.
+
+            And on Sunday mornings at 9:45, our [Family School](/family-school) does something you may not have seen before: everyone — kids, parents, grandparents — learns together in the same room.
+
+            [See the full FBC Kids schedule →](/fbc-kids)
+        - question: How do I get involved?
+          answer: |
+            Start by showing up — that’s genuinely the whole first step. From there: the choir and orchestra are open to anyone (no audition — just talk to Matthew Dowdy), our ministries always welcome helpers, and the [Church Center app](/church-center-app) is where sign-ups and groups live.
+
+            Not sure where you’d fit? [Ask us](/contact) — that’s an easy conversation, not a commitment.
+nextStep:
+  title: Ask us anything else
+  text: >-
+    Seriously — if it matters to you, it's worth asking. Or just come see for
+    yourself.
+  primaryLabel: Plan Your Visit
+  primaryLink: /plan-your-visit
+  secondaryLabel: Contact us
+  secondaryLink: /contact

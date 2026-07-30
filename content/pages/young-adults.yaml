@@ -1,0 +1,50 @@
+title: Young Adults
+eyebrow: Ages 18–30
+intro: >-
+  College, first jobs, new marriages — the decade where faith either becomes
+  your own or quietly fades. We're building a group where it becomes your
+  own.
+description: >-
+  Young adults (18–30) at Faith Baptist Church of Chelsea — the Unashamed
+  conference, activities organized by Matthew Dowdy, and a group worth
+  belonging to.
+menu: none
+menuOrder: 99
+sections:
+  - discriminant: signupFeature
+    value:
+      keyword: unashamed
+      eyebrow: Our conference
+      fallbackTitle: Unashamed
+      fallbackText: >-
+        A two-day conference for young adults (18–30), hosted right here at
+        Faith Baptist — preaching, fellowship, and a room full of people your
+        age who take the Bible seriously. Details and this year's theme are
+        on the registration page.
+      registerLabel: Register for Unashamed
+      fallbackRegisterLink: https://fbcchelsea.churchcenter.com/registrations/events/3565632
+      secondaryLabel: "@unashamed_fbcconference"
+      secondaryLink: https://www.instagram.com/unashamed_fbcconference/
+  - discriminant: imageText
+    value:
+      heading: Connecting outside of Sunday
+      body: |
+        Young adult activities happen as life allows — game nights, bonfires, trips, serving together — organized by **Matthew Dowdy** and scheduled as they come rather than on a rigid calendar. That’s on purpose: it fits real schedules, and it means when something’s happening, it’s because people actually wanted to do it.
+
+        The catch with an irregular schedule: you have to be on the list to hear about the next thing.
+      image: /images/pages/young-adults/sections/1/value/image.jpg
+      imageSide: right
+      tint: true
+  - discriminant: text
+    value:
+      heading: Get on the list
+      body: |
+        Two ways, both easy: download the [Church Center app](https://fbcchelsea.churchcenter.com) and join the young adults group to see young adult events as they’re posted — or just talk to Matthew on a Sunday and he’ll make sure you hear about the next one.
+      tint: false
+nextStep:
+  title: Start with a Sunday
+  text: The group you're looking for is here on Sunday mornings. Come meet us.
+  primaryLabel: Plan Your Visit
+  primaryLink: /plan-your-visit
+  secondaryLabel: Get the Church Center app
+  secondaryLink: /church-center-app

@@ -1,0 +1,95 @@
+title: We saved you a seat.
+browserTitle: Plan Your Visit
+eyebrow: First time?
+intro: >-
+  Walking into a new church is a big step, and we don't take it for granted.
+  Here's everything you need to know before Sunday — no surprises.
+description: >-
+  Where to park, which door to use, what to wear, and what happens with your
+  kids — everything you need to know before your first Sunday at Faith
+  Baptist Church in Chelsea.
+menu: none
+menuOrder: 99
+sections:
+  - discriminant: serviceTimes
+    value:
+      note: >-
+        Any of them is a great first visit — each service is different.
+        Services run about an hour and 15 minutes.
+      whereNote: >-
+        Look for the visitor parking signs — those spots are reserved for
+        first-time guests. Greeters at the door will help you find
+        everything.
+  - discriminant: gallery
+    value:
+      heading: So you know it when you see it
+      photos:
+        - image: /images/pages/plan-your-visit/sections/1/value/photos/0/image.jpg
+          caption: The building, from Kalmbach Road
+        - image: /images/pages/plan-your-visit/sections/1/value/photos/1/image.jpg
+          caption: Visitor parking is marked — those spots are for you
+        - image: /images/pages/plan-your-visit/sections/1/value/photos/2/image.jpg
+          caption: Come in through the main entrance
+  - discriminant: timeline
+    value:
+      heading: Your first Sunday, minute by minute
+      intro: >-
+        Here’s the whole thing, so nothing is a surprise. (Times shown for
+        the 11:00 service — the rhythm is the same at any of them.)
+      steps:
+        - label: "10:50"
+          text: Pull in and take a marked visitor parking spot — they’re saved for you.
+        - label: "10:52"
+          text: Come in the main entrance and stop at the welcome desk. Free gift, warm faces, and every question answered.
+        - label: "10:55"
+          text: "Kids? The welcome desk walks you to check-in: your child gets a name tag, you get the matching pickup tag. (Or keep them with you — both are fine.)"
+        - label: "11:00"
+          text: Singing — old hymns and newer songs, often with the choir. Nobody will single you out or ask you to stand.
+        - label: "11:25"
+          text: "The preaching: working through a passage of the Bible, digging into what it actually says."
+        - label: "12:15"
+          text: That’s it. Slip out right away, or stay and talk — plenty of people will be glad you did.
+      tint: false
+  - discriminant: faq
+    value:
+      googleResults: false
+      tint: false
+      items:
+        - question: Where do I go first?
+          answer: |
+            The **welcome desk**, right inside the main entrance. There’s a free gift waiting for you there, and it’s the spot where any question gets answered — where the nursery is, where your kids’ classes meet, and anything else you’re wondering.
+        - question: What should I wear?
+          answer: |
+            Whatever you’re comfortable in. You’ll see plenty of suits and dresses and plenty of T-shirts, often in the same pew — there is no judgment based on dress here, in either direction.
+        - question: Will anyone single me out?
+          answer: |
+            No. We won’t ask you to stand up, raise your hand, or introduce yourself to the room. People will greet you — we really are a friendly church — but you can be as anonymous as you want to be.
+        - question: What’s the service like?
+          answer: |
+            We sing — old hymns and newer spiritual songs, often with our choir — and then the preaching works through a passage of the Bible, digging into what it actually says. We preach from the King James Version.
+        - question: What about my kids?
+          answer: |
+            A clean, staffed [nursery](/fbc-kids) is available for ages 0–3 at every service, and Sunday at 11:00 there are classes for ages 3 through 12 with a simple, secure check-in. Kids are also always welcome to stay in the service with you — nobody minds a wiggly toddler.
+
+            [See the full kids schedule →](/fbc-kids)
+  - discriminant: text
+    value:
+      heading: Want us to expect you? (Totally optional)
+      body: |
+        You’re welcome to just show up — most people do. But if you let us know you’re coming, we’ll have someone watching for you at the door — and if you tell us your kids’ ages, we’ll email you a short introduction to their teachers so the faces are familiar before you ever walk in.
+      tint: true
+  - discriminant: buttons
+    value:
+      buttons:
+        - label: Let us know you’re coming
+          link: /contact
+          style: primary
+nextStep:
+  title: Still have questions?
+  text: >-
+    Are you KJV? What's the music like? What do you believe? We answer the
+    questions people actually ask.
+  primaryLabel: Read Common Questions
+  primaryLink: /common-questions
+  secondaryLabel: Contact us
+  secondaryLink: /contact
