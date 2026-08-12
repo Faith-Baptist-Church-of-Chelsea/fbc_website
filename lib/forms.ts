@@ -33,9 +33,8 @@ const KIND_LABEL: Record<Submission["kind"], string> = {
 
 /**
  * Sends the notification email. Returns true on success.
- * Until a sending domain is verified in Resend, the from address must be
- * onboarding@resend.dev (Resend's shared test sender). After verifying
- * fbcchelsea.org in Resend, change FROM below.
+ * fbcchelsea.org was verified in Resend 2026-08-12 — sends from a real
+ * church address now, no longer the onboarding@resend.dev placeholder.
  */
 export async function sendFormEmail(s: Submission): Promise<boolean> {
   const key = process.env.RESEND_API_KEY;
@@ -43,7 +42,7 @@ export async function sendFormEmail(s: Submission): Promise<boolean> {
     console.warn("[forms] RESEND_API_KEY not set — email not sent");
     return false;
   }
-  const FROM = "Faith Baptist Website <onboarding@resend.dev>"; // TODO: switch to website@fbcchelsea.org once the domain is verified in Resend
+  const FROM = "Faith Baptist Website <website@fbcchelsea.org>";
   const confidentialNote = s.confidential
     ? "\n\n⚠ Marked CONFIDENTIAL — keep to the pastors.\n"
     : "";
@@ -278,7 +277,7 @@ export async function sendVisitorWelcomeEmail(s: Submission): Promise<boolean> {
   try {
     const resend = new Resend(key);
     const { error } = await resend.emails.send({
-      from: "Faith Baptist Church <onboarding@resend.dev>", // TODO: switch to welcome@fbcchelsea.org once the domain is verified in Resend
+      from: "Faith Baptist Church <welcome@fbcchelsea.org>",
       to: [s.email],
       replyTo: site.emails.assistantPastor,
       subject: "We can't wait to meet you — your visit to Faith Baptist",
@@ -306,7 +305,7 @@ export async function sendUnansweredQuestionEmail(question: string): Promise<voi
   try {
     const resend = new Resend(key);
     await resend.emails.send({
-      from: "Faith Baptist Website <onboarding@resend.dev>", // TODO: switch to website@fbcchelsea.org once the domain is verified in Resend
+      from: "Faith Baptist Website <website@fbcchelsea.org>",
       to: [...site.formRecipients],
       subject: "[Website] The assistant couldn't answer a visitor's question",
       text:

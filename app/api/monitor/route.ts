@@ -72,7 +72,7 @@ export async function GET(req: NextRequest) {
     try {
       const resend = new Resend(process.env.RESEND_API_KEY);
       await resend.emails.send({
-        from: "Faith Baptist Website <onboarding@resend.dev>", // TODO: switch after domain verification
+        from: "Faith Baptist Website <alerts@fbcchelsea.org>",
         to: [...site.formRecipients],
         subject: `[Website] ⚠ ${failures.length} integration${failures.length > 1 ? "s" : ""} failing`,
         text:

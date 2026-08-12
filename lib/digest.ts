@@ -182,7 +182,7 @@ export async function sendDigest(
   const { subject, html } = await composeDigest({ review: true });
   const resend = new Resend(process.env.RESEND_API_KEY);
   const { error } = await resend.emails.send({
-    from: "Faith Baptist Website <onboarding@resend.dev>", // TODO: switch after domain verification
+    from: "Faith Baptist Website <digest@fbcchelsea.org>",
     to: [...site.formRecipients],
     subject,
     html,

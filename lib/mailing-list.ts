@@ -183,8 +183,7 @@ export async function sendDigestBroadcast(
     method: "POST",
     body: JSON.stringify({
       audience_id: audienceId,
-      // TODO after domain verification: switch to digest@fbcchelsea.org
-      from: "Faith Baptist Church <onboarding@resend.dev>",
+      from: "Faith Baptist Church <digest@fbcchelsea.org>",
       subject,
       html:
         html.replace(
