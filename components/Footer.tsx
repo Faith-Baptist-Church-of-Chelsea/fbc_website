@@ -103,6 +103,11 @@ export default function Footer({ extraLinks = [] }: { extraLinks?: { label: stri
             <a href={site.social.youtube} className="text-slate-400 hover:text-white">
               YouTube
             </a>
+            {site.social.sermonAudio && (
+              <a href={site.social.sermonAudio} className="text-slate-400 hover:text-white">
+                Sermon Audio
+              </a>
+            )}
             <a href={site.links.churchCenter} className="text-slate-400 hover:text-white">
               Church Center
             </a>

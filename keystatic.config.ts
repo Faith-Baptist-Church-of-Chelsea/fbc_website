@@ -132,6 +132,10 @@ export default config({
               label: "YouTube channel ID",
               description: "Technical ID used for video embeds — don't change unless the channel changes",
             }),
+            sermonAudio: fields.url({
+              label: "SermonAudio.com",
+              description: "Link to the church's page on sermonaudio.com — optional",
+            }),
           },
           { label: "Social links" }
         ),
