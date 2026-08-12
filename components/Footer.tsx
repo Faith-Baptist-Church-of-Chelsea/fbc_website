@@ -1,11 +1,21 @@
+import Image from "next/image";
 import Link from "next/link";
 import site from "@/content/site.json";
 import SubscribeForm from "@/components/SubscribeForm";
 
-// Simple monochrome footer icons (currentColor, so hover states just work).
-// Facebook/Instagram/YouTube are the recognizable brand shapes; Sermon
-// Audio and Church Center don't have a universally known mark, so they're
-// deliberately generic (headphones / app grid) rather than an imitation.
+// Simple monochrome footer icons (currentColor, so hover states just work)
+// for Facebook/Instagram/YouTube. Sermon Audio and Church Center use their
+// own real icons (public/images/sermon-audio-icon.png, church-center-icon.png
+// — downloaded directly from sermonaudio.com and churchcenter.com's own
+// favicons) in a small white chip, since both source files are opaque and
+// would otherwise show as a white box on this dark footer.
+function BrandChip({ src, alt }: { src: string; alt: string }) {
+  return (
+    <span className="flex h-6 w-6 items-center justify-center overflow-hidden rounded-md bg-white">
+      <Image src={src} alt={alt} width={24} height={24} className="h-full w-full object-cover" />
+    </span>
+  );
+}
 function FacebookIcon() {
   return (
     <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24">
@@ -33,26 +43,6 @@ function YouTubeIcon() {
     </svg>
   );
 }
-function HeadphonesIcon() {
-  return (
-    <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24">
-      <path d="M4 14v-2a8 8 0 0 1 16 0v2" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-      <rect x="3" y="13" width="4" height="6" rx="1.5" fill="currentColor" />
-      <rect x="17" y="13" width="4" height="6" rx="1.5" fill="currentColor" />
-    </svg>
-  );
-}
-function AppGridIcon() {
-  return (
-    <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24">
-      <rect x="3" y="3" width="7" height="7" rx="1.8" fill="currentColor" />
-      <rect x="14" y="3" width="7" height="7" rx="1.8" fill="currentColor" />
-      <rect x="3" y="14" width="7" height="7" rx="1.8" fill="currentColor" />
-      <rect x="14" y="14" width="7" height="7" rx="1.8" fill="currentColor" />
-    </svg>
-  );
-}
-
 // Site-wide footer, kept deliberately light: service times, address/contact,
 // and a short list of the links people actually look for. The full page list
 // lives in the header menu — repeating all of it here just adds noise.
@@ -153,12 +143,12 @@ export default function Footer({ extraLinks = [] }: { extraLinks?: { label: stri
               <YouTubeIcon />
             </a>
             {site.social.sermonAudio && (
-              <a href={site.social.sermonAudio} aria-label="Sermon Audio" className="text-slate-400 hover:text-white">
-                <HeadphonesIcon />
+              <a href={site.social.sermonAudio} aria-label="Sermon Audio">
+                <BrandChip src="/images/sermon-audio-icon.png" alt="" />
               </a>
             )}
-            <a href={site.links.churchCenter} aria-label="Church Center app" className="text-slate-400 hover:text-white">
-              <AppGridIcon />
+            <a href={site.links.churchCenter} aria-label="Church Center app">
+              <BrandChip src="/images/church-center-icon.png" alt="" />
             </a>
           </p>
         </div>
