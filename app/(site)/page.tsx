@@ -86,8 +86,9 @@ export default async function Home() {
             <span className="text-brand-400"> growing in grace.</span>
           </h1>
           <p className="animate-rise animate-rise-2 mx-auto mt-5 max-w-2xl text-lg text-slate-300">
-            Biblical preaching. Godly worship. Genuine fellowship. Join us in
-            Chelsea, just off {site.address.directionsNote}.
+            Biblical preaching. Godly worship. Genuine fellowship.
+            <br />
+            Join us in Chelsea, just off {site.address.directionsNote}.
           </p>
           <Link
             href="/plan-your-visit"
