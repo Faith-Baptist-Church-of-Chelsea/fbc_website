@@ -43,8 +43,6 @@ export const metadata: Metadata = {
     siteName: `${site.name} of Chelsea`,
     type: "website",
     locale: "en_US",
-    // TODO: replace with a real photo-based OG image in phase 8
-    // (nearly all traffic arrives from Facebook — this preview matters).
     images: ["/images/og-default.png"],
   },
 };
