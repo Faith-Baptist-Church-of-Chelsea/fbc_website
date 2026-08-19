@@ -2,6 +2,18 @@ import site from "@/content/site.json";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://fbc-website-delta.vercel.app";
 
+/** "9:45 AM" -> "09:45", "6:00 PM" -> "18:00" — schema.org wants 24h time. */
+function to24Hour(time: string): string | null {
+  const m = time.trim().match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i);
+  if (!m) return null;
+  let hour = parseInt(m[1], 10);
+  const minute = m[2];
+  const isPM = m[3].toUpperCase() === "PM";
+  if (isPM && hour !== 12) hour += 12;
+  if (!isPM && hour === 12) hour = 0;
+  return `${String(hour).padStart(2, "0")}:${minute}`;
+}
+
 // Structured data (JSON-LD) so search engines understand exactly what this
 // site is: a church, at this address, with these services. Emitted on every
 // page via the root layout.
@@ -24,17 +36,23 @@ export function ChurchJsonLd() {
       addressCountry: "US",
     },
     sameAs: [site.social.facebook, site.social.instagram, site.social.youtube],
-    // Weekly services expressed as a repeating event schedule
-    event: site.services.map((s) => ({
-      "@type": "Event",
-      name: `${s.name} — ${site.name} of Chelsea`,
-      eventSchedule: {
-        "@type": "Schedule",
-        byDay: `https://schema.org/${s.day === "Sunday" ? "Sunday" : "Wednesday"}`,
-        repeatFrequency: "P1W",
-      },
-      location: { "@type": "Place", name: `${site.name} of Chelsea`, address: `${site.address.street}, ${site.address.city}, ${site.address.state} ${site.address.zip}` },
-    })),
+    // Weekly services as recurring opening hours (the schema.org-correct
+    // way to represent them — Event requires a concrete startDate, which
+    // a perpetually-repeating service doesn't have, and was failing
+    // Google's Rich Results validation on every service every time).
+    openingHoursSpecification: site.services
+      .map((s) => {
+        const opens = to24Hour(s.time);
+        return opens
+          ? {
+              "@type": "OpeningHoursSpecification",
+              dayOfWeek: `https://schema.org/${s.day}`,
+              opens,
+              description: s.name,
+            }
+          : null;
+      })
+      .filter(Boolean),
   };
   return (
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />
