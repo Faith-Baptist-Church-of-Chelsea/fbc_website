@@ -44,6 +44,19 @@ const nextConfig: NextConfig = {
       { source: "/about-us", destination: "/about", permanent: true },
       { source: "/visit", destination: "/plan-your-visit", permanent: true },
       { source: "/watch", destination: "/live", permanent: true },
+      // Old WordPress URLs still in Google's index — found via
+      // site:fbcchelsea.org still returning only these years-old pages.
+      // Redirecting (rather than leaving as 404) helps Google connect
+      // the old indexed page to its real replacement on the new site.
+      { source: "/nursery", destination: "/fbc-kids", permanent: true },
+      { source: "/nursery/", destination: "/fbc-kids", permanent: true },
+      { source: "/sermon-videos", destination: "/sermons", permanent: true },
+      { source: "/sermon-videos/", destination: "/sermons", permanent: true },
+      { source: "/email-list", destination: "/", permanent: true },
+      { source: "/email-list/", destination: "/", permanent: true },
+      { source: "/activity", destination: "/", permanent: true },
+      { source: "/activity/", destination: "/", permanent: true },
+      { source: "/category/:slug*", destination: "/about", permanent: true },
     ];
   },
 };
