@@ -96,6 +96,12 @@ export default config({
             "Who receives contact & prayer form submissions. Add or remove staff freely — no code changes needed.",
           itemLabel: (props) => props.value,
         }),
+        digestReviewRecipients: fields.array(fields.text({ label: "Email address" }), {
+          label: "Weekly digest review recipients",
+          description:
+            "Who gets the Monday 'This Week at Faith' review copy to check and approve. Separate from Form recipients on purpose — the digest doesn't go to everyone who handles contact forms.",
+          itemLabel: (props) => props.value,
+        }),
         officeHours: fields.array(
           fields.object({
             days: fields.text({ label: "Day(s)" }),

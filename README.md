@@ -175,34 +175,27 @@ same morning instead of finding out from a visitor.
 
 Every Monday at 8 AM Eastern the site composes a summary email from its own
 content — this week's events, active announcements, the latest message, and
-the service times — and emails the staff a **review copy** with an amber
+the service times — and emails `content/site.json`'s `digestReviewRecipients`
+(currently just Steve, on purpose — separate from `formRecipients`, which
+handles contact/prayer form notifications) a **review copy** with an amber
 "nothing sent yet" banner. **The congregation never gets anything
 automatically.** A human checks the dates, fixes anything on `/admin` or
 `/keystatic` if needed, then clicks "Approve & send to the congregation" on
 `/admin` (admin password + a second are-you-sure click). Approving always
 rebuilds the email from the website's current content, so fixes made after
-the review copy are included. Until the fbcchelsea.org domain is verified
-in Resend, review copies only deliver to Steven's gmail — same limitation
-as the contact forms.
+the review copy are included.
 
 ### The mailing list (congregation-wide sending)
 
 There's a signup form in the site footer, and `scripts/import-pco-contacts.mjs`
 imports every active adult with an email from Planning Center (run it once,
 dry-run by default). Both feed a Resend "audience"; the Monday cron then
-broadcasts the digest to it with automatic per-person unsubscribe links.
-Three switches must be on before real sending happens:
-
-1. `RESEND_FULL_API_KEY` env var — a **full access** key from
-   resend.com/api-keys (the original key is sending-only and can't manage
-   the contact list). Until it exists, the footer form politely says
-   signups aren't open yet.
-2. fbcchelsea.org verified in Resend (same blocker as the forms).
-3. `DIGEST_BROADCAST=1` env var — the deliberate on-switch, because ~265
-   contacts exceeds Resend's free tier (100 emails/day): flipping this on
-   means the church is on the $20/mo Resend plan.
-
-Until all three are true the Monday digest just goes to staff as before.
+syncs new contacts and stands ready to broadcast the digest to it with
+automatic per-person unsubscribe links — but ONLY after a human clicks
+"Approve & send to the congregation" on `/admin`. All three infrastructure
+switches are on (`RESEND_FULL_API_KEY`, fbcchelsea.org verified in Resend,
+`DIGEST_BROADCAST=1`), so broadcasting is live — the review-and-approve
+step is now the only thing standing between a Monday and a real send.
 
 ## The visitor question bubble
 

@@ -183,12 +183,12 @@ export async function sendDigest(
   const resend = new Resend(process.env.RESEND_API_KEY);
   const { error } = await resend.emails.send({
     from: "Faith Baptist Website <digest@fbcchelsea.org>",
-    to: [...site.formRecipients],
+    to: [...site.digestReviewRecipients],
     subject,
     html,
   });
   if (error) return { sent: false, detail: error.message };
-  let detail = `Review copy sent to ${site.formRecipients.join(", ")}`;
+  let detail = `Review copy sent to ${site.digestReviewRecipients.join(", ")}`;
   // Monday cron: also pull anyone newly added to Planning Center into the
   // mailing list, so the list is current by the time someone approves.
   if (opts.sync) {

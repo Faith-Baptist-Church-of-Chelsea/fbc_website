@@ -20,6 +20,9 @@
     "pastorsteve@fbcchelsea.org",
     "moriah@fbcchelsea.org"
   ],
+  "digestReviewRecipients": [
+    "pastorsteve@fbcchelsea.org"
+  ],
   "officeHours": [
     {
       "days": "Monday\u2013Thursday",

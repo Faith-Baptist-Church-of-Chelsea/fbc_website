@@ -4,8 +4,10 @@ import { useState } from "react";
 
 // The "This Week at Faith" panel on /admin.
 // Two actions, both password-gated at the API:
-//  - review copy: email the staff list the current digest with the
-//    approval banner (also happens automatically every Monday 8 AM)
+//  - review copy: email content/site.json's digestReviewRecipients the
+//    current digest with the approval banner (also happens automatically
+//    every Monday 8 AM) — deliberately NOT the same list as form
+//    submissions (site.formRecipients)
 //  - approve & send: recompose fresh and broadcast to the whole mailing
 //    list — guarded by a second "really?" click so nobody fat-fingers an
 //    email to a few hundred people.
@@ -48,7 +50,7 @@ export default function DigestButton() {
     <div className="rounded-xl border border-slate-200 bg-slate-50 p-5">
       <h2 className="font-semibold text-slate-900">This Week at Faith — email digest</h2>
       <p className="mt-1 text-sm text-slate-600">
-        Every Monday morning the staff get a <strong>review copy</strong> of
+        Every Monday morning you get a <strong>review copy</strong> of
         this week&rsquo;s digest. Nothing goes to the congregation until
         someone checks the dates and approves it here. Fixed an event since
         the review copy? No problem — approving always rebuilds the email

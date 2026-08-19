@@ -110,8 +110,8 @@ export async function commitChanges(
 // ---------- Validation ----------
 
 const SITE_JSON_REQUIRED = [
-  "name", "address", "phone", "emails", "formRecipients", "officeHours",
-  "services", "social", "links",
+  "name", "address", "phone", "emails", "formRecipients", "digestReviewRecipients",
+  "officeHours", "services", "social", "links",
 ];
 
 /** Throws with a plain-English reason if the proposal isn't safe to apply. */
