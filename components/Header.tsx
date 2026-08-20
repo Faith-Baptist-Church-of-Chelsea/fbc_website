@@ -153,7 +153,10 @@ export default function Header({
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div id="mobile-menu" className="border-t border-white/10 bg-navy px-4 pb-6 pt-2 lg:hidden">
+        <div
+          id="mobile-menu"
+          className="max-h-[calc(100vh-5rem)] overflow-y-auto border-t border-white/10 bg-navy px-4 pb-6 pt-2 lg:hidden"
+        >
           <Link
             href={planYourVisit.href}
             onClick={close}
