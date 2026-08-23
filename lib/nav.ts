@@ -1,7 +1,7 @@
 // One nav structure shared by the header, mobile menu, footer, and 404 page.
 // Add or reorder pages here, not in the components.
 
-export type NavLink = { label: string; href: string };
+export type NavLink = { label: string; href: string; external?: boolean };
 export type NavGroup = { label: string; links: NavLink[] };
 
 // NOTE: Missions is not listed here — it's a CMS-built page now
@@ -15,6 +15,10 @@ export const ministries: NavGroup = {
     { label: "Youth Group", href: "/youth-group" },
     { label: "Young Adults", href: "/young-adults" },
     { label: "Special Music", href: "/special-music" },
+    // Sibling ministries — separate organizations, separate websites.
+    { label: "Throughly Furnished Ministries", href: "https://tfmchelsea.org/", external: true },
+    { label: "Great Lakes Seedline", href: "https://glseedline.com/", external: true },
+    { label: "Berean Armed Forces Ministries", href: "https://bereanarmedforcesministries.com/", external: true },
   ],
 };
 

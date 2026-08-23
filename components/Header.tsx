@@ -12,6 +12,24 @@ import {
   type NavLink,
 } from "@/lib/nav";
 
+// Small "opens in a new tab" indicator for ministry links that go to a
+// separate organization's own website (Family School, FBC Kids, etc.
+// don't get this — only entries with external: true in lib/nav.ts).
+function ExternalIcon() {
+  return (
+    <svg aria-hidden="true" width="12" height="12" viewBox="0 0 24 24" className="shrink-0 opacity-60">
+      <path
+        d="M7 17 17 7M9 7h8v8"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 // Site-wide header. Client component only because the mobile menu and the
 // Ministries dropdown need open/closed state — everything else is static.
 //
@@ -92,15 +110,17 @@ export default function Header({
               </svg>
             </button>
             {ministriesOpen && (
-              <div className="absolute left-0 top-full w-48 rounded-b-lg bg-navy py-2 shadow-lg">
+              <div className="absolute left-0 top-full w-64 rounded-b-lg bg-navy py-2 shadow-lg">
                 {ministryLinks.map((l) => (
                   <Link
                     key={l.href}
                     href={l.href}
                     onClick={close}
-                    className="block px-4 py-2 text-sm text-slate-300 hover:bg-white/10 hover:text-white"
+                    {...(l.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                    className="flex items-center justify-between gap-2 px-4 py-2 text-sm text-slate-300 hover:bg-white/10 hover:text-white"
                   >
                     {l.label}
+                    {l.external && <ExternalIcon />}
                   </Link>
                 ))}
               </div>
@@ -176,8 +196,15 @@ export default function Header({
           </p>
           <div className="mt-1 space-y-1">
             {ministryLinks.map((l) => (
-              <Link key={l.href} href={l.href} onClick={close} className="block rounded px-2 py-2 text-base text-slate-200 hover:bg-white/10">
+              <Link
+                key={l.href}
+                href={l.href}
+                onClick={close}
+                {...(l.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                className="flex items-center justify-between gap-2 rounded px-2 py-2 text-base text-slate-200 hover:bg-white/10"
+              >
                 {l.label}
+                {l.external && <ExternalIcon />}
               </Link>
             ))}
           </div>
