@@ -5,6 +5,15 @@ import { useState } from "react";
 // YouTube "facade": renders just the thumbnail with a play button, and only
 // loads the real (heavy, ~1MB+) YouTube player when someone clicks. This is
 // the single biggest page-weight win on the site.
+//
+// Quality fallback chain: when no explicit `thumbnail` is passed (e.g. a
+// manually-pasted video in the page builder, not the API-driven sermon
+// list), we don't know in advance which YouTube-generated sizes exist for
+// that video — maxresdefault only exists for some uploads and 404s for
+// others. So we try the best size first and step down on error, landing on
+// hqdefault (always present) as the guaranteed-safe final fallback.
+const FALLBACK_SIZES = ["maxresdefault", "sddefault", "hqdefault"];
+
 export default function LiteYouTube({
   videoId,
   title,
@@ -15,6 +24,7 @@ export default function LiteYouTube({
   thumbnail?: string | null;
 }) {
   const [playing, setPlaying] = useState(false);
+  const [fallbackIndex, setFallbackIndex] = useState(0);
 
   if (playing) {
     return (
@@ -37,9 +47,12 @@ export default function LiteYouTube({
     >
       {/* eslint-disable-next-line @next/next/no-img-element -- YouTube CDN thumbnail */}
       <img
-        src={thumbnail ?? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`}
+        src={thumbnail ?? `https://i.ytimg.com/vi/${videoId}/${FALLBACK_SIZES[fallbackIndex]}.jpg`}
         alt=""
         loading="lazy"
+        onError={() => {
+          if (!thumbnail) setFallbackIndex((i) => Math.min(i + 1, FALLBACK_SIZES.length - 1));
+        }}
         className="absolute inset-0 h-full w-full object-cover"
       />
       <span className="absolute inset-0 bg-slate-950/20 transition-colors group-hover:bg-slate-950/10" aria-hidden="true" />
