@@ -1,10 +1,10 @@
 title: Friendly people. Biblical preaching.
-browserTitle: About Us
 eyebrow: Who we are
 intro: >-
-  Whether you’re new to church or have been in church your whole life,
-  you’ll find a church family that loves people and is committed to
-  faithfully teaching God’s Word.
+  Whether you’re new to church or have been in church your whole life, you’ll
+  find a church family that loves people and is committed to faithfully teaching
+  God’s Word.
+browserTitle: About Us
 description: >-
   The history, leadership, and beliefs of Faith Baptist Church of Chelsea,
   Michigan — established 1996, preaching the Bible expositionally.
@@ -14,10 +14,42 @@ sections:
   - discriminant: text
     value:
       heading: Our story
-      body: |
-        Faith Baptist Church was established in 1996 by the Whitaker family and a handful of others who wanted a Bible-preaching church in Chelsea. Pastor Adam Summers has led the congregation since 2008 — his wife Melody grew up in that founding family, saved at age five right here in Chelsea.
+      body: >
+        Faith Baptist Church of Chelsea was born out of the burdened hearts and
+        faith of Jerry and Elaine Whitaker, who stepped out in 1996 trusting God
+        to build something lasting for His glory in this community. From that
+        small handful of people, the Lord began to draw together a family of
+        believers committed to the Word of God, to one another, and to reaching
+        their neighbors with the gospel. Under the foundational leadership of
+        Pastor Jack T. Story, the church took root and began to grow, and God
+        proved Himself faithful time and again to this young and growing
+        congregation.
 
-        Nearly thirty years later we’re still doing the same things: preaching through the Scriptures, singing together, supporting missionaries around the world, and welcoming whoever walks through the door.
+
+        Pastor Adam Summers has led the congregation since 2008 — his wife
+        Melody grew up in that founding family, saved at age five right here in
+        Chelsea.
+
+
+        Thirty years later, we’re still doing the same things: preaching through
+        the Scriptures, singing together, supporting missionaries around the
+        world, and encouraging our brothers and sisters in Christ.&#x20;
+
+
+        Over the past thirty years, the Lord has provided for every need, opened
+        doors that only He could open, and brought men, women, and children to
+        saving faith in Jesus Christ. Through seasons of change and transition,
+        the heart of Faith Baptist has remained the same — to know Christ and to
+        make Him known. What has been accomplished here is not the result of
+        human effort or ingenuity, but of the grace and provision of a God who
+        delights in building His Church.
+
+
+        Faith Baptist Church of Chelsea is more than a building or an
+        organization — it is a family, a story, and a testimony of the provision
+        and blessing of God. We look back with gratitude, we stand today with
+        confidence, and we look ahead with great expectation for all that God
+        has yet to do.
       tint: false
   - discriminant: staffGrid
     value:
