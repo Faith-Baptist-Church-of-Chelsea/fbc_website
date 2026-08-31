@@ -1,9 +1,9 @@
 title: Family School
 eyebrow: Sundays · 9:45 AM
 intro: >-
-  Our version of Sunday school — with one big difference: nobody gets split
-  up. Kids, parents, and grandparents learn the same passage at the same
-  time, side by side.
+  Our version of Sunday school — with one big difference: nobody gets split up.
+  Kids, parents, and grandparents learn the same passage at the same time, side
+  by side.
 description: >-
   Sunday mornings at 9:45 — Family School at Faith Baptist Church, where all
   ages learn the Bible side by side instead of splitting into age-graded
@@ -14,32 +14,50 @@ sections:
   - discriminant: text
     value:
       heading: Why we keep families together
-      body: |
-        Most churches send children one way and adults another. We used to think that was just how it worked, too. But something happens when a family sits down and digs into the same scripture together: the conversation doesn’t end when class does. Kids hear their parents wrestle with the text. Parents know exactly what their children are learning — because they learned it in the same room, at the same time.
+      body: >
+        Most churches send children one way and adults another. We used to think
+        that was just how it worked, too. But something happens when a family
+        sits down and digs into the same scripture together: the conversation
+        doesn’t end when class does. Kids hear their parents wrestle with the
+        text. Parents know exactly what their children are learning — because
+        they learned it in the same room, at the same time.
 
-        The Bible puts the responsibility for teaching children about God squarely on parents. Family School doesn’t replace that — it equips it. Every week, every family leaves with the same passage in their hands and something to talk about on the drive home.
+
+        The Bible puts the responsibility for teaching children about God
+        squarely on parents. Family School doesn’t replace that — it equips it.
+        Every week, every family leaves with the same passage in their hands and
+        something to talk about on the drive home.
       tint: false
   - discriminant: imageText
     value:
       heading: What it looks like in the room
-      body: |
-        It’s a class, not a service — taught by Pastor Summers or Pastor Steve, our assistant pastor. There’s teaching from the front, questions along the way, and all ages in the seats. Bring your Bible; expect to open it.
+      body: >
+        It’s a class, not a service — taught by Pastor Summers or Pastor Steve,
+        our assistant pastor. There’s teaching from the front, questions along
+        the way, and all ages in the seats. Bring your Bible; expect to open it.
 
-        Our current study is **“Portraits of Proverbs”** — walking through the characters found in Proverbs, comparing the wise and the foolish, the diligent and the sluggard, and asking which portrait looks most like us.
-      image: /images/pages/family-school/sections/1/value/image.jpg
+
+        Our current study is **“Portraits of Proverbs”** — walking through the
+        characters found in Proverbs, comparing the wise and the foolish, the
+        diligent and the sluggard, and asking which portrait looks most like us.
+      image: /images/pages/family-school/sections/1/value/image.heic
       imageSide: right
       tint: true
   - discriminant: text
     value:
       heading: “But what if my toddler is a distraction?”
-      body: |
-        They might be. Ours are too — that’s what a room full of families sounds like, and nobody here will give you a look over a restless two-year-old. If you’d rather have the hour to focus, our staffed [nursery](/fbc-kids) is open for ages 0–3 during Family School, every week. Use it or don’t — both are genuinely fine.
+      body: >
+        They might be. Ours are too — that’s what a room full of families sounds
+        like, and nobody here will give you a look over a restless two-year-old.
+        If you’d rather have the hour to focus, our staffed [nursery](/fbc-kids)
+        is open for ages 0–3 during Family School, every week. Use it or don’t —
+        both are genuinely fine.
       tint: false
 nextStep:
   title: Come sit in this Sunday
   text: >-
-    9:45 AM, an hour before the morning service. Show up once and see what
-    it's like — no preparation needed.
+    9:45 AM, an hour before the morning service. Show up once and see what it's
+    like — no preparation needed.
   primaryLabel: Plan Your Visit
   primaryLink: /plan-your-visit
   secondaryLabel: Questions? Contact us
