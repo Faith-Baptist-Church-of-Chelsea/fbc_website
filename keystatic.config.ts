@@ -252,6 +252,8 @@ export default config({
                 }),
                 image: fields.image({
                   label: "Photo",
+                  description:
+                    "JPG or PNG only. iPhone photos saved as HEIC won't show up on the site — if your photo has a .heic extension, share it as JPG first (in Photos: Share → \"Compress Image\", or change camera format to JPEG in Settings > Camera > Formats).",
                   directory: "public/images/pages",
                   publicPath: "/images/pages/",
                 }),
@@ -275,6 +277,8 @@ export default config({
               schema: fields.object({
                 image: fields.image({
                   label: "Photo",
+                  description:
+                    "JPG or PNG only. iPhone photos saved as HEIC won't show up on the site — if your photo has a .heic extension, share it as JPG first (in Photos: Share → \"Compress Image\", or change camera format to JPEG in Settings > Camera > Formats).",
                   directory: "public/images/pages",
                   publicPath: "/images/pages/",
                 }),
@@ -556,6 +560,8 @@ export default config({
         }),
         image: fields.image({
           label: "Event graphic",
+          description:
+            "JPG or PNG only. iPhone photos saved as HEIC won't show up on the site — if your photo has a .heic extension, share it as JPG first (in Photos: Share → \"Compress Image\", or change camera format to JPEG in Settings > Camera > Formats).",
           directory: "public/images/events",
           publicPath: "/images/events/",
         }),
@@ -591,6 +597,8 @@ export default config({
         }),
         photo: fields.image({
           label: "Photo",
+          description:
+            "JPG or PNG only. iPhone photos saved as HEIC won't show up on the site — if your photo has a .heic extension, share it as JPG first (in Photos: Share → \"Compress Image\", or change camera format to JPEG in Settings > Camera > Formats).",
           directory: "public/images/staff",
           publicPath: "/images/staff/",
         }),
