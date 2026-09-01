@@ -69,7 +69,7 @@ export default async function Home() {
           frame serves phones-on-data and anyone with reduced motion. */}
       <section className="relative overflow-hidden bg-slate-950 px-4 pb-14 pt-12 text-white sm:pb-20 sm:pt-16">
         <video
-          className="hero-video absolute inset-0 h-full w-full scale-105 object-cover opacity-30"
+          className="hero-video absolute inset-0 h-full w-full scale-105 object-cover opacity-50"
           autoPlay
           muted
           loop
@@ -80,7 +80,7 @@ export default async function Home() {
         >
           <source src="/videos/hero.mp4" type="video/mp4" />
         </video>
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-slate-950/60 to-slate-950" aria-hidden="true" />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/45 via-slate-950/35 to-slate-950/85" aria-hidden="true" />
         <div className="relative mx-auto max-w-4xl text-center">
           <h1 className="animate-rise animate-rise-1 text-5xl leading-none sm:text-7xl">
             Rooted in the Word,<br className="hidden sm:block" />
