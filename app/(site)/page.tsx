@@ -63,9 +63,10 @@ export default async function Home() {
   return (
     <main className="flex-1">
       {/* Hero: times + address above the fold, Plan Your Visit dominant.
-          Background is a quiet stock loop (public/videos/hero.mp4 — swap
-          the file to change it) under a heavy overlay; the poster frame
-          serves phones-on-data and anyone with reduced motion enabled. */}
+          Background is real church footage — the property, people
+          arriving, the congregation, preaching (public/videos/hero.mp4 —
+          swap the file to change it) under a heavy overlay; the poster
+          frame serves phones-on-data and anyone with reduced motion. */}
       <section className="relative overflow-hidden bg-slate-950 px-4 pb-14 pt-12 text-white sm:pb-20 sm:pt-16">
         <video
           className="hero-video absolute inset-0 h-full w-full scale-105 object-cover opacity-30"
