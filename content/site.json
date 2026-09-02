@@ -79,5 +79,13 @@
     "googlePlayChurchCenter": "https://play.google.com/store/apps/details?id=com.ministrycentered.churchcenter",
     "givingEmbed": "https://fbcchelsea.churchtrac.com/give/embed"
   },
-  "googlePlaceId": "ChIJT0K6UyTOPIgRS-C-SaPKdsY"
+  "googlePlaceId": "ChIJT0K6UyTOPIgRS-C-SaPKdsY",
+  "homepageMinistries": {
+    "familySchool": { "image": "/images/ministries/family-school/image.jpg", "desc": "All ages · Sundays 9:45 AM" },
+    "fbcKids": { "image": "/images/ministries/fbc-kids/image.jpg", "desc": "Nursery–age 12 · Sundays & Wednesdays" },
+    "youthGroup": { "image": "/images/ministries/youth-group/image.jpg", "desc": "Ages 12–18 · Wednesdays 7:00 PM" },
+    "youngAdults": { "image": "/images/ministries/young-adults/image.jpg", "desc": "Ages 18–30 · Sundays & beyond" },
+    "specialMusic": { "image": "/images/ministries/special-music/image.jpg", "desc": "Choir & orchestra · No audition" },
+    "missions": { "image": "/images/ministries/missions/image.jpg", "desc": "At home & around the world" }
+  }
 }

@@ -111,7 +111,7 @@ export async function commitChanges(
 
 const SITE_JSON_REQUIRED = [
   "name", "address", "phone", "emails", "formRecipients", "digestReviewRecipients",
-  "officeHours", "services", "social", "links",
+  "officeHours", "services", "social", "links", "homepageMinistries",
 ];
 
 /** Throws with a plain-English reason if the proposal isn't safe to apply. */
@@ -212,7 +212,7 @@ export async function proposeChanges(instruction: string): Promise<Proposal> {
     system: `You edit the content files of the Faith Baptist Church of Chelsea website on behalf of church staff who describe changes in plain English.
 
 The website reads everything from these files:
-- content/site.json — service times, address, phone, emails, office hours, links, form recipients
+- content/site.json — service times, address, phone, emails, office hours, links, form recipients, homepage ministry card photos/subtitles (image paths only — don't rewrite the image path yourself, that's a file upload done in /keystatic)
 - content/statement-of-faith.json — doctrine (edit ONLY when explicitly asked; never reword doctrine on your own)
 - content/staff/*.mdx — one file per staff member (YAML frontmatter: name, role, order; body = bio)
 - content/announcements/*.mdx — homepage/events announcements (frontmatter: title, expires (YYYY-MM-DD), link; body = details)

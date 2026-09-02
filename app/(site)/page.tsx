@@ -40,14 +40,17 @@ async function featuredEvents(): Promise<CarouselItem[]> {
 // The homepage has one job: move a hesitant visitor one step closer to
 // showing up on Sunday. Service times and address are visible without
 // scrolling; Plan Your Visit is the most prominent element on the page.
-
+//
+// label/href stay fixed in code (a typo there breaks a link, not just a
+// caption) — photo and subtitle come from Church Info in /keystatic
+// (site.homepageMinistries), so those can be updated without touching code.
 const ministries = [
-  { label: "Family School", href: "/family-school", desc: "All ages · Sundays 9:45 AM", img: "/images/family-school-wide.jpg" },
-  { label: "FBC Kids", href: "/fbc-kids", desc: "Nursery–age 12 · Sundays & Wednesdays", img: "/images/kids-class.jpg" },
-  { label: "Youth Group", href: "/youth-group", desc: "Ages 12–18 · Wednesdays 7:00 PM", img: "/images/youth-group.jpg" },
-  { label: "Young Adults", href: "/young-adults", desc: "Ages 18–30 · Sundays & beyond", img: "/images/young-adults-activity.jpg" },
-  { label: "Special Music", href: "/special-music", desc: "Choir & orchestra · No audition", img: "/images/choir.jpg" },
-  { label: "Missions", href: "/missions", desc: "At home & around the world", img: "/images/missions-map.jpg" },
+  { label: "Family School", href: "/family-school", ...site.homepageMinistries.familySchool },
+  { label: "FBC Kids", href: "/fbc-kids", ...site.homepageMinistries.fbcKids },
+  { label: "Youth Group", href: "/youth-group", ...site.homepageMinistries.youthGroup },
+  { label: "Young Adults", href: "/young-adults", ...site.homepageMinistries.youngAdults },
+  { label: "Special Music", href: "/special-music", ...site.homepageMinistries.specialMusic },
+  { label: "Missions", href: "/missions", ...site.homepageMinistries.missions },
 ];
 
 export default async function Home() {
@@ -206,7 +209,7 @@ export default async function Home() {
                 className="group hover-lift overflow-hidden rounded-xl border border-slate-200 bg-white transition-shadow hover:shadow-lg"
               >
                 <div className="relative aspect-[8/5] w-full overflow-hidden">
-                  <Photo src={m.img} alt="" width={800} height={500} fill sizes="(max-width: 640px) 100vw, 340px" />
+                  <Photo src={m.image} alt="" width={800} height={500} fill sizes="(max-width: 640px) 100vw, 340px" />
                 </div>
                 <div className="p-5">
                   <h3 className="text-lg font-bold text-slate-900 group-hover:text-brand-700">

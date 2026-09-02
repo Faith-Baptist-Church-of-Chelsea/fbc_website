@@ -43,6 +43,35 @@ const contentImages = {
   },
 };
 
+const HEIC_WARNING =
+  "JPG or PNG only. iPhone photos saved as HEIC won't show up on the site — if your photo has a .heic extension, share it as JPG first (in Photos: Share → \"Compress Image\", or change camera format to JPEG in Settings > Camera > Formats).";
+
+/**
+ * One card in the homepage's "Bring the whole family" ministry grid.
+ * Each card gets its OWN directory (not a shared one) — Keystatic names
+ * an image field's file after the field itself (image.jpg), confirmed
+ * elsewhere in this project (staff photos, event graphics), so sharing
+ * one directory across all 6 cards would make every card overwrite the
+ * same file the moment a second one was ever saved.
+ */
+function homepageMinistryCard(label: string, slug: string) {
+  return fields.object(
+    {
+      image: fields.image({
+        label: "Photo",
+        description: HEIC_WARNING,
+        directory: `public/images/ministries/${slug}`,
+        publicPath: `/images/ministries/${slug}/`,
+      }),
+      desc: fields.text({
+        label: "Subtitle",
+        description: "e.g. \"All ages · Sundays 9:45 AM\"",
+      }),
+    },
+    { label }
+  );
+}
+
 export default config({
   // GitHub storage: /keystatic works in ANY browser on the deployed site —
   // volunteers log in with GitHub, edits (including image uploads) become
@@ -165,6 +194,21 @@ export default config({
             googlePlayChurchCenter: fields.url({ label: "Google Play (Church Center)" }),
           },
           { label: "Important links" }
+        ),
+        // The 6 ministry cards on the homepage ("Bring the whole family...").
+        // Only the photo and subtitle are editable here — the title and
+        // which page each card links to stay fixed in code, since a typo
+        // there breaks a link rather than just looking wrong.
+        homepageMinistries: fields.object(
+          {
+            familySchool: homepageMinistryCard("Family School card", "family-school"),
+            fbcKids: homepageMinistryCard("FBC Kids card", "fbc-kids"),
+            youthGroup: homepageMinistryCard("Youth Group card", "youth-group"),
+            youngAdults: homepageMinistryCard("Young Adults card", "young-adults"),
+            specialMusic: homepageMinistryCard("Special Music card", "special-music"),
+            missions: homepageMinistryCard("Missions card", "missions"),
+          },
+          { label: "Homepage ministry cards" }
         ),
       },
     }),
