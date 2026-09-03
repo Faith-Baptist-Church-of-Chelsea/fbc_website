@@ -33,6 +33,12 @@ const siteUrl =
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
+  // Relative canonical in a shared layout resolves per-page against
+  // metadataBase automatically — every page gets its own correct
+  // canonical URL without touching each page's own metadata. Google
+  // was flagging pages as duplicates "without a user-selected canonical"
+  // because the site never explicitly declared one before this.
+  alternates: { canonical: "./" },
   title: {
     default: `${site.name} | Chelsea, Michigan`,
     template: `%s | ${site.name}`,

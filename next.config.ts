@@ -37,6 +37,17 @@ const nextConfig: NextConfig = {
   },
   async redirects() {
     return [
+      // www -> bare domain. Both were serving the identical site
+      // independently (no redirect between them), which Google flagged as
+      // duplicate content with no canonical we'd chosen — this is the
+      // real fix (a redirect is a directive; the canonical tag is only a
+      // hint). Keep this first so it applies before any path-specific rule.
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.fbcchelsea.org" }],
+        destination: "https://fbcchelsea.org/:path*",
+        permanent: true,
+      },
       { source: "/statement-of-faith", destination: "/about#statement-of-faith", permanent: true },
       { source: "/statement-of-faith/", destination: "/about#statement-of-faith", permanent: true },
       { source: "/teachers", destination: "/fbc-kids", permanent: true },
