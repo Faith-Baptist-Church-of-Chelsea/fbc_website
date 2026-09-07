@@ -34,7 +34,6 @@ sections:
   - discriminant: image
     value:
       image: /images/pages/special-music/sections/3/value/image.jpg
-      caption: The orchestra playing on a Sunday
   - discriminant: text
     value:
       heading: Want in?
