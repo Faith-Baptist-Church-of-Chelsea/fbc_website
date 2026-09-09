@@ -12,16 +12,15 @@ menuOrder: 99
 sections:
   - discriminant: signupFeature
     value:
-      keyword: unashamed
-      eyebrow: Our conference
-      fallbackTitle: Unashamed
+      keyword: Progressive Dinner
+      eyebrow: Young Adults
+      fallbackTitle: Progressive Dinner
       fallbackText: >-
         A two-day conference for young adults (18–30), hosted right here at
         Faith Baptist — preaching, fellowship, and a room full of people your
         age who take the Bible seriously. Details for 2027 coming!
-      fallbackRegisterLink: https://fbcchelsea.churchcenter.com/registrations/events/3565632
-      secondaryLabel: '@unashamed_fbcconference'
-      secondaryLink: https://www.instagram.com/unashamed_fbcconference/
+      registerLabel: Sign up today!
+      fallbackRegisterLink: https://fbcchelsea.churchcenter.com/registrations/events/3880606
   - discriminant: imageText
     value:
       heading: Connecting outside of Sunday
