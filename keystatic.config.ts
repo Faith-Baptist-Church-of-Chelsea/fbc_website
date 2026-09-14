@@ -88,6 +88,31 @@ export default config({
   },
 
   singletons: {
+    // Edits content/homepage.json — listed first so it's the first thing
+    // staff see, since "where do I change a homepage photo" was the most
+    // common thing people couldn't find.
+    homepage: singleton({
+      label: "Homepage photos",
+      path: "content/homepage",
+      format: { data: "json" },
+      schema: {
+        // The 6 ministry cards on the homepage ("Bring the whole family...").
+        // Only the photo and subtitle are editable here — the title and
+        // which page each card links to stay fixed in code, since a typo
+        // there breaks a link rather than just looking wrong.
+        ministryCards: fields.object(
+          {
+            familySchool: homepageMinistryCard("Family School card", "family-school"),
+            fbcKids: homepageMinistryCard("FBC Kids card", "fbc-kids"),
+            youthGroup: homepageMinistryCard("Youth Group card", "youth-group"),
+            youngAdults: homepageMinistryCard("Young Adults card", "young-adults"),
+            specialMusic: homepageMinistryCard("Special Music card", "special-music"),
+            missions: homepageMinistryCard("Missions card", "missions"),
+          },
+          { label: "Ministry cards" }
+        ),
+      },
+    }),
     // Edits content/site.json — service times, address, contact info, links.
     site: singleton({
       label: "Church Info (times, address, links)",
@@ -194,21 +219,6 @@ export default config({
             googlePlayChurchCenter: fields.url({ label: "Google Play (Church Center)" }),
           },
           { label: "Important links" }
-        ),
-        // The 6 ministry cards on the homepage ("Bring the whole family...").
-        // Only the photo and subtitle are editable here — the title and
-        // which page each card links to stay fixed in code, since a typo
-        // there breaks a link rather than just looking wrong.
-        homepageMinistries: fields.object(
-          {
-            familySchool: homepageMinistryCard("Family School card", "family-school"),
-            fbcKids: homepageMinistryCard("FBC Kids card", "fbc-kids"),
-            youthGroup: homepageMinistryCard("Youth Group card", "youth-group"),
-            youngAdults: homepageMinistryCard("Young Adults card", "young-adults"),
-            specialMusic: homepageMinistryCard("Special Music card", "special-music"),
-            missions: homepageMinistryCard("Missions card", "missions"),
-          },
-          { label: "Homepage ministry cards" }
         ),
       },
     }),

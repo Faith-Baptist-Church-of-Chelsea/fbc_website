@@ -14,7 +14,7 @@ const REPO = "Faith-Baptist-Church-of-Chelsea/fbc_website";
 const BRANCH = "main";
 
 // Only these may be created or modified. Anything else is rejected.
-const EDITABLE = /^content\/(site\.json|statement-of-faith\.json|chat-facts\.md|(staff|announcements|testimonials|events)\/[a-z0-9-]+\.mdx|pages\/[a-z0-9-]+\.yaml)$/;
+const EDITABLE = /^content\/(site\.json|homepage\.json|statement-of-faith\.json|chat-facts\.md|(staff|announcements|testimonials|events)\/[a-z0-9-]+\.mdx|pages\/[a-z0-9-]+\.yaml)$/;
 
 export type ProposedChange = { path: string; contents: string };
 export type Proposal = {
@@ -86,7 +86,10 @@ export async function commitChanges(
         ...(sha ? { sha } : {}),
       }),
     });
-    if (!res.ok) throw new Error(`GitHub write failed for ${change.path}: HTTP ${res.status}`);
+    if (!res.ok) {
+      const detail = await res.text().catch(() => "");
+      throw new Error(`GitHub write failed for ${change.path}: HTTP ${res.status}${detail ? ` — ${detail.slice(0, 300)}` : ""}`);
+    }
     const json = (await res.json()) as { commit: { html_url: string } };
     commitUrls.push(json.commit.html_url);
   }
@@ -102,7 +105,10 @@ export async function commitChanges(
         branch: BRANCH,
       }),
     });
-    if (!res.ok) throw new Error(`GitHub delete failed for ${path}: HTTP ${res.status}`);
+    if (!res.ok) {
+      const detail = await res.text().catch(() => "");
+      throw new Error(`GitHub delete failed for ${path}: HTTP ${res.status}${detail ? ` — ${detail.slice(0, 300)}` : ""}`);
+    }
   }
   return commitUrls;
 }
@@ -111,7 +117,12 @@ export async function commitChanges(
 
 const SITE_JSON_REQUIRED = [
   "name", "address", "phone", "emails", "formRecipients", "digestReviewRecipients",
-  "officeHours", "services", "social", "links", "homepageMinistries",
+  "officeHours", "services", "social", "links",
+];
+
+const HOMEPAGE_JSON_REQUIRED = ["ministryCards"];
+const HOMEPAGE_MINISTRY_CARD_KEYS = [
+  "familySchool", "fbcKids", "youthGroup", "youngAdults", "specialMusic", "missions",
 ];
 
 /** Throws with a plain-English reason if the proposal isn't safe to apply. */
@@ -140,6 +151,16 @@ export function validateProposal(p: Proposal): void {
         }
         if (!Array.isArray(obj.services) || obj.services.length === 0) {
           throw new Error("site.json must keep at least one service time.");
+        }
+      }
+      if (c.path === "content/homepage.json") {
+        const obj = parsed as Record<string, unknown>;
+        for (const key of HOMEPAGE_JSON_REQUIRED) {
+          if (!(key in obj)) throw new Error(`homepage.json would lose its required "${key}" section.`);
+        }
+        const cards = obj.ministryCards as Record<string, unknown>;
+        for (const key of HOMEPAGE_MINISTRY_CARD_KEYS) {
+          if (!(key in cards)) throw new Error(`homepage.json would lose the "${key}" ministry card.`);
         }
       }
       if (c.path === "content/statement-of-faith.json") {
@@ -218,7 +239,8 @@ export async function proposeChanges(instruction: string): Promise<Proposal> {
     system: `You edit the content files of the Faith Baptist Church of Chelsea website on behalf of church staff who describe changes in plain English.
 
 The website reads everything from these files:
-- content/site.json — service times, address, phone, emails, office hours, links, form recipients, homepage ministry card photos/subtitles
+- content/site.json — service times, address, phone, emails, office hours, links, form recipients
+- content/homepage.json — the homepage's 6 ministry card photos/subtitles ({ministryCards: {familySchool, fbcKids, youthGroup, youngAdults, specialMusic, missions}, each {image, desc}})
 - content/statement-of-faith.json — doctrine (edit ONLY when explicitly asked; never reword doctrine on your own)
 - content/staff/*.mdx — one file per staff member (YAML frontmatter: name, role, order; body = bio)
 - content/announcements/*.mdx — homepage/events announcements (frontmatter: title, expires (YYYY-MM-DD), link; body = details)

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import site from "@/content/site.json";
+import homepage from "@/content/homepage.json";
 import Photo from "@/components/Photo";
 import EventsCarousel, { type CarouselItem } from "@/components/EventsCarousel";
 import LiteYouTube from "@/components/LiteYouTube";
@@ -42,15 +43,15 @@ async function featuredEvents(): Promise<CarouselItem[]> {
 // scrolling; Plan Your Visit is the most prominent element on the page.
 //
 // label/href stay fixed in code (a typo there breaks a link, not just a
-// caption) — photo and subtitle come from Church Info in /keystatic
-// (site.homepageMinistries), so those can be updated without touching code.
+// caption) — photo and subtitle come from "Homepage photos" in /keystatic
+// (content/homepage.json), so those can be updated without touching code.
 const ministries = [
-  { label: "Family School", href: "/family-school", ...site.homepageMinistries.familySchool },
-  { label: "FBC Kids", href: "/fbc-kids", ...site.homepageMinistries.fbcKids },
-  { label: "Youth Group", href: "/youth-group", ...site.homepageMinistries.youthGroup },
-  { label: "Young Adults", href: "/young-adults", ...site.homepageMinistries.youngAdults },
-  { label: "Special Music", href: "/special-music", ...site.homepageMinistries.specialMusic },
-  { label: "Missions", href: "/missions", ...site.homepageMinistries.missions },
+  { label: "Family School", href: "/family-school", ...homepage.ministryCards.familySchool },
+  { label: "FBC Kids", href: "/fbc-kids", ...homepage.ministryCards.fbcKids },
+  { label: "Youth Group", href: "/youth-group", ...homepage.ministryCards.youthGroup },
+  { label: "Young Adults", href: "/young-adults", ...homepage.ministryCards.youngAdults },
+  { label: "Special Music", href: "/special-music", ...homepage.ministryCards.specialMusic },
+  { label: "Missions", href: "/missions", ...homepage.ministryCards.missions },
 ];
 
 export default async function Home() {
