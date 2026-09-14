@@ -35,10 +35,12 @@ export default function LiveBanner() {
     };
     check();
     // A tab opened before the service starts should still get the banner:
-    // re-check every 90s while visible, and immediately on tab refocus.
+    // re-check every 5 min while visible, and immediately on tab refocus —
+    // a longer interval means fewer requests from tabs left open, and
+    // missing the first few minutes of a service doesn't matter much here.
     const interval = setInterval(() => {
       if (document.visibilityState === "visible") check();
-    }, 90_000);
+    }, 300_000);
     const onVisible = () => {
       if (document.visibilityState === "visible") check();
     };
