@@ -1,0 +1,72 @@
+name: Optimize images
+
+# Keystatic writes uploaded photos straight to public/images/** with no
+# size/compression step of its own. This catches oversized ones after the
+# fact — runs on every push that touches a photo, resizes/recompresses in
+# place, and commits the result back to main.
+#
+# "workflow_dispatch" lets it be run by hand from the Actions tab, e.g. to
+# sweep the whole folder once after lowering the thresholds.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "public/images/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: optimize-images
+  cancel-in-progress: false
+
+jobs:
+  optimize:
+    runs-on: ubuntu-latest
+    # Skip commits made by this workflow itself, or the whole thing would
+    # trigger itself forever.
+    if: "!contains(github.event.head_commit.message, '[skip-image-optimize]')"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install sharp
+        run: npm install sharp@^0.35.3 --no-save --no-audit --no-fund
+
+      - name: Find changed images
+        if: github.event_name == 'push'
+        id: diff
+        run: |
+          {
+            echo "files<<EOF"
+            git diff --name-only --diff-filter=ACMR "${{ github.event.before }}" "${{ github.sha }}" -- public/images || true
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Compress oversized images (changed files)
+        if: github.event_name == 'push'
+        env:
+          CHANGED_FILES: ${{ steps.diff.outputs.files }}
+        run: node scripts/optimize-images.mjs
+
+      - name: Compress oversized images (full backfill)
+        if: github.event_name == 'workflow_dispatch'
+        run: node scripts/optimize-images.mjs --all
+
+      - name: Commit any changes
+        run: |
+          if git diff --quiet; then
+            echo "Nothing to compress."
+            exit 0
+          fi
+          git config user.name "fbc-website-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add public/images
+          git commit -m "Auto-compress oversized photos [skip-image-optimize]"
+          git push
