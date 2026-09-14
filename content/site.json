@@ -25,8 +25,8 @@
   ],
   "officeHours": [
     {
-      "days": "Monday\u2013Thursday",
-      "hours": "8:00 AM \u2013 4:00 PM"
+      "days": "Monday–Thursday",
+      "hours": "8:00 AM – 4:00 PM"
     },
     {
       "days": "Wednesday evening",
@@ -34,7 +34,7 @@
     },
     {
       "days": "Saturday",
-      "hours": "8:00 AM \u2013 12:00 PM"
+      "hours": "8:00 AM – 12:00 PM"
     },
     {
       "days": "Friday",
@@ -63,6 +63,7 @@
       "time": "7:00 PM"
     }
   ],
+  "googlePlaceId": "ChIJT0K6UyTOPIgRS-C-SaPKdsY",
   "social": {
     "facebook": "https://www.facebook.com/profile.php?id=100091820160379",
     "instagram": "https://www.instagram.com/faith_baptist_church/",
@@ -73,19 +74,36 @@
   "links": {
     "churchCenter": "https://fbcchelsea.churchcenter.com",
     "giving": "https://fbcchelsea.churchtrac.com/give",
+    "givingEmbed": "https://fbcchelsea.churchtrac.com/give/embed",
     "missionaries": "https://fbcchelsea.churchcenter.com/pages/all-missionaries",
     "unashamedRegistration": "https://fbcchelsea.churchcenter.com/registrations/events/3565632",
     "appStoreChurchCenter": "https://apps.apple.com/us/app/church-center-app/id1357742931",
-    "googlePlayChurchCenter": "https://play.google.com/store/apps/details?id=com.ministrycentered.churchcenter",
-    "givingEmbed": "https://fbcchelsea.churchtrac.com/give/embed"
+    "googlePlayChurchCenter": "https://play.google.com/store/apps/details?id=com.ministrycentered.churchcenter"
   },
-  "googlePlaceId": "ChIJT0K6UyTOPIgRS-C-SaPKdsY",
   "homepageMinistries": {
-    "familySchool": { "image": "/images/ministries/family-school/image.jpg", "desc": "All ages · Sundays 9:45 AM" },
-    "fbcKids": { "image": "/images/ministries/fbc-kids/image.jpg", "desc": "Nursery–age 12 · Sundays & Wednesdays" },
-    "youthGroup": { "image": "/images/ministries/youth-group/image.jpg", "desc": "Ages 12–18 · Wednesdays 7:00 PM" },
-    "youngAdults": { "image": "/images/ministries/young-adults/image.jpg", "desc": "Ages 18–30 · Sundays & beyond" },
-    "specialMusic": { "image": "/images/ministries/special-music/image.jpg", "desc": "Choir & orchestra · No audition" },
-    "missions": { "image": "/images/ministries/missions/image.jpg", "desc": "At home & around the world" }
+    "familySchool": {
+      "image": "/images/ministries/family-school/homepageMinistries/familySchool/image.jpg",
+      "desc": "All ages · Sundays 9:45 AM"
+    },
+    "fbcKids": {
+      "image": "/images/ministries/fbc-kids/homepageMinistries/fbcKids/image.jpg",
+      "desc": "Nursery–age 12 · Sundays & Wednesdays"
+    },
+    "youthGroup": {
+      "image": "/images/ministries/youth-group/homepageMinistries/youthGroup/image.jpg",
+      "desc": "Ages 12–18 · Wednesdays 7:00 PM"
+    },
+    "youngAdults": {
+      "image": "/images/ministries/young-adults/homepageMinistries/youngAdults/image.png",
+      "desc": "Ages 18–30 · Sundays & beyond"
+    },
+    "specialMusic": {
+      "image": "/images/ministries/special-music/homepageMinistries/specialMusic/image.jpg",
+      "desc": "Choir & orchestra · No audition"
+    },
+    "missions": {
+      "image": "/images/ministries/missions/homepageMinistries/missions/image.jpg",
+      "desc": "At home & around the world"
+    }
   }
 }
