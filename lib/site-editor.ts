@@ -201,7 +201,13 @@ export async function proposeChanges(instruction: string): Promise<Proposal> {
     .join("\n\n");
 
   const client = new Anthropic();
-  const response = await client.beta.messages.create({
+  // Non-streaming create() estimates the wall-clock time for this call (the
+  // file dump + up to 32k output tokens) and refuses ones that could run
+  // past 10 minutes — that's the SDK's own client-side guard, not a real
+  // timeout. Streaming has no such cap; finalMessage() still gives back the
+  // same assembled Message shape create() would have.
+  const response = await client.beta.messages
+    .stream({
     model: "claude-opus-5",
     max_tokens: 32000,
     betas: ["server-side-fallback-2026-07-01"],
@@ -212,14 +218,14 @@ export async function proposeChanges(instruction: string): Promise<Proposal> {
     system: `You edit the content files of the Faith Baptist Church of Chelsea website on behalf of church staff who describe changes in plain English.
 
 The website reads everything from these files:
-- content/site.json — service times, address, phone, emails, office hours, links, form recipients, homepage ministry card photos/subtitles (image paths only — don't rewrite the image path yourself, that's a file upload done in /keystatic)
+- content/site.json — service times, address, phone, emails, office hours, links, form recipients, homepage ministry card photos/subtitles
 - content/statement-of-faith.json — doctrine (edit ONLY when explicitly asked; never reword doctrine on your own)
 - content/staff/*.mdx — one file per staff member (YAML frontmatter: name, role, order; body = bio)
 - content/announcements/*.mdx — homepage/events announcements (frontmatter: title, expires (YYYY-MM-DD), link; body = details)
 - content/testimonials/*.mdx — homepage testimonials (frontmatter: name, detail; body = the quote)
-- content/events/*.mdx — upcoming events (frontmatter: title, date (YYYY-MM-DD), time (display text like "6:30 PM"), showUntil (optional YYYY-MM-DD for multi-day), location, image (path, do not change), signupLink; body = description). Events disappear automatically after their date/showUntil. Graphics are uploaded in /keystatic, not here.
+- content/events/*.mdx — upcoming events (frontmatter: title, date (YYYY-MM-DD), time (display text like "6:30 PM"), showUntil (optional YYYY-MM-DD for multi-day), location, image (path), signupLink; body = description). Events disappear automatically after their date/showUntil.
 - content/chat-facts.md — facts the website's chat assistant may use
-- content/pages/*.yaml — build-your-own pages, shown at /<filename> (title, eyebrow, intro, menu (none|ministries|footer), menuOrder, sections (a list of {discriminant, value} blocks: text {heading, body=markdown}, imageText {heading, body, image path — do not change, imageSide left|right}, image {image path — do not change, caption}, buttons {buttons: [{label, link, style primary|secondary}]}, video {url=YouTube link}), nextStep {title, text, primaryLabel, primaryLink, secondaryLabel, secondaryLink — all-empty means the standard ending}). Copy the structure of an existing page file exactly; body fields are markdown. Photos are uploaded in /keystatic, not here.
+- content/pages/*.yaml — build-your-own pages, shown at /<filename> (title, eyebrow, intro, menu (none|ministries|footer), menuOrder, sections (a list of {discriminant, value} blocks: text {heading, body=markdown}, imageText {heading, body, image path, imageSide left|right}, image {image path, caption}, buttons {buttons: [{label, link, style primary|secondary}]}, video {url=YouTube link}), nextStep {title, text, primaryLabel, primaryLink, secondaryLabel, secondaryLink — all-empty means the standard ending}). Copy the structure of an existing page file exactly; body fields are markdown.
 
 Rules:
 - Return the COMPLETE new contents for every file you change — not a diff.
@@ -227,7 +233,8 @@ Rules:
 - New staff/announcement files: kebab-case filenames matching the pattern shown by existing files.
 - If the instruction is ambiguous, make the most reasonable interpretation and record the assumption in warnings.
 - New pages go in content/pages/ (kebab-case .yaml filename = the web address). Do NOT create a page whose filename matches a built-in page (about, events, give, sermons, live, contact, plan-your-visit, salvation, fbc-kids, youth-group, young-adults, family-school, special-music, church-center-app, common-questions) — the built-in page would win and the new one would never show.
-- If the instruction asks for something these files cannot express (design change, uploading photos), make no change for that part and explain in warnings that it needs /keystatic or the developer.
+- Image paths: you may only ever write a path that already appears somewhere in the current content files above (e.g. reusing one page's photo for another, like putting a page's existing photo onto its homepage card) — copy it exactly. NEVER invent, guess, or construct a new image path, and never rename/move an image file. If the instruction wants a photo that isn't already used anywhere in these files (a brand-new upload), make no change for that part and explain in warnings that it needs a file upload in /keystatic.
+- If the instruction asks for something else these files cannot express (a design/layout change), make no change for that part and explain in warnings that it needs the developer.
 - Church voice: warm, plain, honest. Never invent facts — if the instruction lacks a needed fact (a date, a name), note it in warnings instead of guessing.`,
     messages: [
       {
@@ -235,7 +242,8 @@ Rules:
         content: `Current content files:\n\n${fileDump}\n\nRequested change: ${instruction}`,
       },
     ],
-  });
+  })
+    .finalMessage();
 
   if (response.stop_reason === "refusal") {
     throw new Error("The AI declined this request. Try rephrasing, or make the edit in /keystatic.");
