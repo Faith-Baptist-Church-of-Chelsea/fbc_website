@@ -57,8 +57,11 @@ export async function checkLiveNow(): Promise<{ live: boolean | null; videoId: s
  */
 export async function scrapeLiveNow(): Promise<{ live: boolean | null; videoId: string | null }> {
   try {
+    // Cached only 1 min: this costs no API quota and Next's fetch cache is
+    // shared across all visitors, so that's at most one YouTube fetch per
+    // minute site-wide — and it's what decides how fast the banner appears.
     const res = await fetch(`https://www.youtube.com/channel/${CHANNEL}/live`, {
-      next: { revalidate: 300 },
+      next: { revalidate: 60 },
       headers: {
         "user-agent":
           "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36",

@@ -71,3 +71,25 @@ export function currentServiceWindow(now = new Date()): ServiceWindow | null {
     ) ?? null
   );
 }
+
+/**
+ * True from `lead` minutes before a scheduled service starts until `tail`
+ * minutes after — the stretch when "did we just go live?" is the live
+ * question and the banner should be checking often. Outside it, a slow
+ * poll is plenty.
+ */
+export function nearServiceStart(now = new Date(), lead = 10, tail = 30): boolean {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/Detroit",
+    weekday: "short",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: false,
+  }).formatToParts(now);
+  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? "";
+  const dayIndex = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(get("weekday"));
+  const minutes = parseInt(get("hour"), 10) * 60 + parseInt(get("minute"), 10);
+  return SERVICE_WINDOWS.some(
+    (w) => w.day === dayIndex && minutes >= w.startMinutes - lead && minutes < w.startMinutes + tail
+  );
+}

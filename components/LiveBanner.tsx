@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { nearServiceStart } from "@/lib/service-windows";
 
 type LiveState = {
   show: boolean;
@@ -14,6 +15,10 @@ type LiveState = {
 // API confirmed it; otherwise "happening now" with a watch link.
 export default function LiveBanner() {
   const [state, setState] = useState<LiveState | null>(null);
+  // Refs (not state) so the polling interval can read them without
+  // re-subscribing every time the banner toggles.
+  const showingRef = useRef(false);
+  const lastCheck = useRef(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -21,34 +26,45 @@ export default function LiveBanner() {
     // live — for checking the design, not shown to normal visitors.
     const preview = window.location.search.includes("preview-live");
     const check = () => {
+      lastCheck.current = Date.now();
       (preview
         ? Promise.resolve({ show: true, verified: true, label: "Sunday Morning Service (preview)" })
         : fetch("/api/live")
             .then((r) => (r.ok ? r.json() : { show: false }))
       )
         .then((s: LiveState) => {
-          if (!cancelled) setState(s);
+          if (!cancelled) {
+            showingRef.current = Boolean(s.show);
+            setState(s);
+          }
         })
         .catch(() => {
           if (!cancelled) setState((prev) => prev ?? { show: false });
         });
     };
     check();
-    // A tab opened before the service starts should still get the banner:
-    // re-check every 5 min while visible, and immediately on tab refocus —
-    // a longer interval means fewer requests from tabs left open, and
-    // missing the first few minutes of a service doesn't matter much here.
-    const interval = setInterval(() => {
-      if (document.visibilityState === "visible") check();
-    }, 300_000);
+    // A tab opened before the service starts should still get the banner.
+    // Re-check every 45s in the stretch around a scheduled service start
+    // (when going live is actually expected and the banner isn't up yet),
+    // every 5 min otherwise — keeps request volume low from tabs left open
+    // all week without making the banner slow to appear when it matters.
+    // Also re-check on tab refocus and when a phone restores the page from
+    // its back-forward cache (effects don't re-run on that restore).
+    const tick = setInterval(() => {
+      if (document.visibilityState !== "visible") return;
+      const wanted = nearServiceStart() && !showingRef.current ? 45_000 : 300_000;
+      if (Date.now() - lastCheck.current >= wanted) check();
+    }, 15_000);
     const onVisible = () => {
       if (document.visibilityState === "visible") check();
     };
     document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("pageshow", onVisible);
     return () => {
       cancelled = true;
-      clearInterval(interval);
+      clearInterval(tick);
       document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("pageshow", onVisible);
     };
   }, []);
 
