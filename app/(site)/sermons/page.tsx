@@ -7,6 +7,7 @@ import { parseSermon } from "@/lib/sermons";
 import LiteYouTube from "@/components/LiteYouTube";
 import SermonBrowser from "@/components/SermonBrowser";
 import { SermonVideoJsonLd } from "@/components/JsonLd";
+import { getSermonSummary } from "@/lib/sermon-summary";
 
 // SermonAudio already generates a real podcast feed (actual MP3 files,
 // iTunes tags, artwork) from the same account linked in the footer — the
@@ -51,6 +52,10 @@ export default async function Sermons() {
   // Includes `latest` too — every fetched video gets a VideoObject, not
   // just the ones shown in the browsable grid below.
   const allParsed = videos.map(parseSermon);
+  // Only the featured latest message gets an AI summary — real API cost per
+  // call, so this stays bounded to the one sermon every visitor actually
+  // sees, not all 48 fetched for the archive grid below.
+  const latestSummary = latest ? await getSermonSummary(latest.videoId, latest.title) : null;
 
   return (
     <main className="flex-1">
@@ -86,6 +91,7 @@ export default async function Sermons() {
               {latest.publishedAt && <> · {dateFmt.format(new Date(latest.publishedAt))}</>}
             </p>
           )}
+          {latestSummary && <p className="mt-2 text-slate-600">{latestSummary}</p>}
           {!latest && (
             <p className="mt-4 text-slate-600">
               Use the playlist icon in the player&rsquo;s top-right corner to
