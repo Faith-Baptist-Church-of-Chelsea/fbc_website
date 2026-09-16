@@ -45,15 +45,13 @@ export default async function Events() {
               href={bulletin.pdf!}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover-lift flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+              className="hover-lift group block overflow-hidden rounded-2xl bg-slate-900 px-8 py-12 text-center shadow-lg sm:py-16"
             >
-              <span>
-                <span className="block text-sm font-semibold uppercase tracking-wide text-brand-700">
-                  This week
-                </span>
-                <span className="mt-0.5 block text-xl font-bold text-slate-900">This week&rsquo;s bulletin</span>
+              <p className="text-sm font-bold uppercase tracking-[0.3em] text-brand-400">This week</p>
+              <h2 className="mt-3 text-4xl text-white sm:text-5xl">This Week&rsquo;s Bulletin</h2>
+              <span className="hover-lift mt-8 inline-block rounded-lg bg-brand-500 px-8 py-3.5 text-lg font-bold text-white transition-colors group-hover:bg-brand-600">
+                View bulletin →
               </span>
-              <span className="shrink-0 font-semibold text-brand-700">View →</span>
             </a>
           </div>
         </section>
