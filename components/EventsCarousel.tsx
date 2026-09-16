@@ -45,7 +45,10 @@ export default function EventsCarousel({ items }: { items: CarouselItem[] }) {
         <a
           key={i}
           href={e.href}
-          className="hover-lift group w-[19rem] shrink-0 snap-start overflow-hidden rounded-2xl bg-slate-900 text-white shadow-lg sm:w-[22rem]"
+          // Width is an exact fraction of the track (1 / 2 / 3 across) so a
+          // whole number of cards always fits — no partially cut-off card
+          // peeking at the edge. gap-6 = 1.5rem, hence the subtracted gaps.
+          className="hover-lift group shrink-0 grow-0 basis-full snap-start overflow-hidden rounded-2xl bg-slate-900 text-white shadow-lg sm:basis-[calc((100%-1.5rem)/2)] lg:basis-[calc((100%-3rem)/3)]"
         >
           {e.image ? (
             <Image
@@ -53,7 +56,7 @@ export default function EventsCarousel({ items }: { items: CarouselItem[] }) {
               alt=""
               width={1920}
               height={1080}
-              sizes="(max-width: 640px) 90vw, 384px"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 384px"
               className="aspect-video w-full bg-slate-950 object-cover"
             />
           ) : (
