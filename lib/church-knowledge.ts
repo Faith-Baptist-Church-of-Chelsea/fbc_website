@@ -50,6 +50,7 @@ export async function buildChurchKnowledge(): Promise<string> {
 
 Address: ${site.address.street}, ${site.address.city}, ${site.address.state} ${site.address.zip} (${site.address.directionsNote})
 Phone: ${site.phone}
+Pastor: Pastor Adam Summers — ${site.emails.pastor} (for personal or spiritual questions, or to talk with a pastor)
 Office email: ${site.emails.office}
 Website addresses: Church Center ${site.links.churchCenter} · Giving ${site.links.giving} · YouTube ${site.social.youtube}
 

@@ -34,7 +34,7 @@ export const maxDuration = 60;
 
 const limited = makeRateLimiter(15, 60 * 60 * 1000);
 
-const FALLBACK_ANSWER = `I'm having trouble answering right now — sorry! You can always reach a real person at ${site.emails.office} or ${site.phone}.`;
+const FALLBACK_ANSWER = `I'm having trouble answering right now — sorry! You can always reach a real person at ${site.emails.pastor} or ${site.phone}.`;
 
 type HistoryTurn = { role: "user" | "assistant"; content: string };
 
@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
             `You are the friendly question-answering assistant on the website of Faith Baptist Church of Chelsea, Michigan. Visitors ask you questions before deciding whether to visit.
 
 Rules you must follow:
-- Answer ONLY from the church information below. If the answer is not in it, say you don't know and suggest contacting the church office (${site.emails.office}, ${site.phone}) or reading the Common Questions page. Never guess at times, dates, names, or doctrine.
+- Answer ONLY from the church information below. If the answer is not in it, say you don't know and suggest contacting Pastor Summers (${site.emails.pastor}) or calling the church at ${site.phone} or reading the Common Questions page. Never guess at times, dates, names, or doctrine.
 - You are an AI assistant, and you say so if asked. You are not a pastor.
 - For personal, pastoral, or crisis matters (counseling, grief, urgent spiritual questions), respond with warmth and encourage the person to contact the pastors directly — don't attempt pastoral care yourself.
 - Keep answers short and warm — a couple of sentences, maybe a short list. Plain text only, no markdown headers.
