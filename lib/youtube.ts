@@ -85,7 +85,38 @@ export type SermonVideo = {
   thumbnail: string | null;
   /** Small (320px) thumbnail — for grid cards and emails. */
   thumbSmall: string | null;
+  /** ISO 8601 (e.g. "PT58M12S") — schema.org VideoObject wants this format
+   *  directly, no conversion needed. Null if the lookup failed. */
+  duration: string | null;
 };
+
+/**
+ * Durations for a batch of video IDs — 1 quota unit regardless of count
+ * (YouTube allows up to 50 ids per call), so this is cheap to always fetch.
+ */
+async function getDurations(videoIds: string[]): Promise<Map<string, string>> {
+  const durations = new Map<string, string>();
+  if (!KEY || videoIds.length === 0) return durations;
+  try {
+    const url =
+      `https://www.googleapis.com/youtube/v3/videos?part=contentDetails` +
+      `&id=${videoIds.join(",")}&key=${KEY}`;
+    const res = await fetch(url, { next: { revalidate: 900 } });
+    if (!res.ok) {
+      console.warn(`[youtube] videos.list HTTP ${res.status}`);
+      return durations;
+    }
+    const json = (await res.json()) as {
+      items?: { id?: string; contentDetails?: { duration?: string } }[];
+    };
+    for (const item of json.items ?? []) {
+      if (item.id && item.contentDetails?.duration) durations.set(item.id, item.contentDetails.duration);
+    }
+  } catch (err) {
+    console.warn("[youtube] getDurations failed:", err instanceof Error ? err.message : err);
+  }
+  return durations;
+}
 
 /**
  * Recent uploads (newest first) — 1 quota unit. YouTube's uploads playlist
@@ -126,7 +157,7 @@ export async function getRecentVideos(limit = 12): Promise<SermonVideo[]> {
         contentDetails?: { videoPublishedAt?: string };
       }[];
     };
-    return (json.items ?? [])
+    const parsed = (json.items ?? [])
       .map((i) => ({
         videoId: i.snippet?.resourceId?.videoId ?? "",
         // Some uploads are duplicated from streams as "Copy of …" — the
@@ -149,6 +180,9 @@ export async function getRecentVideos(limit = 12): Promise<SermonVideo[]> {
       .filter((v) => !/#shorts/i.test(v.title))
       .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
       .slice(0, limit);
+
+    const durations = await getDurations(parsed.map((v) => v.videoId));
+    return parsed.map((v) => ({ ...v, duration: durations.get(v.videoId) ?? null }));
   } catch (err) {
     console.warn("[youtube] getRecentVideos failed:", err instanceof Error ? err.message : err);
     return [];

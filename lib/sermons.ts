@@ -17,9 +17,13 @@ export type ParsedSermon = {
   videoId: string;
   publishedAt: string;
   thumbnail: string | null;
+  duration: string | null;
   raw: string;
   title: string;
   passage: string | null;
+  /** Just the book name from `passage` (e.g. "Genesis" from "Genesis 3:1-5") —
+   *  lets sermons be browsed by what's being preached through. */
+  book: string | null;
   kind: SermonKind;
 };
 
@@ -35,8 +39,17 @@ const BOOKS = [
   "Titus","Philemon","Hebrews","James","1 Peter","2 Peter","1 John","2 John",
   "3 John","Jude","Revelation","Revelations",
 ];
+// Two spellings in BOOKS (to match however a title happens to say it)
+// should collapse to one book for grouping/filtering purposes.
+const BOOK_ALIASES: Record<string, string> = { Psalms: "Psalm", Revelations: "Revelation" };
+// Canonical Bible order, deduplicated to primary spellings — exported so the
+// sermon browser's book filter reads "what are we in right now" naturally
+// instead of alphabetically.
+export const BOOK_ORDER = BOOKS.filter((b) => !(b in BOOK_ALIASES));
 // Longest names first so "1 Corinthians" wins over "Corinthians"-less noise.
-const BOOK_ALTERNATION = BOOKS.sort((a, b) => b.length - a.length)
+// Sorts a COPY — BOOKS itself must stay in canonical order for BOOK_ORDER above.
+const BOOK_ALTERNATION = [...BOOKS]
+  .sort((a, b) => b.length - a.length)
   .map((b) => b.replace(/ /g, "\\s+"))
   .join("|");
 const PASSAGE_RE = new RegExp(
@@ -67,6 +80,8 @@ export function parseSermon(v: SermonVideo): ParsedSermon {
   const passage = passageMatch
     ? `${passageMatch[1].replace(/\s+/g, " ")} ${passageMatch[2]}${passageMatch[3] ? `:${passageMatch[3].replace(/\s/g, "")}` : ""}`
     : null;
+  const bookRaw = passageMatch ? passageMatch[1].replace(/\s+/g, " ").trim() : null;
+  const book = bookRaw ? (BOOK_ALIASES[bookRaw] ?? bookRaw) : null;
 
   // Quoted segment(s) are usually the sermon title; drop any quote that is
   // itself just the passage reference.
@@ -90,9 +105,11 @@ export function parseSermon(v: SermonVideo): ParsedSermon {
     videoId: v.videoId,
     publishedAt: v.publishedAt,
     thumbnail: v.thumbSmall ?? v.thumbnail,
+    duration: v.duration,
     raw,
     title,
     passage,
+    book,
     kind: detectKind(raw, v.publishedAt),
   };
 }

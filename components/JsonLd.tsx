@@ -75,6 +75,30 @@ export function FaqJsonLd({ faqs }: { faqs: { q: string; a: string }[] }) {
   );
 }
 
+/** Video rich-result markup for sermon listings — one VideoObject per sermon. */
+export function SermonVideoJsonLd({
+  sermons,
+}: {
+  sermons: { videoId: string; title: string; raw: string; publishedAt: string; thumbnail: string | null; duration: string | null }[];
+}) {
+  if (sermons.length === 0) return null;
+  const data = sermons.map((s) => ({
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    name: s.title,
+    description: s.raw,
+    thumbnailUrl: s.thumbnail ? [s.thumbnail] : undefined,
+    uploadDate: s.publishedAt,
+    ...(s.duration ? { duration: s.duration } : {}),
+    contentUrl: `https://www.youtube.com/watch?v=${s.videoId}`,
+    embedUrl: `https://www.youtube.com/embed/${s.videoId}`,
+    publisher: { "@type": "Organization", name: `${site.name} of Chelsea`, logo: { "@type": "ImageObject", url: `${SITE_URL}/images/logo-header.png` } },
+  }));
+  return (
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />
+  );
+}
+
 /** Event rich-result markup for event detail pages. */
 export function EventJsonLd({
   title,

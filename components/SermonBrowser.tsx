@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import type { ParsedSermon, SermonKind } from "@/lib/sermons";
+import { BOOK_ORDER, type ParsedSermon, type SermonKind } from "@/lib/sermons";
 
 const KINDS: (SermonKind | "All")[] = [
   "All",
@@ -24,6 +24,7 @@ const dateFmt = new Intl.DateTimeFormat("en-US", {
 export default function SermonBrowser({ sermons }: { sermons: ParsedSermon[] }) {
   const [query, setQuery] = useState("");
   const [kind, setKind] = useState<(typeof KINDS)[number]>("All");
+  const [book, setBook] = useState("All");
 
   const counts = useMemo(() => {
     const c = new Map<string, number>([["All", sermons.length]]);
@@ -31,17 +32,25 @@ export default function SermonBrowser({ sermons }: { sermons: ParsedSermon[] }) 
     return c;
   }, [sermons]);
 
+  // Books actually being preached through, in canonical (not alphabetical)
+  // Bible order, so "what are we in right now" reads naturally.
+  const books = useMemo(() => {
+    const present = new Set(sermons.map((s) => s.book).filter((b): b is string => Boolean(b)));
+    return BOOK_ORDER.filter((b) => present.has(b));
+  }, [sermons]);
+
   const shown = useMemo(() => {
     const q = query.trim().toLowerCase();
     return sermons.filter(
       (s) =>
         (kind === "All" || s.kind === kind) &&
+        (book === "All" || s.book === book) &&
         (!q ||
           s.raw.toLowerCase().includes(q) ||
           s.title.toLowerCase().includes(q) ||
           (s.passage ?? "").toLowerCase().includes(q))
     );
-  }, [sermons, query, kind]);
+  }, [sermons, query, kind, book]);
 
   return (
     <div>
@@ -56,24 +65,43 @@ export default function SermonBrowser({ sermons }: { sermons: ParsedSermon[] }) 
             className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400"
           />
         </label>
-        <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by service">
-          {KINDS.filter((k) => (counts.get(k) ?? 0) > 0).map((k) => (
-            <button
-              key={k}
-              onClick={() => setKind(k)}
-              aria-pressed={kind === k}
-              className={`rounded-full px-3.5 py-1.5 text-sm font-semibold transition ${
-                kind === k
-                  ? "bg-slate-900 text-white"
-                  : "border border-slate-300 bg-white text-slate-700 hover:border-slate-500"
-              }`}
-            >
-              {k}
-              <span className={kind === k ? "ml-1.5 text-slate-400" : "ml-1.5 text-slate-400"}>
-                {counts.get(k)}
-              </span>
-            </button>
-          ))}
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap gap-2" role="group" aria-label="Filter by service">
+            {KINDS.filter((k) => (counts.get(k) ?? 0) > 0).map((k) => (
+              <button
+                key={k}
+                onClick={() => setKind(k)}
+                aria-pressed={kind === k}
+                className={`rounded-full px-3.5 py-1.5 text-sm font-semibold transition ${
+                  kind === k
+                    ? "bg-slate-900 text-white"
+                    : "border border-slate-300 bg-white text-slate-700 hover:border-slate-500"
+                }`}
+              >
+                {k}
+                <span className={kind === k ? "ml-1.5 text-slate-400" : "ml-1.5 text-slate-400"}>
+                  {counts.get(k)}
+                </span>
+              </button>
+            ))}
+          </div>
+          {books.length > 1 && (
+            <label className="relative block">
+              <span className="sr-only">Filter by book</span>
+              <select
+                value={book}
+                onChange={(e) => setBook(e.target.value)}
+                className="rounded-full border border-slate-300 bg-white px-3.5 py-1.5 text-sm font-semibold text-slate-700 hover:border-slate-500"
+              >
+                <option value="All">Every book</option>
+                {books.map((b) => (
+                  <option key={b} value={b}>
+                    {b}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
         </div>
       </div>
 

@@ -6,11 +6,29 @@ import { getRecentVideos } from "@/lib/youtube";
 import { parseSermon } from "@/lib/sermons";
 import LiteYouTube from "@/components/LiteYouTube";
 import SermonBrowser from "@/components/SermonBrowser";
+import { SermonVideoJsonLd } from "@/components/JsonLd";
+
+// SermonAudio already generates a real podcast feed (actual MP3 files,
+// iTunes tags, artwork) from the same account linked in the footer — the
+// broadcaster page URL and the feed URL share the same account slug.
+const sermonAudioSlug = site.social.sermonAudio?.match(/sermonaudio\.com\/(?:broadcasters|solo)\/([^/]+)/)?.[1];
+const podcastFeedUrl = sermonAudioSlug ? `https://feed.sermonaudio.com/broadcasters/${sermonAudioSlug}` : null;
 
 export const metadata: Metadata = {
   title: "Sermons",
   description:
     "Watch sermons from Faith Baptist Church of Chelsea — expository preaching through the Bible, live-streamed and archived on YouTube.",
+  // Metadata merges SHALLOWLY across layout -> page (Next docs: "Merging"),
+  // so defining `alternates` here at all replaces the root layout's
+  // `alternates.canonical` unless re-specified — canonical must come along.
+  ...(podcastFeedUrl
+    ? {
+        alternates: {
+          canonical: "./",
+          types: { "application/rss+xml": [{ url: podcastFeedUrl, title: `${site.name} — Sermon Podcast` }] },
+        },
+      }
+    : {}),
 };
 
 export const revalidate = 900;
@@ -30,9 +48,13 @@ export default async function Sermons() {
   const videos = await getRecentVideos(48);
   const [latest, ...rest] = videos;
   const browsable = rest.map(parseSermon);
+  // Includes `latest` too — every fetched video gets a VideoObject, not
+  // just the ones shown in the browsable grid below.
+  const allParsed = videos.map(parseSermon);
 
   return (
     <main className="flex-1">
+      <SermonVideoJsonLd sermons={allParsed} />
       <PageHero
         eyebrow="Expository preaching"
         title="Sermons"
@@ -95,6 +117,16 @@ export default async function Sermons() {
               </a>
               .
             </p>
+            {site.social.sermonAudio && (
+              <p className="mt-2 text-slate-600">
+                Prefer listening on the go? Subscribe as a podcast in Apple
+                Podcasts, Spotify, or any podcast app via{" "}
+                <a href={site.social.sermonAudio} className="font-semibold text-brand-700 underline-offset-4 hover:underline">
+                  our SermonAudio page
+                </a>
+                .
+              </p>
+            )}
           </div>
         </section>
       )}
