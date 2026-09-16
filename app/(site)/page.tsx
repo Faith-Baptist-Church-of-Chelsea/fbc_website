@@ -12,6 +12,11 @@ import { getGoogleReviews } from "@/lib/google-reviews";
 
 export const revalidate = 900;
 
+// content/bulletin.json starts as `{ "bulletins": [] }` — TS infers an empty
+// array literal as never[], so the shape needs spelling out explicitly.
+type BulletinEntry = { weekOf: string | null; pdf: string | null };
+const bulletins = bulletin.bulletins as BulletinEntry[];
+
 const fullDate = new Intl.DateTimeFormat("en-US", {
   weekday: "long",
   month: "long",
@@ -21,13 +26,15 @@ const fullDate = new Intl.DateTimeFormat("en-US", {
 const dayNumFmt = new Intl.DateTimeFormat("en-US", { day: "numeric", timeZone: "America/Detroit" });
 const monthFmt = new Intl.DateTimeFormat("en-US", { month: "short", timeZone: "America/Detroit" });
 
-/** True for ~8 days after weekOf — long enough to cover the whole week
- *  it's for, short enough that a forgotten upload doesn't linger for months. */
-function isBulletinCurrent(weekOf: string | null): boolean {
-  if (!weekOf) return false;
-  const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/Detroit" });
-  const diffDays = (new Date(today).getTime() - new Date(weekOf).getTime()) / 86_400_000;
-  return diffDays >= -1 && diffDays <= 8;
+/** The Sunday that starts the current week, as a YYYY-MM-DD string — a
+ *  bulletin runs Sunday-Saturday, so whichever entry has this exact date
+ *  is the one to show. UTC arithmetic on an already-Detroit-resolved date
+ *  string keeps this safe across the DST transition. */
+function currentWeekSunday(): string {
+  const todayInDetroit = new Date().toLocaleDateString("en-CA", { timeZone: "America/Detroit" });
+  const d = new Date(`${todayInDetroit}T00:00:00Z`);
+  d.setUTCDate(d.getUTCDate() - d.getUTCDay());
+  return d.toISOString().slice(0, 10);
 }
 
 /** Carousel cards from the church's own events (content/events). */
@@ -73,7 +80,7 @@ export default async function Home() {
     getGoogleReviews(),
   ]);
   const testimonials = [...manualTestimonials, ...googleReviews];
-  const showBulletin = Boolean(bulletin.pdf) && isBulletinCurrent(bulletin.weekOf);
+  const currentBulletin = bulletins.find((b) => b.weekOf === currentWeekSunday()) ?? null;
 
   return (
     <main className="flex-1">
@@ -129,11 +136,12 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* This week's bulletin — set in Keystatic, auto-hides after ~8 days */}
-      {showBulletin && (
+      {/* This week's bulletin — whichever entry in Keystatic is tagged with
+          this week's Sunday; switches over automatically week to week */}
+      {currentBulletin && (
         <section className="border-b border-slate-200 bg-slate-50 px-4 py-4 text-center">
           <a
-            href={bulletin.pdf!}
+            href={currentBulletin.pdf!}
             target="_blank"
             rel="noopener noreferrer"
             className="font-semibold text-brand-700 underline-offset-4 hover:underline"

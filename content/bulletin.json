@@ -1,3 +1,5 @@
 {
-  "pdf": "/bulletin/pdf.png"
+  "bulletins": [
+    { "weekOf": "2026-09-13", "pdf": "/bulletin/pdf.png" }
+  ]
 }

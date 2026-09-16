@@ -116,21 +116,35 @@ export default config({
     // Edits content/bulletin.json — the weekly bulletin PDF. Listed near the
     // top (same reasoning as "Homepage photos" above): whoever uploads this
     // does it every single week, so it needs to be easy to find fast.
+    //
+    // A list, not one slot: a bulletin runs Sunday-Saturday, and the next
+    // one is often uploaded a few days early (e.g. Thursday) while the
+    // current one is still supposed to be showing. The site picks whichever
+    // entry's "Week of" matches the Sunday that started the current week —
+    // add next week's whenever it's ready, it just waits its turn.
     bulletin: singleton({
-      label: "This week's bulletin",
+      label: "Bulletins",
       path: "content/bulletin",
       format: { data: "json" },
       schema: {
-        weekOf: fields.date({
-          label: "Week of",
-          description: "The Sunday this bulletin is for. Used to hide it automatically once it's old.",
-        }),
-        pdf: fields.file({
-          label: "Bulletin PDF",
-          description: "Upload this week's bulletin as a PDF.",
-          directory: "public/bulletin",
-          publicPath: "/bulletin/",
-        }),
+        bulletins: fields.array(
+          fields.object({
+            weekOf: fields.date({
+              label: "Week of (Sunday)",
+              description: "The Sunday this bulletin is for — must be a Sunday, e.g. the first day of that week.",
+            }),
+            pdf: fields.file({
+              label: "Bulletin PDF",
+              directory: "public/bulletin",
+              publicPath: "/bulletin/",
+            }),
+          }),
+          {
+            label: "Bulletins",
+            description: "Keep this week's and next week's here — remove old ones whenever, they just stop showing on their own.",
+            itemLabel: (props) => props.fields.weekOf.value ?? "Untitled",
+          }
+        ),
       },
     }),
     // Edits content/site.json — service times, address, contact info, links.
