@@ -6,6 +6,7 @@ import Link from "next/link";
 import { getUpcomingEvents } from "@/lib/content";
 import { getUpcomingSignups } from "@/lib/pco";
 import { htmlToParagraphs } from "@/lib/html";
+import { getCurrentBulletin } from "@/lib/bulletin";
 
 export const metadata: Metadata = {
   title: "Events",
@@ -27,6 +28,7 @@ const dateFmt = new Intl.DateTimeFormat("en-US", {
 });
 export default async function Events() {
   const [events, signups] = await Promise.all([getUpcomingEvents(), getUpcomingSignups()]);
+  const bulletin = getCurrentBulletin();
 
   return (
     <main className="flex-1">
@@ -35,6 +37,27 @@ export default async function Events() {
         title="Events"
         intro="Beyond the weekly services — trips, conferences, and the occasional excuse to eat together."
       />
+
+      {bulletin && (
+        <section className="px-4 pt-10">
+          <div className="mx-auto max-w-4xl">
+            <a
+              href={bulletin.pdf!}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover-lift flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+            >
+              <span>
+                <span className="block text-sm font-semibold uppercase tracking-wide text-brand-700">
+                  This week
+                </span>
+                <span className="mt-0.5 block text-xl font-bold text-slate-900">This week&rsquo;s bulletin</span>
+              </span>
+              <span className="shrink-0 font-semibold text-brand-700">View →</span>
+            </a>
+          </div>
+        </section>
+      )}
 
       <section className="px-4 py-14">
         <div className="mx-auto max-w-4xl space-y-14">

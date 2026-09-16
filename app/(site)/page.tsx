@@ -1,7 +1,6 @@
 import Link from "next/link";
 import site from "@/content/site.json";
 import homepage from "@/content/homepage.json";
-import bulletin from "@/content/bulletin.json";
 import Photo from "@/components/Photo";
 import EventsCarousel, { type CarouselItem } from "@/components/EventsCarousel";
 import LiteYouTube from "@/components/LiteYouTube";
@@ -12,11 +11,6 @@ import { getGoogleReviews } from "@/lib/google-reviews";
 
 export const revalidate = 900;
 
-// content/bulletin.json starts as `{ "bulletins": [] }` — TS infers an empty
-// array literal as never[], so the shape needs spelling out explicitly.
-type BulletinEntry = { weekOf: string | null; pdf: string | null };
-const bulletins = bulletin.bulletins as BulletinEntry[];
-
 const fullDate = new Intl.DateTimeFormat("en-US", {
   weekday: "long",
   month: "long",
@@ -25,17 +19,6 @@ const fullDate = new Intl.DateTimeFormat("en-US", {
 });
 const dayNumFmt = new Intl.DateTimeFormat("en-US", { day: "numeric", timeZone: "America/Detroit" });
 const monthFmt = new Intl.DateTimeFormat("en-US", { month: "short", timeZone: "America/Detroit" });
-
-/** The Sunday that starts the current week, as a YYYY-MM-DD string — a
- *  bulletin runs Sunday-Saturday, so whichever entry has this exact date
- *  is the one to show. UTC arithmetic on an already-Detroit-resolved date
- *  string keeps this safe across the DST transition. */
-function currentWeekSunday(): string {
-  const todayInDetroit = new Date().toLocaleDateString("en-CA", { timeZone: "America/Detroit" });
-  const d = new Date(`${todayInDetroit}T00:00:00Z`);
-  d.setUTCDate(d.getUTCDate() - d.getUTCDay());
-  return d.toISOString().slice(0, 10);
-}
 
 /** Carousel cards from the church's own events (content/events). */
 async function featuredEvents(): Promise<CarouselItem[]> {
@@ -80,7 +63,6 @@ export default async function Home() {
     getGoogleReviews(),
   ]);
   const testimonials = [...manualTestimonials, ...googleReviews];
-  const currentBulletin = bulletins.find((b) => b.weekOf === currentWeekSunday()) ?? null;
 
   return (
     <main className="flex-1">
@@ -135,21 +117,6 @@ export default async function Home() {
           </p>
         </div>
       </section>
-
-      {/* This week's bulletin — whichever entry in Keystatic is tagged with
-          this week's Sunday; switches over automatically week to week */}
-      {currentBulletin && (
-        <section className="border-b border-slate-200 bg-slate-50 px-4 py-4 text-center">
-          <a
-            href={currentBulletin.pdf!}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-semibold text-brand-700 underline-offset-4 hover:underline"
-          >
-            This week&rsquo;s bulletin →
-          </a>
-        </section>
-      )}
 
       {/* This week at a glance */}
       {announcements.length > 0 && (
