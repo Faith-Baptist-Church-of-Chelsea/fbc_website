@@ -1,6 +1,7 @@
 import Link from "next/link";
 import site from "@/content/site.json";
 import homepage from "@/content/homepage.json";
+import bulletin from "@/content/bulletin.json";
 import Photo from "@/components/Photo";
 import EventsCarousel, { type CarouselItem } from "@/components/EventsCarousel";
 import LiteYouTube from "@/components/LiteYouTube";
@@ -19,6 +20,15 @@ const fullDate = new Intl.DateTimeFormat("en-US", {
 });
 const dayNumFmt = new Intl.DateTimeFormat("en-US", { day: "numeric", timeZone: "America/Detroit" });
 const monthFmt = new Intl.DateTimeFormat("en-US", { month: "short", timeZone: "America/Detroit" });
+
+/** True for ~8 days after weekOf — long enough to cover the whole week
+ *  it's for, short enough that a forgotten upload doesn't linger for months. */
+function isBulletinCurrent(weekOf: string | null): boolean {
+  if (!weekOf) return false;
+  const today = new Date().toLocaleDateString("en-CA", { timeZone: "America/Detroit" });
+  const diffDays = (new Date(today).getTime() - new Date(weekOf).getTime()) / 86_400_000;
+  return diffDays >= -1 && diffDays <= 8;
+}
 
 /** Carousel cards from the church's own events (content/events). */
 async function featuredEvents(): Promise<CarouselItem[]> {
@@ -63,6 +73,7 @@ export default async function Home() {
     getGoogleReviews(),
   ]);
   const testimonials = [...manualTestimonials, ...googleReviews];
+  const showBulletin = Boolean(bulletin.pdf) && isBulletinCurrent(bulletin.weekOf);
 
   return (
     <main className="flex-1">
@@ -117,6 +128,20 @@ export default async function Home() {
           </p>
         </div>
       </section>
+
+      {/* This week's bulletin — set in Keystatic, auto-hides after ~8 days */}
+      {showBulletin && (
+        <section className="border-b border-slate-200 bg-slate-50 px-4 py-4 text-center">
+          <a
+            href={bulletin.pdf!}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold text-brand-700 underline-offset-4 hover:underline"
+          >
+            This week&rsquo;s bulletin →
+          </a>
+        </section>
+      )}
 
       {/* This week at a glance */}
       {announcements.length > 0 && (

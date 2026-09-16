@@ -113,6 +113,26 @@ export default config({
         ),
       },
     }),
+    // Edits content/bulletin.json — the weekly bulletin PDF. Listed near the
+    // top (same reasoning as "Homepage photos" above): whoever uploads this
+    // does it every single week, so it needs to be easy to find fast.
+    bulletin: singleton({
+      label: "This week's bulletin",
+      path: "content/bulletin",
+      format: { data: "json" },
+      schema: {
+        weekOf: fields.date({
+          label: "Week of",
+          description: "The Sunday this bulletin is for. Used to hide it automatically once it's old.",
+        }),
+        pdf: fields.file({
+          label: "Bulletin PDF",
+          description: "Upload this week's bulletin as a PDF.",
+          directory: "public/bulletin",
+          publicPath: "/bulletin/",
+        }),
+      },
+    }),
     // Edits content/site.json — service times, address, contact info, links.
     site: singleton({
       label: "Church Info (times, address, links)",
