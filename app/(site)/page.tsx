@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import site from "@/content/site.json";
 import homepage from "@/content/homepage.json";
@@ -10,6 +11,15 @@ import { getRecentVideos } from "@/lib/youtube";
 import { getGoogleReviews } from "@/lib/google-reviews";
 
 export const revalidate = 900;
+
+// The root layout's relative canonical ("./") resolves correctly on every
+// page except this one: in production the root route's internal name is
+// "/index", so the homepage was declaring https://fbcchelsea.org/index as
+// canonical — a duplicate URL Google then indexed. An absolute path is
+// resolved from metadataBase alone, independent of the route name.
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 const fullDate = new Intl.DateTimeFormat("en-US", {
   weekday: "long",

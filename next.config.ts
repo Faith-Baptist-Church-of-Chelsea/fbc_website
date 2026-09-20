@@ -48,6 +48,9 @@ const nextConfig: NextConfig = {
         destination: "https://fbcchelsea.org/:path*",
         permanent: true,
       },
+      // Next serves the root route at /index as well as /, and that duplicate
+      // got into Google's index via a bad canonical (see app/(site)/page.tsx).
+      { source: "/index", destination: "/", permanent: true },
       { source: "/statement-of-faith", destination: "/about#statement-of-faith", permanent: true },
       { source: "/statement-of-faith/", destination: "/about#statement-of-faith", permanent: true },
       { source: "/teachers", destination: "/fbc-kids", permanent: true },
