@@ -35,7 +35,19 @@ export function ChurchJsonLd() {
       postalCode: site.address.zip,
       addressCountry: "US",
     },
-    sameAs: [site.social.facebook, site.social.instagram, site.social.youtube],
+    // Every well-known listing for the church, so search engines tie those
+    // profiles (and their reviews) to THIS site as the canonical home.
+    sameAs: [
+      site.social.facebook,
+      site.social.instagram,
+      site.social.youtube,
+      ...(site.social.sermonAudio ? [site.social.sermonAudio] : []),
+    ],
+    hasMap: site.address.mapsUrl,
+    areaServed: [
+      { "@type": "City", name: "Chelsea", containedInPlace: { "@type": "State", name: "Michigan" } },
+      { "@type": "AdministrativeArea", name: "Washtenaw County" },
+    ],
     // Weekly services as recurring opening hours (the schema.org-correct
     // way to represent them — Event requires a concrete startDate, which
     // a perpetually-repeating service doesn't have, and was failing

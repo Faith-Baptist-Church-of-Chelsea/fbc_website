@@ -71,6 +71,15 @@ const nextConfig: NextConfig = {
       { source: "/activity", destination: "/", permanent: true },
       { source: "/activity/", destination: "/", permanent: true },
       { source: "/category/:slug*", destination: "/about", permanent: true },
+      // More old WordPress URLs Google still lists for the domain (found via
+      // site:fbcchelsea.org) that were dead-ending in 404s.
+      { source: "/streaming-video-services", destination: "/live", permanent: true },
+      { source: "/missionaries", destination: "/missions", permanent: true },
+      { source: "/missionaries/:slug*", destination: "/missions", permanent: true },
+      { source: "/staff", destination: "/about", permanent: true },
+      { source: "/contact-us", destination: "/contact", permanent: true },
+      { source: "/ministries", destination: "/", permanent: true },
+      { source: "/calendar", destination: "/events", permanent: true },
     ];
   },
 };

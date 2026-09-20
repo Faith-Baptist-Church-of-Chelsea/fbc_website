@@ -96,7 +96,13 @@ export default async function Home() {
         </video>
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950/45 via-slate-950/35 to-slate-950/85" aria-hidden="true" />
         <div className="relative mx-auto max-w-4xl text-center">
-          <h1 className="animate-rise animate-rise-1 text-5xl leading-none sm:text-7xl">
+          {/* The one place the homepage says, in plain words, what and
+              where this is — the H1 is the tagline, so the location signal
+              lives here (same eyebrow pattern every other page's hero uses). */}
+          <p className="animate-rise animate-rise-1 text-sm font-semibold uppercase tracking-wider text-brand-400">
+            An independent Baptist church in Chelsea, Michigan
+          </p>
+          <h1 className="animate-rise animate-rise-1 mt-3 text-5xl leading-none sm:text-7xl">
             Rooted in the Word,<br className="hidden sm:block" />
             <span className="text-brand-400"> growing in grace.</span>
           </h1>
