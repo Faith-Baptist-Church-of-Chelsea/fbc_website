@@ -55,7 +55,7 @@ answer, add the answer here.
 ## Practical
 
 - Office hours: Mon–Thu 8 AM–4 PM (Wednesday open through the evening
-  service), Sat 8 AM–noon, closed Friday. Phone: (734) 433-1360.
+  service), Sat 8 AM–noon, closed Friday. Phone: (734) 433-1356.
 - Online giving is at fbcchelsea.churchtrac.com/give. Visitors are guests and
   are never expected to give.
 - The Church Center app (free, iPhone/Android) has events, sign-ups, and the
