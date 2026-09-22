@@ -137,7 +137,9 @@ export default function Footer({ extraLinks = [] }: { extraLinks?: { label: stri
           <p className="text-xs text-slate-400">
             © {new Date().getFullYear()} {site.name}
           </p>
-          <p className="flex items-center gap-4">
+          {/* Right padding keeps the last icons clear of the floating chat
+              bubble (bottom-right, ~4.5rem wide) when scrolled to the bottom. */}
+          <p className="flex items-center gap-4 pr-20">
             <a href={site.social.facebook} aria-label="Facebook" className="text-slate-400 hover:text-white">
               <FacebookIcon />
             </a>

@@ -30,6 +30,7 @@ export async function getCustomPages() {
     .map(({ slug, entry }) => ({
       slug,
       title: entry.title,
+      menuLabel: entry.menuLabel || null,
       menu: entry.menu,
       menuOrder: entry.menuOrder ?? 99,
     }));
@@ -58,7 +59,7 @@ export async function getCustomNavLinks(): Promise<{
       pages
         .filter((p) => p.menu === menu)
         .sort((a, b) => a.menuOrder - b.menuOrder || a.title.localeCompare(b.title))
-        .map((p) => ({ label: p.title, href: `/${p.slug}` }));
+        .map((p) => ({ label: p.menuLabel || p.title, href: `/${p.slug}` }));
     return { ministries: links("ministries"), footer: links("footer") };
   } catch {
     return { ministries: [], footer: [] };

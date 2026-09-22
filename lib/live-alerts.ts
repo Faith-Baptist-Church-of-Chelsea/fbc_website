@@ -14,6 +14,7 @@ import crypto from "node:crypto";
 import { Resend } from "resend";
 import { del, get, list, put } from "@vercel/blob";
 import type { SubscribeResult } from "@/lib/mailing-list";
+import { recordEvent } from "@/lib/metrics";
 
 const PREFIX = "live-alerts/subscribers/";
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://fbc-website-delta.vercel.app";
@@ -46,6 +47,7 @@ export async function addLiveAlertSubscriber(email: string): Promise<SubscribeRe
       allowOverwrite: true, // re-subscribing is idempotent
       contentType: "application/json",
     });
+    recordEvent("subscribe.live");
     return { ok: true, detail: "You're set — we'll email you the moment a service goes live." };
   } catch (err) {
     console.warn("[live-alerts] subscribe failed:", err instanceof Error ? err.message : err);
@@ -127,5 +129,6 @@ export async function sendLiveAlert(videoId: string | null, label: string): Prom
     }
     sent += batch.length;
   }
+  if (sent > 0) recordEvent("livealert.sent", { sent, label, videoId });
   return { sent, detail: `emailed ${sent} of ${contacts.length} subscribers` };
 }

@@ -10,6 +10,7 @@
 // setting DIGEST_BROADCAST=1 — until then the Monday cron only sends the
 // staff copy.
 import "server-only";
+import { recordEvent } from "@/lib/metrics";
 
 const AUDIENCE_NAME = "This Week at Faith";
 
@@ -161,6 +162,7 @@ export async function addSubscriber(
     console.warn(`[mailing-list] contact create failed: HTTP ${res.status}`);
     return { ok: false, detail: "Something went wrong — try again in a minute." };
   }
+  recordEvent("subscribe.weekly");
   return { ok: true, detail: "You're on the list! See you Monday morning." };
 }
 
@@ -203,5 +205,6 @@ export async function sendDigestBroadcast(
   const { id } = (await create.json()) as { id: string };
   const send = await resend(`/broadcasts/${id}/send`, { method: "POST", body: "{}" });
   if (!send.ok) return { sent: false, detail: `broadcast send failed: HTTP ${send.status}` };
+  recordEvent("digest.broadcast");
   return { sent: true, detail: "broadcast sent to the mailing list" };
 }

@@ -121,6 +121,26 @@ async function getDurations(videoIds: string[]): Promise<Map<string, string>> {
   return durations;
 }
 
+/** View counts for a batch of ids — 1 quota unit per call (up to 50 ids). */
+export async function getVideoStats(videoIds: string[]): Promise<Map<string, number>> {
+  const out = new Map<string, number>();
+  if (!KEY || videoIds.length === 0) return out;
+  try {
+    const res = await fetch(
+      `https://www.googleapis.com/youtube/v3/videos?part=statistics&id=${videoIds.slice(0, 50).join(",")}&key=${KEY}`,
+      { cache: "no-store" }
+    );
+    if (!res.ok) return out;
+    const json = (await res.json()) as { items?: { id?: string; statistics?: { viewCount?: string } }[] };
+    for (const item of json.items ?? []) {
+      if (item.id && item.statistics?.viewCount) out.set(item.id, Number(item.statistics.viewCount));
+    }
+  } catch (err) {
+    console.warn("[youtube] getVideoStats failed:", err instanceof Error ? err.message : err);
+  }
+  return out;
+}
+
 /**
  * Recent uploads (newest first) — 1 quota unit. YouTube's uploads playlist
  * orders completed LIVE STREAMS by their scheduled date rather than when

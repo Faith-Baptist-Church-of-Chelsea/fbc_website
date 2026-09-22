@@ -88,6 +88,7 @@ export default async function Home() {
         <link rel="preload" as="image" href="/images/hero-poster.jpg" fetchPriority="high" />
         <HeroVideo
           src="/videos/hero.mp4"
+          mobileSrc="/videos/hero-mobile.mp4"
           poster="/images/hero-poster.jpg"
           className="hero-video absolute inset-0 h-full w-full scale-105 object-cover opacity-50"
         />

@@ -8,6 +8,7 @@
 // If one half fails, the other still happens; total failure is reported
 // to the visitor honestly with a fallback email address.
 import "server-only";
+import { recordEvent } from "@/lib/metrics";
 import { Resend } from "resend";
 import site from "@/content/site.json";
 import { pcoFetch } from "@/lib/pco";
@@ -37,6 +38,7 @@ const KIND_LABEL: Record<Submission["kind"], string> = {
  * church address now, no longer the onboarding@resend.dev placeholder.
  */
 export async function sendFormEmail(s: Submission): Promise<boolean> {
+  recordEvent(`form.${s.kind}`);
   const key = process.env.RESEND_API_KEY;
   if (!key) {
     console.warn("[forms] RESEND_API_KEY not set — email not sent");

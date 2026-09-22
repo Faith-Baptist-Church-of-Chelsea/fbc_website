@@ -41,7 +41,7 @@ export default function AskBubble() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 z-40">
+    <div className="fixed bottom-6 right-6 z-40">
       {open && (
         <div className="mb-3 flex h-[28rem] w-[min(22rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
           <div className="bg-slate-900 px-4 py-3 text-white">

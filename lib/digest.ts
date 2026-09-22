@@ -8,6 +8,7 @@
 import "server-only";
 import crypto from "node:crypto";
 import { Resend } from "resend";
+import { recordEvent } from "@/lib/metrics";
 import site from "@/content/site.json";
 import { getUpcomingEvents, getActiveAnnouncements, type ChurchEvent } from "@/lib/content";
 import { getRecentVideos } from "@/lib/youtube";
@@ -199,6 +200,7 @@ export async function sendDigest(
     }));
     detail += `; ${sync.detail}`;
   }
+  recordEvent("digest.review");
   return { sent: true, detail };
 }
 

@@ -2,13 +2,15 @@ title: Bienvenido a Faith Baptist Church
 browserTitle: Español — Faith Baptist Church of Chelsea
 eyebrow: En español
 intro: >-
-  Somos una iglesia bautista independiente en Chelsea, Michigan. Aquí tiene
-  lo esencial para su primera visita — sin sorpresas.
+  Somos una iglesia bautista independiente en Chelsea, Michigan, con
+  traducción al español disponible. Aquí tiene lo esencial para su primera
+  visita — sin sorpresas.
 description: >-
   Horarios de servicio, dirección y qué esperar en su primera visita a Faith
   Baptist Church en Chelsea, Michigan. Información en español.
 menu: footer
 menuOrder: 50
+menuLabel: Español
 sections:
   - discriminant: text
     value:
@@ -19,7 +21,11 @@ sections:
         - **Domingo 6:00 PM** — Servicio de la tarde
         - **Miércoles 7:00 PM** — Servicio de mitad de semana
 
-        Cualquiera de ellos es una buena primera visita. Los servicios duran aproximadamente una hora y quince minutos y se realizan en inglés. También se transmiten en vivo por [YouTube](https://www.youtube.com/@faithbaptistchurchofchelsea) y Facebook.
+        Cualquiera de ellos es una buena primera visita. Los servicios duran aproximadamente una hora y quince minutos.
+
+        **Traducción al español:** los servicios se predican en inglés, pero contamos con un servicio de traducción al español disponible en todos los servicios, excepto en Family School. Pregunte en la mesa de bienvenida al llegar y con gusto le ayudarán.
+
+        Los servicios también se transmiten en vivo por [YouTube](https://www.youtube.com/@faithbaptistchurchofchelsea) y Facebook.
       tint: false
   - discriminant: text
     value:

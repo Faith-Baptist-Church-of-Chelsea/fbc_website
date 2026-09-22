@@ -8,6 +8,7 @@ import { Resend } from "resend";
 import site from "@/content/site.json";
 import { runPcoHealthChecks, type HealthCheck } from "@/lib/pco";
 import { getRecentVideos } from "@/lib/youtube";
+import { sendMonthlyReport } from "@/lib/report";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -22,6 +23,18 @@ export async function GET(req: NextRequest) {
     : (req.headers.get("user-agent") ?? "").startsWith("vercel-cron");
   if (!isCron) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
+
+  // Monthly "how the site did" report: on the 1st of the month for the
+  // month just ended, or on demand with ?report=YYYY-MM (still cron-gated).
+  // Rides on this daily cron because the Hobby plan allows only two.
+  const dayOfMonth = new Date().toLocaleDateString("en-US", { day: "numeric", timeZone: "America/Detroit" });
+  const forcedMonth = req.nextUrl.searchParams.get("report");
+  let report: { sent: boolean; detail: string } | null = null;
+  if (forcedMonth || dayOfMonth === "1") {
+    report = await sendMonthlyReport(forcedMonth && /^\d{4}-\d{2}$/.test(forcedMonth) ? forcedMonth : undefined).catch(
+      (err: unknown) => ({ sent: false, detail: err instanceof Error ? err.message : "report failed" })
+    );
   }
 
   const checks: HealthCheck[] = [...(await runPcoHealthChecks())];
@@ -156,5 +169,6 @@ export async function GET(req: NextRequest) {
     ok: failures.length === 0,
     failures: failures.map((f) => f.name),
     checked: checks.length,
+    ...(report ? { report } : {}),
   });
 }

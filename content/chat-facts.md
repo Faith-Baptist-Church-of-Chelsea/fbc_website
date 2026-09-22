@@ -28,6 +28,9 @@ answer, add the answer here.
   Wednesday 7:00 PM Midweek Service.
 - Preaching is expository — working through the Bible text. The church uses
   the King James Version; visitors may bring any Bible.
+- Spanish translation is available at every service except Family School —
+  ask at the welcome desk. There is a Spanish-language visitor page at
+  /espanol.
 - Music: a blend of old hymns and newer spiritual songs; choir most Sundays,
   plus an orchestra. Anyone can join choir or orchestra — no audition; talk to
   Matthew Dowdy, the music director.

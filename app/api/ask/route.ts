@@ -10,6 +10,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import site from "@/content/site.json";
 import { buildChurchKnowledge } from "@/lib/church-knowledge";
 import { sendUnansweredQuestionEmail } from "@/lib/forms";
+import { recordEvent } from "@/lib/metrics";
 import { makeRateLimiter, requestIp } from "@/lib/rate-limit";
 
 // The model reports whether it could actually answer from church info;
@@ -113,6 +114,7 @@ ${knowledge}`,
     try {
       const parsed = JSON.parse(text) as { answer?: string; answeredFromInfo?: boolean };
       if (parsed.answer) answer = parsed.answer;
+      recordEvent(parsed.answeredFromInfo === false ? "question.unanswered" : "question.answered", { question });
       if (parsed.answeredFromInfo === false) {
         // Fire-and-forget staff notification; never blocks the visitor.
         void sendUnansweredQuestionEmail(question);

@@ -348,6 +348,10 @@ export default config({
           ],
           defaultValue: "none",
         }),
+        menuLabel: fields.text({
+          label: "Menu label (optional)",
+          description: "Short name for the footer/menu link, e.g. \"Español\" — defaults to the page name",
+        }),
         menuOrder: fields.integer({
           label: "Menu position",
           description: "Lower numbers appear first among custom pages",
