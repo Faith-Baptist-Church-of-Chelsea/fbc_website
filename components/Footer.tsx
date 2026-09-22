@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import site from "@/content/site.json";
 import SubscribeForm from "@/components/SubscribeForm";
+import { dayName, ES, navLabel, serviceName, type Locale } from "@/lib/i18n";
 
 // Simple monochrome footer icons (currentColor, so hover states just work)
 // for Facebook/Instagram/YouTube. Sermon Audio and Church Center use their
@@ -57,23 +58,30 @@ const quickLinks = [
 
 // extraLinks: menu entries from volunteer-created pages ("Pages" in
 // /keystatic set to "Footer links") — passed in by the layout.
-export default function Footer({ extraLinks = [] }: { extraLinks?: { label: string; href: string }[] }) {
+export default function Footer({
+  extraLinks = [],
+  locale = "en",
+}: {
+  extraLinks?: { label: string; href: string }[];
+  locale?: Locale;
+}) {
+  const es = locale === "es";
   return (
     <footer className="bg-slate-950 text-slate-300">
       <div className="border-b border-slate-800">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-8 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="text-sm font-semibold uppercase tracking-wider text-white">
-              This Week at Faith
+              {es ? "Esta semana en Faith" : "This Week at Faith"}
             </h2>
             <p className="mt-1 text-sm text-slate-400">
-              One email every Monday — that week&rsquo;s events and the latest message.
+              {es ? ES.footer.signupBlurb : <>One email every Monday — that week&rsquo;s events and the latest message.</>}
             </p>
           </div>
-          <SubscribeForm dark />
+          <SubscribeForm dark locale={locale} />
           <p className="mt-2 text-xs text-slate-400">
             <Link href="/weekly-email" className="underline-offset-4 hover:text-white hover:underline">
-              What&rsquo;s in it? See a sample →
+              {es ? ES.footer.sample : <>What&rsquo;s in it? See a sample →</>}
             </Link>
           </p>
         </div>
@@ -81,15 +89,15 @@ export default function Footer({ extraLinks = [] }: { extraLinks?: { label: stri
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:grid-cols-3">
         <div>
           <h2 className="text-sm font-semibold uppercase tracking-wider text-white">
-            Service Times
+            {es ? ES.footer.serviceTimes : "Service Times"}
           </h2>
           <ul className="mt-4 space-y-2 text-sm">
             {site.services.map((s) => (
               <li key={`${s.day}-${s.time}`}>
                 <span className="font-medium text-white">
-                  {s.day} {s.time}
+                  {dayName(locale, s.day)} {s.time}
                 </span>{" "}
-                — {s.name}
+                — {serviceName(locale, s.name)}
               </li>
             ))}
           </ul>
@@ -97,7 +105,7 @@ export default function Footer({ extraLinks = [] }: { extraLinks?: { label: stri
 
         <div>
           <h2 className="text-sm font-semibold uppercase tracking-wider text-white">
-            Find Us
+            {es ? ES.footer.findUs : "Find Us"}
           </h2>
           <address className="mt-4 space-y-2 text-sm not-italic">
             <p>
@@ -118,13 +126,13 @@ export default function Footer({ extraLinks = [] }: { extraLinks?: { label: stri
 
         <div>
           <h2 className="text-sm font-semibold uppercase tracking-wider text-white">
-            Quick Links
+            {es ? ES.footer.quickLinks : "Quick Links"}
           </h2>
           <ul className="mt-4 space-y-2 text-sm">
             {[...quickLinks, ...extraLinks].map((l) => (
               <li key={l.href}>
                 <Link href={l.href} className="hover:text-white">
-                  {l.label}
+                  {navLabel(locale, l.href, l.label)}
                 </Link>
               </li>
             ))}

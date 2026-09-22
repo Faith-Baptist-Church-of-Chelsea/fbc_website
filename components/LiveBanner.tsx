@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { nearServiceStart } from "@/lib/service-windows";
+import { ES, serviceName, type Locale } from "@/lib/i18n";
 
 type LiveState = {
   show: boolean;
@@ -13,7 +14,8 @@ type LiveState = {
 // Shows during service windows, unmistakably, at the very top of the page.
 // Wording is honest about what we know: "WE'RE LIVE" only when the YouTube
 // API confirmed it; otherwise "happening now" with a watch link.
-export default function LiveBanner() {
+export default function LiveBanner({ locale = "en" }: { locale?: Locale }) {
+  const es = locale === "es";
   const [state, setState] = useState<LiveState | null>(null);
   // Refs (not state) so the polling interval can read them without
   // re-subscribing every time the banner toggles.
@@ -77,15 +79,19 @@ export default function LiveBanner() {
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-4 gap-y-2 text-center">
         <p className="font-bold">
         <span className="mr-2 inline-block h-2.5 w-2.5 animate-pulse rounded-full bg-white align-middle" aria-hidden="true" />
-          {state.verified
-            ? `We're live right now — ${state.label}`
-            : `${state.label} is happening now`}
+          {es
+            ? state.verified
+              ? ES.live.verified(serviceName("es", state.label ?? ""))
+              : ES.live.scheduled(serviceName("es", state.label ?? ""))
+            : state.verified
+              ? `We're live right now — ${state.label}`
+              : `${state.label} is happening now`}
         </p>
         <a
           href={watchUrl}
           className="rounded-md bg-white px-4 py-1.5 text-sm font-bold text-red-700 hover:bg-red-50"
         >
-          Watch the live stream
+          {es ? ES.live.watch : "Watch the live stream"}
         </a>
       </div>
     </div>

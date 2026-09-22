@@ -17,6 +17,11 @@ export type CustomPage = NonNullable<Awaited<ReturnType<typeof getCustomPage>>>;
  * these names would be silently shadowed by the built-in page, so the
  * places that list custom pages (menus, sitemap) skip them entirely.
  */
+// Custom pages served by their own route group instead of (site)/[slug]
+// (a static route always wins over the dynamic one; [slug] just must not
+// also try to build them).
+export const LOCALIZED_SLUGS = new Set(["espanol"]);
+
 export const RESERVED_SLUGS = new Set([
   "events", "live", "salvation", "sermons",
   "admin", "api", "keystatic", "videos",

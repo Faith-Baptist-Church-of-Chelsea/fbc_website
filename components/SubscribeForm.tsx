@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { ES, type Locale } from "@/lib/i18n";
 
 // Email signup for the "This Week at Faith" weekly digest. Used in the
 // footer (dark) and on the Events page (light) — the `dark` prop flips
 // the palette.
-export default function SubscribeForm({ dark = false }: { dark?: boolean }) {
+export default function SubscribeForm({ dark = false, locale = "en" }: { dark?: boolean; locale?: Locale }) {
+  const es = locale === "es";
   const [email, setEmail] = useState("");
   const [website, setWebsite] = useState(""); // honeypot
   const [busy, setBusy] = useState(false);
@@ -24,8 +26,8 @@ export default function SubscribeForm({ dark = false }: { dark?: boolean }) {
       const json = (await res.json()) as { detail?: string; error?: string };
       setMessage(
         res.ok
-          ? { ok: true, text: json.detail ?? "You're on the list!" }
-          : { ok: false, text: json.error ?? "Something went wrong — try again." }
+          ? { ok: true, text: es ? ES.subscribe.ok : (json.detail ?? "You're on the list!") }
+          : { ok: false, text: es ? ES.subscribe.fail : (json.error ?? "Something went wrong — try again.") }
       );
       if (res.ok) setEmail("");
     } catch {
@@ -47,7 +49,7 @@ export default function SubscribeForm({ dark = false }: { dark?: boolean }) {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@example.com"
+          placeholder={es ? ES.subscribe.placeholder : "you@example.com"}
           className={`w-full rounded-lg border px-3 py-2 text-sm ${
             dark
               ? "border-slate-700 bg-slate-900 text-white placeholder:text-slate-500"
@@ -68,7 +70,7 @@ export default function SubscribeForm({ dark = false }: { dark?: boolean }) {
           disabled={busy}
           className="shrink-0 rounded-lg bg-brand-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-600 disabled:opacity-50"
         >
-          {busy ? "…" : "Sign up"}
+          {busy ? "…" : es ? ES.subscribe.button : "Sign up"}
         </button>
       </div>
       {message && (

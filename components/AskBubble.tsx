@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { ES, type Locale } from "@/lib/i18n";
 
 type Turn = { role: "user" | "assistant"; content: string };
 
 // The floating "ask a question" bubble, bottom-right on every page.
 // Talks to /api/ask, which answers only from the church's own content.
-export default function AskBubble() {
+export default function AskBubble({ locale = "en" }: { locale?: Locale }) {
+  const es = locale === "es";
   const [open, setOpen] = useState(false);
   const [turns, setTurns] = useState<Turn[]>([]);
   const [input, setInput] = useState("");
@@ -45,17 +47,21 @@ export default function AskBubble() {
       {open && (
         <div className="mb-3 flex h-[28rem] w-[min(22rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl">
           <div className="bg-slate-900 px-4 py-3 text-white">
-            <p className="font-bold">Questions about our church?</p>
+            <p className="font-bold">{es ? ES.ask.title : "Questions about our church?"}</p>
             <p className="text-xs text-slate-300">
-              An automated assistant that only knows about Faith Baptist — for
-              anything personal, please contact our pastors.
+              {es
+                ? "Un asistente automático que solo conoce Faith Baptist — para asuntos personales, contacte a nuestros pastores. Puede escribir en español."
+                : "An automated assistant that only knows about Faith Baptist — for anything personal, please contact our pastors."}
             </p>
           </div>
           <div ref={listRef} className="flex-1 space-y-3 overflow-y-auto p-4" aria-live="polite">
             {turns.length === 0 && (
               <p className="text-sm text-slate-500">
-                Try: &ldquo;What should I wear?&rdquo; · &ldquo;What do you
-                have for a 4-year-old?&rdquo; · &ldquo;Are you KJV?&rdquo;
+                {es ? (
+                  <>Pruebe: &ldquo;¿Cómo debo vestirme?&rdquo; · &ldquo;¿Qué tienen para un niño de 4 años?&rdquo; · &ldquo;¿Hay traducción al español?&rdquo;</>
+                ) : (
+                  <>Try: &ldquo;What should I wear?&rdquo; · &ldquo;What do you have for a 4-year-old?&rdquo; · &ldquo;Are you KJV?&rdquo;</>
+                )}
               </p>
             )}
             {turns.map((t, i) => (
@@ -72,20 +78,20 @@ export default function AskBubble() {
             ))}
             {busy && (
               <p className="mr-8 rounded-xl bg-slate-100 px-3 py-2 text-sm text-slate-500">
-                Thinking…
+                {es ? "Pensando…" : "Thinking…"}
               </p>
             )}
           </div>
           <form onSubmit={send} className="flex gap-2 border-t border-slate-200 p-3">
             <label htmlFor="ask-input" className="sr-only">
-              Your question
+              {es ? "Su pregunta" : "Your question"}
             </label>
             <input
               id="ask-input"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               maxLength={600}
-              placeholder="Ask a question…"
+              placeholder={es ? ES.ask.placeholder : "Ask a question…"}
               className="min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm"
             />
             <button
@@ -93,7 +99,7 @@ export default function AskBubble() {
               disabled={busy || !input.trim()}
               className="rounded-lg bg-brand-500 px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
             >
-              Send
+              {es ? ES.ask.send : "Send"}
             </button>
           </form>
         </div>
@@ -102,7 +108,7 @@ export default function AskBubble() {
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        aria-label={open ? "Close church questions chat" : "Ask a question about our church"}
+        aria-label={open ? (es ? ES.ask.close : "Close church questions chat") : es ? ES.ask.open : "Ask a question about our church"}
         className="ml-auto flex h-14 w-14 items-center justify-center rounded-full bg-brand-500 text-white shadow-lg transition-colors hover:bg-brand-600"
       >
         {open ? (

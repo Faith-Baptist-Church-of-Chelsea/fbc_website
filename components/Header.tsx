@@ -11,6 +11,7 @@ import {
   secondaryLinks,
   type NavLink,
 } from "@/lib/nav";
+import { ES, navLabel, type Locale } from "@/lib/i18n";
 
 // Small "opens in a new tab" indicator for ministry links that go to a
 // separate organization's own website (Family School, FBC Kids, etc.
@@ -40,10 +41,14 @@ function ExternalIcon() {
 export default function Header({
   extraMinistries = [],
   extraSecondary = [],
+  locale = "en",
 }: {
   extraMinistries?: NavLink[];
   extraSecondary?: NavLink[];
+  locale?: Locale;
 }) {
+  const es = locale === "es";
+  const label = (l: NavLink) => navLabel(locale, l.href, l.label);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [ministriesOpen, setMinistriesOpen] = useState(false);
   const pathname = usePathname();
@@ -72,7 +77,7 @@ export default function Header({
         <Link
           href="/"
           onClick={close}
-          aria-label="Faith Baptist Church of Chelsea — home"
+          aria-label={es ? ES.homeAria : "Faith Baptist Church of Chelsea — home"}
           className="flex shrink-0 items-center gap-3"
         >
           {/* Moriah's official website logo */}
@@ -89,7 +94,7 @@ export default function Header({
         {/* Desktop nav */}
         <div className="hidden items-center gap-1 lg:flex">
           <Link href="/about" className={linkClass("/about")}>
-            About
+            {navLabel(locale, "/about", "About")}
           </Link>
 
           {/* Ministries dropdown */}
@@ -104,7 +109,7 @@ export default function Header({
               onClick={() => setMinistriesOpen((o) => !o)}
               className="flex items-center gap-1 rounded px-3 py-2.5 text-sm font-medium text-slate-300 transition-colors hover:text-white"
             >
-              {ministries.label}
+              {es ? ES.ministries : ministries.label}
               <svg aria-hidden="true" width="10" height="10" viewBox="0 0 10 10" className={`transition-transform ${ministriesOpen ? "rotate-180" : ""}`}>
                 <path d="M1 3l4 4 4-4" fill="none" stroke="currentColor" strokeWidth="1.5" />
               </svg>
@@ -131,7 +136,7 @@ export default function Header({
             .filter((l) => l.href !== "/about")
             .map((l) => (
               <Link key={l.href} href={l.href} className={linkClass(l.href)}>
-                {l.label}
+                {label(l)}
               </Link>
             ))}
 
@@ -139,7 +144,7 @@ export default function Header({
             href={planYourVisit.href}
             className="ml-2 rounded-lg bg-brand-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
           >
-            {planYourVisit.label}
+            {label(planYourVisit)}
           </Link>
         </div>
 
@@ -150,13 +155,13 @@ export default function Header({
             onClick={close}
             className="rounded-lg bg-brand-500 px-3 py-2 text-sm font-semibold text-white"
           >
-            Visit
+            {es ? ES.visitShort : "Visit"}
           </Link>
           <button
             type="button"
             aria-expanded={mobileOpen}
             aria-controls="mobile-menu"
-            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            aria-label={mobileOpen ? (es ? ES.closeMenu : "Close menu") : es ? ES.openMenu : "Open menu"}
             onClick={() => setMobileOpen((o) => !o)}
             className="rounded p-2 text-slate-200"
           >
@@ -182,17 +187,17 @@ export default function Header({
             onClick={close}
             className="mt-2 block rounded-lg bg-brand-500 px-4 py-3 text-center text-base font-semibold text-white"
           >
-            {planYourVisit.label}
+            {label(planYourVisit)}
           </Link>
           <div className="mt-4 space-y-1">
             {primaryLinks.map((l) => (
               <Link key={l.href} href={l.href} onClick={close} className="block rounded px-2 py-2 text-base text-slate-200 hover:bg-white/10">
-                {l.label}
+                {label(l)}
               </Link>
             ))}
           </div>
           <p className="mt-4 px-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
-            {ministries.label}
+            {es ? ES.ministries : ministries.label}
           </p>
           <div className="mt-1 space-y-1">
             {ministryLinks.map((l) => (
@@ -211,7 +216,7 @@ export default function Header({
           <div className="mt-4 space-y-1 border-t border-white/10 pt-4">
             {moreLinks.map((l) => (
               <Link key={l.href} href={l.href} onClick={close} className="block rounded px-2 py-2 text-base text-slate-300 hover:bg-white/10">
-                {l.label}
+                {label(l)}
               </Link>
             ))}
           </div>
