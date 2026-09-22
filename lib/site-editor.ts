@@ -116,7 +116,7 @@ export async function commitChanges(
 // ---------- Validation ----------
 
 const SITE_JSON_REQUIRED = [
-  "name", "address", "phone", "emails", "formRecipients", "digestReviewRecipients", "chatQuestionRecipients",
+  "name", "address", "phone", "emails", "formRecipients", "digestReviewRecipients",
   "officeHours", "services", "social", "links",
 ];
 
