@@ -18,6 +18,7 @@ const pages = [
   "/young-adults",
   "/special-music",
   "/sermons",
+  "/weekly-email",
   "/live",
   "/salvation",
   "/events",

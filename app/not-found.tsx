@@ -48,6 +48,20 @@ export default function NotFound() {
           Go to the homepage
         </Link>
       </div>
+      <nav aria-label="Main pages" className="mx-auto mt-10 flex max-w-lg flex-wrap justify-center gap-x-6 gap-y-2 text-sm font-semibold text-brand-700">
+        {[
+          ["/sermons", "Sermons"],
+          ["/live", "Watch Live"],
+          ["/events", "Events"],
+          ["/give", "Give"],
+          ["/about", "About"],
+          ["/contact", "Contact"],
+        ].map(([href, label]) => (
+          <Link key={href} href={href} className="underline-offset-4 hover:underline">
+            {label}
+          </Link>
+        ))}
+      </nav>
       </main>
       <Footer />
     </>

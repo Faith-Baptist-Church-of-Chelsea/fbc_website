@@ -3,8 +3,11 @@ import Link from "next/link";
 import site from "@/content/site.json";
 import NextStep from "@/components/NextStep";
 import { checkLiveNow, getRecentVideos, scrapeLiveNow } from "@/lib/youtube";
-import { nextService } from "@/lib/service-windows";
+import { currentServiceWindow, nextService } from "@/lib/service-windows";
+import { getCurrentBulletin } from "@/lib/bulletin";
 import LiteYouTube from "@/components/LiteYouTube";
+import ServiceCountdown from "@/components/ServiceCountdown";
+import LiveAlertForm from "@/components/LiveAlertForm";
 
 export const metadata: Metadata = {
   title: "Watch Live",
@@ -13,20 +16,53 @@ export const metadata: Metadata = {
 };
 
 // Re-render every minute so the page flips to the player promptly when a
-// stream starts (the underlying live checks are cached ~5 minutes anyway).
+// stream starts (the underlying live check is cached 1 minute).
 export const revalidate = 60;
 
 export default async function LivePage() {
+  // Same decision logic as /api/live: YouTube's own isLive flag (scraped)
+  // is the primary signal and a positive reading is never vetoed by the
+  // Data API's laggier live search — that veto used to blank this page
+  // mid-service. A negative scrape during a scheduled window IS
+  // double-checked, so one bad page fetch can't hide a real stream.
   const scraped = await scrapeLiveNow();
+  const window = currentServiceWindow();
   let live = scraped.live === true;
   let videoId = scraped.videoId;
   if (live) {
     const api = await checkLiveNow();
-    if (api.live === false) live = false;
     if (api.videoId) videoId = api.videoId;
+  } else if (scraped.live === false && window) {
+    const api = await checkLiveNow();
+    if (api.live === true) {
+      live = true;
+      videoId = api.videoId;
+    }
+  } else if (scraped.live === null && window) {
+    const api = await checkLiveNow();
+    if (api.live !== false) {
+      live = true;
+      videoId = api.videoId;
+    }
   }
   const next = nextService();
+  const bulletin = getCurrentBulletin();
   const [latest] = live ? [undefined] : await getRecentVideos(1);
+
+  const bulletinCard = bulletin && (
+    <a
+      href={bulletin.pdf!}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="hover-lift flex items-center justify-between gap-4 rounded-xl border border-slate-700 bg-slate-900 p-5"
+    >
+      <span>
+        <span className="block text-xs font-bold uppercase tracking-wider text-brand-400">Follow along</span>
+        <span className="mt-0.5 block font-bold text-white">This week&rsquo;s bulletin</span>
+      </span>
+      <span className="shrink-0 font-semibold text-brand-400">Open →</span>
+    </a>
+  );
 
   return (
     <main className="flex-1">
@@ -41,18 +77,21 @@ export default async function LivePage() {
               <h1 className="mt-2 text-3xl font-bold sm:text-4xl">
                 Welcome — you&rsquo;re right on time.
               </h1>
-              <div className="mt-6 overflow-hidden rounded-xl">
-                <iframe
-                  className="aspect-video w-full"
-                  src={
-                    videoId
-                      ? `https://www.youtube.com/embed/${videoId}?autoplay=1`
-                      : `https://www.youtube.com/embed/live_stream?channel=${site.social.youtubeChannelId}&autoplay=1`
-                  }
-                  title="Faith Baptist Church live stream"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
+              <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-start">
+                <div className="overflow-hidden rounded-xl">
+                  <iframe
+                    className="aspect-video w-full"
+                    src={
+                      videoId
+                        ? `https://www.youtube.com/embed/${videoId}?autoplay=1`
+                        : `https://www.youtube.com/embed/live_stream?channel=${site.social.youtubeChannelId}&autoplay=1`
+                    }
+                    title="Faith Baptist Church live stream"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+                {bulletinCard && <div className="space-y-4">{bulletinCard}</div>}
               </div>
               <p className="mt-4 text-slate-300">
                 Glad you&rsquo;re here. If you&rsquo;re nearby, we&rsquo;d love
@@ -76,9 +115,16 @@ export default async function LivePage() {
                 <span className="font-bold text-white">
                   {next.label}, {next.when}
                 </span>{" "}
-                (Michigan time). This page becomes the live player the moment
-                the stream starts.
+                (Michigan time) — in{" "}
+                <ServiceCountdown className="font-bold text-white" />. This page becomes the
+                live player the moment the stream starts.
               </p>
+              <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-start">
+                <div>
+                  <LiveAlertForm />
+                </div>
+                {bulletinCard && <div>{bulletinCard}</div>}
+              </div>
               {latest && (
                 <>
                   <h2 className="mt-10 text-xl font-bold">

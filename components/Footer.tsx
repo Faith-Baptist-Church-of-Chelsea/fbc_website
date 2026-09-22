@@ -71,6 +71,11 @@ export default function Footer({ extraLinks = [] }: { extraLinks?: { label: stri
             </p>
           </div>
           <SubscribeForm dark />
+          <p className="mt-2 text-xs text-slate-400">
+            <Link href="/weekly-email" className="underline-offset-4 hover:text-white hover:underline">
+              What&rsquo;s in it? See a sample →
+            </Link>
+          </p>
         </div>
       </div>
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:grid-cols-3">

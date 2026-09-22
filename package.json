@@ -13,6 +13,7 @@
     "@keystatic/core": "^0.6.3",
     "@keystatic/next": "^5.0.4",
     "@vercel/analytics": "^2.0.1",
+    "@vercel/blob": "^2.8.0",
     "mdast-util-from-markdown": "^2.0.3",
     "mdast-util-gfm": "^3.1.0",
     "micromark-extension-gfm": "^3.0.0",

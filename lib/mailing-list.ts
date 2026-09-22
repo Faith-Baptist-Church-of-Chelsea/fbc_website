@@ -29,24 +29,29 @@ async function resend(path: string, init?: RequestInit): Promise<Response> {
   });
 }
 
-/** Find-or-create the digest audience. Returns its id, or null without a key. */
-export async function ensureAudience(): Promise<string | null> {
+/** Find-or-create an audience by name. Returns its id, or null without a key. */
+export async function ensureNamedAudience(name: string): Promise<string | null> {
   if (!fullKey()) return null;
   const list = await resend("/audiences");
   if (list.ok) {
     const json = (await list.json()) as { data?: { id: string; name: string }[] };
-    const existing = json.data?.find((a) => a.name === AUDIENCE_NAME);
+    const existing = json.data?.find((a) => a.name === name);
     if (existing) return existing.id;
   }
   const created = await resend("/audiences", {
     method: "POST",
-    body: JSON.stringify({ name: AUDIENCE_NAME }),
+    body: JSON.stringify({ name }),
   });
   if (!created.ok) {
     console.warn(`[mailing-list] audience create failed: HTTP ${created.status}`);
     return null;
   }
   return ((await created.json()) as { id: string }).id;
+}
+
+/** Find-or-create the digest audience. Returns its id, or null without a key. */
+export async function ensureAudience(): Promise<string | null> {
+  return ensureNamedAudience(AUDIENCE_NAME);
 }
 
 export type SubscribeResult = { ok: boolean; detail: string };

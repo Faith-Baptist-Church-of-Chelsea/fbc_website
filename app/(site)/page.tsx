@@ -3,6 +3,7 @@ import Link from "next/link";
 import site from "@/content/site.json";
 import homepage from "@/content/homepage.json";
 import Photo from "@/components/Photo";
+import HeroVideo from "@/components/HeroVideo";
 import EventsCarousel, { type CarouselItem } from "@/components/EventsCarousel";
 import LiteYouTube from "@/components/LiteYouTube";
 import TestimonialRotator from "@/components/TestimonialRotator";
@@ -82,18 +83,14 @@ export default async function Home() {
           swap the file to change it) under a heavy overlay; the poster
           frame serves phones-on-data and anyone with reduced motion. */}
       <section className="relative overflow-hidden bg-slate-950 px-4 pb-14 pt-12 text-white sm:pb-20 sm:pt-16">
-        <video
-          className="hero-video absolute inset-0 h-full w-full scale-105 object-cover opacity-50"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
+        {/* Poster is the LCP element: tell the browser about it before it
+            parses down to the video tag. React hoists this into <head>. */}
+        <link rel="preload" as="image" href="/images/hero-poster.jpg" fetchPriority="high" />
+        <HeroVideo
+          src="/videos/hero.mp4"
           poster="/images/hero-poster.jpg"
-          aria-hidden="true"
-        >
-          <source src="/videos/hero.mp4" type="video/mp4" />
-        </video>
+          className="hero-video absolute inset-0 h-full w-full scale-105 object-cover opacity-50"
+        />
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950/45 via-slate-950/35 to-slate-950/85" aria-hidden="true" />
         <div className="relative mx-auto max-w-4xl text-center">
           {/* The one place the homepage says, in plain words, what and

@@ -1,0 +1,74 @@
+title: Bienvenido a Faith Baptist Church
+browserTitle: Español — Faith Baptist Church of Chelsea
+eyebrow: En español
+intro: >-
+  Somos una iglesia bautista independiente en Chelsea, Michigan. Aquí tiene
+  lo esencial para su primera visita — sin sorpresas.
+description: >-
+  Horarios de servicio, dirección y qué esperar en su primera visita a Faith
+  Baptist Church en Chelsea, Michigan. Información en español.
+menu: footer
+menuOrder: 50
+sections:
+  - discriminant: text
+    value:
+      heading: Horarios de servicio
+      body: |
+        - **Domingo 9:45 AM** — Family School: estudio bíblico para todas las edades, juntos en un mismo salón
+        - **Domingo 11:00 AM** — Servicio de la mañana
+        - **Domingo 6:00 PM** — Servicio de la tarde
+        - **Miércoles 7:00 PM** — Servicio de mitad de semana
+
+        Cualquiera de ellos es una buena primera visita. Los servicios duran aproximadamente una hora y quince minutos y se realizan en inglés. También se transmiten en vivo por [YouTube](https://www.youtube.com/@faithbaptistchurchofchelsea) y Facebook.
+      tint: false
+  - discriminant: text
+    value:
+      heading: Dónde estamos
+      body: |
+        **4030 Kalmbach Rd, Chelsea, MI 48118** — junto a la salida 156 de la I-94.
+
+        Hay lugares de estacionamiento marcados para visitantes; son para usted. Entre por la entrada principal y pase por la mesa de bienvenida: allí le ayudarán con cualquier pregunta (dónde está la guardería, dónde se reúnen las clases de los niños) y hay un regalo para quienes nos visitan por primera vez.
+      tint: true
+  - discriminant: buttons
+    value:
+      buttons:
+        - label: Cómo llegar
+          link: https://maps.google.com/?q=4030+Kalmbach+Rd,+Chelsea,+MI+48118
+          style: primary
+  - discriminant: text
+    value:
+      heading: Qué esperar
+      body: |
+        **Vestimenta:** venga como se sienta cómodo. Verá trajes y vestidos, y también camisetas — a nadie se le juzga por su ropa.
+
+        **Nadie lo señalará.** No le pediremos que se ponga de pie ni que se presente ante la congregación. La gente lo saludará — somos una iglesia muy amigable — pero puede mantenerse tan reservado como desee.
+
+        **El servicio:** cantamos himnos antiguos y cánticos espirituales más recientes, muchas veces con el coro, y luego la predicación recorre un pasaje de la Biblia explicando lo que realmente dice. Predicamos con la versión King James (en inglés); puede traer la Biblia que prefiera.
+      tint: false
+  - discriminant: text
+    value:
+      heading: Para los niños
+      body: |
+        - **Guardería** (0 a 3 años) en cada servicio, con personal.
+        - **Clases para niños** de 3 a 12 años los domingos a las 11:00 AM y los miércoles a las 7:00 PM, con un sistema de registro sencillo y seguro: su hijo recibe una etiqueta con su nombre y usted la etiqueta correspondiente para recogerlo.
+        - **Grupo de jóvenes** (12 a 18 años) los miércoles a las 7:00 PM.
+
+        Los niños también son siempre bienvenidos a quedarse en el servicio con usted.
+      tint: true
+  - discriminant: text
+    value:
+      heading: Contacto
+      body: |
+        **Teléfono:** [(734) 433-1356](tel:7344331356)
+
+        **Horario de oficina:** lunes a jueves de 8:00 AM a 4:00 PM (los miércoles la oficina permanece abierta hasta el servicio de la tarde); sábados de 8:00 AM a 12:00 PM; viernes cerrado.
+
+        El [formulario de contacto](/contact) está en inglés, pero puede escribirnos en español y le responderemos.
+      tint: false
+nextStep:
+  title: ¿Preguntas?
+  text: Con gusto le ayudamos. O simplemente venga un domingo — le hemos guardado un lugar.
+  primaryLabel: Contáctenos
+  primaryLink: /contact
+  secondaryLabel: Ver los sermones
+  secondaryLink: /sermons

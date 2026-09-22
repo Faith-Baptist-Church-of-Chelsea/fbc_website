@@ -1,0 +1,35 @@
+name: Archive past events
+
+# Once a month, move events that ended more than 60 days ago out of the main
+# Events list in Keystatic into "Past events (archive)". Nothing visible
+# changes on the site — past events are already hidden — and their pages
+# keep working from the archive.
+on:
+  schedule:
+    - cron: "0 6 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Move old events to the archive
+        run: node scripts/archive-events.mjs
+      - name: Commit
+        run: |
+          if git diff --quiet && git diff --cached --quiet && [ -z "$(git status --porcelain content/)" ]; then
+            echo "Nothing to archive."
+            exit 0
+          fi
+          git config user.name "fbc-website-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add content/events content/events-archive
+          git commit -m "Archive past events (older than 60 days)"
+          git push

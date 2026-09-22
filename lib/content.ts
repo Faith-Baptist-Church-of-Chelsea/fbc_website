@@ -62,7 +62,10 @@ export async function getUpcomingEvents(): Promise<ChurchEvent[]> {
  * formatting-stripped version for metadata and structured data.
  */
 export async function getEvent(slug: string) {
-  const entry = await reader.collections.events.read(slug);
+  // Fall back to the archive so old links (and Google) keep working after
+  // the monthly workflow moves a past event out of the main list.
+  const entry =
+    (await reader.collections.events.read(slug)) ?? (await reader.collections.eventsArchive.read(slug));
   if (!entry) return null;
   const description = await entry.description();
   return {

@@ -93,3 +93,38 @@ export function nearServiceStart(now = new Date(), lead = 10, tail = 30): boolea
     (w) => w.day === dayIndex && minutes >= w.startMinutes - lead && minutes < w.startMinutes + tail
   );
 }
+
+/**
+ * Absolute instant the next service starts — for a live countdown. The
+ * minute arithmetic in nextService() works in Michigan wall-clock minutes,
+ * so if a DST change falls inside the interval the naive result is off by
+ * an hour; this checks the candidate's wall-clock time and nudges it.
+ */
+export function nextServiceStart(now = new Date()): { label: string; when: string; startsAt: Date } {
+  const et = (d: Date) => {
+    const parts = new Intl.DateTimeFormat("en-US", {
+      timeZone: "America/Detroit",
+      weekday: "short",
+      hour: "numeric",
+      minute: "numeric",
+      second: "numeric",
+      hour12: false,
+    }).formatToParts(d);
+    const get = (type: string) => parts.find((p) => p.type === type)?.value ?? "";
+    return {
+      day: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(get("weekday")),
+      minutes: (parseInt(get("hour"), 10) % 24) * 60 + parseInt(get("minute"), 10),
+      seconds: parseInt(get("second"), 10) || 0,
+    };
+  };
+  const { label, when } = nextService(now);
+  const w = SERVICE_WINDOWS.find((x) => x.label === label)!;
+  const cur = et(now);
+  const WEEK = 7 * 24 * 60;
+  const deltaMin = (w.day * 24 * 60 + w.startMinutes - (cur.day * 24 * 60 + cur.minutes) + WEEK) % WEEK;
+  let startsAt = new Date(now.getTime() + deltaMin * 60_000 - cur.seconds * 1000);
+  const landed = et(startsAt);
+  const drift = w.startMinutes - landed.minutes; // ±60 across a DST switch
+  if (drift !== 0 && Math.abs(drift) <= 60) startsAt = new Date(startsAt.getTime() + drift * 60_000);
+  return { label, when, startsAt };
+}

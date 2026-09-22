@@ -72,6 +72,49 @@ function homepageMinistryCard(label: string, slug: string) {
   );
 }
 
+// One schema, two collections: live events and the archive that the
+// monthly archive-events workflow moves old ones into (so the Events
+// list in Keystatic stays short). A function so each collection gets its
+// own field objects.
+function eventSchema() {
+  return {
+    title: fields.slug({ name: { label: "Event name" } }),
+    date: fields.date({ label: "Date", validation: { isRequired: true } }),
+    time: fields.text({
+      label: "Time (as shown)",
+      description: "e.g. \"6:30 PM\" or \"8:00 AM – 12:30 PM\" — leave blank for all-day",
+    }),
+    showUntil: fields.date({
+      label: "End date (multi-day events)",
+      description: "Optional — shows a date range like Sep 11 – 13 and keeps the event visible through this date.",
+    }),
+    location: fields.text({
+      label: "Location",
+      description: "Only needed when it's not at the church",
+    }),
+    image: fields.image({
+      label: "Event graphic",
+      description:
+    "JPG or PNG only. iPhone photos saved as HEIC won't show up on the site — if your photo has a .heic extension, share it as JPG first (in Photos: Share → \"Compress Image\", or change camera format to JPEG in Settings > Camera > Formats).",
+      directory: "public/images/events",
+      publicPath: "/images/events/",
+    }),
+    signupLink: fields.url({
+      label: "Sign-up link (optional)",
+      description: "A registration or sign-up URL, if the event has one",
+    }),
+    // Images dropped into the description must land somewhere the site
+    // can actually serve them. Without this, Keystatic writes them next
+    // to the .mdx file under content/, which is never served over HTTP —
+    // the editor preview looks right but the live page shows a broken
+    // image. publicPath is what gets written into the markdown.
+    description: fields.mdx({
+      label: "About the event",
+      options: { image: contentImages },
+    }),
+      };
+}
+
 export default config({
   // GitHub storage: /keystatic works in ANY browser on the deployed site —
   // volunteers log in with GitHub, edits (including image uploads) become
@@ -631,42 +674,16 @@ export default config({
       path: "content/events/*",
       slugField: "title",
       format: { contentField: "description" },
-      schema: {
-        title: fields.slug({ name: { label: "Event name" } }),
-        date: fields.date({ label: "Date", validation: { isRequired: true } }),
-        time: fields.text({
-          label: "Time (as shown)",
-          description: "e.g. \"6:30 PM\" or \"8:00 AM – 12:30 PM\" — leave blank for all-day",
-        }),
-        showUntil: fields.date({
-          label: "End date (multi-day events)",
-          description: "Optional — shows a date range like Sep 11 – 13 and keeps the event visible through this date.",
-        }),
-        location: fields.text({
-          label: "Location",
-          description: "Only needed when it's not at the church",
-        }),
-        image: fields.image({
-          label: "Event graphic",
-          description:
-            "JPG or PNG only. iPhone photos saved as HEIC won't show up on the site — if your photo has a .heic extension, share it as JPG first (in Photos: Share → \"Compress Image\", or change camera format to JPEG in Settings > Camera > Formats).",
-          directory: "public/images/events",
-          publicPath: "/images/events/",
-        }),
-        signupLink: fields.url({
-          label: "Sign-up link (optional)",
-          description: "A registration or sign-up URL, if the event has one",
-        }),
-        // Images dropped into the description must land somewhere the site
-        // can actually serve them. Without this, Keystatic writes them next
-        // to the .mdx file under content/, which is never served over HTTP —
-        // the editor preview looks right but the live page shows a broken
-        // image. publicPath is what gets written into the markdown.
-        description: fields.mdx({
-          label: "About the event",
-          options: { image: contentImages },
-        }),
-      },
+      schema: eventSchema(),
+    }),
+    // Past events, moved here automatically after ~60 days. Still editable,
+    // and their /events/<slug> pages keep working (old links, Google).
+    eventsArchive: collection({
+      label: "Past events (archive)",
+      path: "content/events-archive/*",
+      slugField: "title",
+      format: { contentField: "description" },
+      schema: eventSchema(),
     }),
 
     // Staff and ministry leader bios → content/staff/*.md + a photo each.
