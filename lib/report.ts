@@ -6,6 +6,7 @@ import { Resend } from "resend";
 import site from "@/content/site.json";
 import { monthKey, pruneOldMonths, summarizeMonth } from "@/lib/metrics";
 import { getRecentVideos, getVideoStats } from "@/lib/youtube";
+import { getMonthPageViews } from "@/lib/vercel-analytics";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://fbc-website-delta.vercel.app";
 
@@ -34,9 +35,24 @@ export async function composeMonthlyReport(month = previousMonthKey()): Promise<
     .map((v) => `  • ${v.title} — ${stats.get(v.videoId)?.toLocaleString() ?? "?"} views`)
     .join("\n");
 
+  // Visitors and page views from Vercel Web Analytics (Pro plan API).
+  const views = await getMonthPageViews(month);
+  const viewLines = views
+    ? [
+        `VISITORS`,
+        `  ${views.visitors.toLocaleString()} visitors, ${views.pageviews.toLocaleString()} page views`,
+        ...(views.devices.length ? [`  Devices: ${views.devices.map((d) => `${d.device} ${d.visitors}`).join(", ")}`] : []),
+        ...(views.countries.length ? [`  Countries: ${views.countries.map((c) => `${c.country} ${c.visitors}`).join(", ")}`] : []),
+        `  Most-visited pages:`,
+        ...views.topPages.slice(0, 10).map((p) => `    ${p.path} — ${p.visitors} visitors, ${p.pageviews} views`),
+        ``,
+      ]
+    : [];
+
   const lines = [
     `How the website did in ${monthName(month)}`,
     ``,
+    ...viewLines,
     `PEOPLE REACHING OUT`,
     `  Forms submitted: ${forms}` +
       (forms ? ` (visit ${n("form.visit")}, question ${n("form.question")}, prayer ${n("form.prayer")}, music ${n("form.music")})` : ""),
@@ -54,7 +70,7 @@ export async function composeMonthlyReport(month = previousMonthKey()): Promise<
     `SERMONS PUBLISHED (${videos.length})`,
     sermonLines || `  (none found for this month)`,
     ``,
-    `Page-view numbers live in the Vercel dashboard (Analytics tab) — they aren't available to the site itself.`,
+    ...(views ? [] : [`Page-view numbers: see the Vercel dashboard (Analytics tab) — VERCEL_ANALYTICS_TOKEN isn't set, so they're not in this email.`]),
     `Details any time: ${SITE_URL}/admin/health`,
   ];
   return { subject: `[Website] ${monthName(month)} in review`, text: lines.join("\n") };
