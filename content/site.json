@@ -23,6 +23,10 @@
   "digestReviewRecipients": [
     "pastorsteve@fbcchelsea.org"
   ],
+  "chatQuestionRecipients": [
+    "pastorsummers@fbcchelsea.org",
+    "pastorsteve@fbcchelsea.org"
+  ],
   "officeHours": [
     {
       "days": "Monday–Thursday",

@@ -9,13 +9,14 @@ import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import site from "@/content/site.json";
 import { buildChurchKnowledge } from "@/lib/church-knowledge";
-import { sendUnansweredQuestionEmail } from "@/lib/forms";
+import { sendChatQuestionEmail } from "@/lib/forms";
 import { recordEvent } from "@/lib/metrics";
 import { makeRateLimiter, requestIp } from "@/lib/rate-limit";
 
-// The model reports whether it could actually answer from church info;
-// unanswered questions get emailed to staff so the answer can be added
-// to content/chat-facts.md (the assistant learns it on the next deploy).
+// Every question (with the answer) is emailed to the pastors so they know
+// what visitors are asking. The model also reports whether it could answer
+// from the church info; when it couldn't, that email says how to add the
+// answer to content/chat-facts.md (the assistant learns it on next deploy).
 const ANSWER_SCHEMA = {
   type: "object" as const,
   properties: {
@@ -116,10 +117,8 @@ ${knowledge}`,
       const parsed = JSON.parse(text) as { answer?: string; answeredFromInfo?: boolean };
       if (parsed.answer) answer = parsed.answer;
       recordEvent(parsed.answeredFromInfo === false ? "question.unanswered" : "question.answered", { question });
-      if (parsed.answeredFromInfo === false) {
-        // Fire-and-forget staff notification; never blocks the visitor.
-        void sendUnansweredQuestionEmail(question);
-      }
+      // Fire-and-forget pastor notification; never blocks the visitor.
+      void sendChatQuestionEmail(question, answer, parsed.answeredFromInfo !== false);
     } catch {
       if (text) answer = text; // model somehow returned plain text — still usable
     }

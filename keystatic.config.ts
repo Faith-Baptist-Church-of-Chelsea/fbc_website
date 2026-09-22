@@ -233,6 +233,12 @@ export default config({
             "Who gets the Monday 'This Week at Faith' review copy to check and approve. Separate from Form recipients on purpose — the digest doesn't go to everyone who handles contact forms.",
           itemLabel: (props) => props.value,
         }),
+        chatQuestionRecipients: fields.array(fields.text({ label: "Email address" }), {
+          label: "Chat question recipients",
+          description:
+            "Who gets an email every time a visitor asks the website's question bubble something (the question and the assistant's answer). Leave empty to turn these emails off.",
+          itemLabel: (props) => props.value,
+        }),
         officeHours: fields.array(
           fields.object({
             days: fields.text({ label: "Day(s)" }),

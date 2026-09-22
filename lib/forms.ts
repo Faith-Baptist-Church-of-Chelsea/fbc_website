@@ -298,28 +298,41 @@ export async function sendVisitorWelcomeEmail(s: Submission): Promise<boolean> {
 }
 
 /**
- * Notifies staff that the website's question assistant couldn't answer
- * something. Best-effort — a failure here never affects the visitor.
+ * Lets the pastors know every time someone asks the website's question
+ * bubble something — the question, what the assistant said, and a note
+ * when it couldn't answer from the church info. Recipients come from
+ * content/site.json → chatQuestionRecipients (empty list = no emails).
+ * Best-effort — a failure here never affects the visitor.
  */
-export async function sendUnansweredQuestionEmail(question: string): Promise<void> {
+export async function sendChatQuestionEmail(question: string, answer: string, answeredFromInfo: boolean): Promise<void> {
   const key = process.env.RESEND_API_KEY;
-  if (!key) return;
+  const to = site.chatQuestionRecipients ?? [];
+  if (!key || to.length === 0) return;
   try {
     const resend = new Resend(key);
+    const when = new Date().toLocaleString("en-US", { timeZone: "America/Detroit", dateStyle: "medium", timeStyle: "short" });
+    const teach = answeredFromInfo
+      ? ""
+      : `The assistant didn't have this in its church info, so it pointed them to the office.\n` +
+        `To teach it the answer: go to /admin on the website and type, for example:\n` +
+        `  Add to the chat facts: <the answer>\n\n`;
     await resend.emails.send({
       from: "Faith Baptist Website <website@fbcchelsea.org>",
-      to: [...site.formRecipients],
-      subject: "[Website] The assistant couldn't answer a visitor's question",
+      to,
+      subject: answeredFromInfo
+        ? `[Website] Someone asked the chat: "${question.slice(0, 70)}${question.length > 70 ? "…" : ""}"`
+        : "[Website] The assistant couldn't answer a visitor's question",
       text:
-        `A visitor asked the website's question bubble:\n\n` +
+        `A visitor asked the website's question bubble (${when}):\n\n` +
         `  "${question}"\n\n` +
-        `The assistant didn't have this in its church info, so it pointed them to the office.\n\n` +
-        `To teach it the answer: go to /admin on the website and type, for example:\n` +
-        `  Add to the chat facts: <the answer>\n\n` +
+        `The assistant replied:\n\n` +
+        `  ${answer.replace(/\n/g, "\n  ")}\n\n` +
+        teach +
+        `Visitors aren't identified — this is just so you know what people are asking.\n` +
         `— Automated notice from the website.`,
     });
   } catch (err) {
-    console.warn("[ask] unanswered-question email failed:", err instanceof Error ? err.message : err);
+    console.warn("[ask] chat-question email failed:", err instanceof Error ? err.message : err);
   }
 }
 
