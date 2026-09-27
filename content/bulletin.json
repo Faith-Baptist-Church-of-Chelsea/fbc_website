@@ -7,6 +7,10 @@
     {
       "weekOf": "2026-09-20",
       "pdf": "/bulletin/bulletins/1/pdf.png"
+    },
+    {
+      "weekOf": "2026-09-27",
+      "pdf": "/bulletin/bulletins/2/pdf.png"
     }
   ]
 }
