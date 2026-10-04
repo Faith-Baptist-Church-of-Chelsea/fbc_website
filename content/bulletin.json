@@ -1,20 +1,12 @@
 {
   "bulletins": [
     {
-      "weekOf": "2026-09-13",
+      "weekOf": "2026-09-27",
       "pdf": "/bulletin/bulletins/0/pdf.png"
     },
     {
-      "weekOf": "2026-09-20",
-      "pdf": "/bulletin/bulletins/1/pdf.png"
-    },
-    {
-      "weekOf": "2026-09-27",
-      "pdf": "/bulletin/bulletins/2/pdf.png"
-    },
-    {
       "weekOf": "2026-10-04",
-      "pdf": "/bulletin/bulletins/3/pdf.png"
+      "pdf": "/bulletin/bulletins/1/pdf.png"
     }
   ]
 }
