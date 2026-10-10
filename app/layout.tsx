@@ -40,11 +40,11 @@ export const metadata: Metadata = {
   // because the site never explicitly declared one before this.
   alternates: { canonical: "./" },
   title: {
-    default: `${site.name} | Chelsea, Michigan`,
+    default: `${site.name} | Independent Baptist Church in Chelsea, MI`,
     template: `%s | ${site.name}`,
   },
   description:
-    "Faith Baptist Church in Chelsea, Michigan — an extremely friendly church that preaches the Bible expositionally. Join us Sundays at 9:45 & 11 AM and 6 PM.",
+    "An independent Baptist church in Chelsea, Michigan (I-94 Exit 156) — extremely friendly, preaching the Bible expositionally. Sundays 9:45 & 11 AM and 6 PM, Wednesdays 7 PM. Spanish translation available.",
   openGraph: {
     siteName: `${site.name} of Chelsea`,
     type: "website",
