@@ -15,7 +15,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { currentServiceWindow } from "@/lib/service-windows";
 import { confirmLive, scrapeLiveNow } from "@/lib/youtube";
-import { alertAlreadySent, liveAlertEmail, markAlertSent, sendLiveAlert, sendLiveAlertTest } from "@/lib/live-alerts";
+import { alertAlreadySent, alertSentRecently, liveAlertEmail, markAlertSent, sendLiveAlert, sendLiveAlertTest } from "@/lib/live-alerts";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -24,6 +24,9 @@ export const maxDuration = 60;
 // down and only now noticed) — an email 40 minutes into the service is
 // worse than none.
 const MAX_AGE_MIN = 45;
+// Never email twice for the same service: a stream that drops and comes
+// back is a new YouTube video but not a new reason to email anyone.
+const REALERT_GAP_MIN = 120;
 
 function authorized(req: NextRequest): boolean {
   const auth = req.headers.get("authorization");
@@ -77,6 +80,10 @@ async function run(req: NextRequest) {
 
   if (await alertAlreadySent(videoId)) {
     return NextResponse.json({ sent: 0, videoId, skipped: "already alerted for this stream" });
+  }
+  // A dropped-and-reconnected stream is a new videoId but the same service.
+  if (await alertSentRecently(REALERT_GAP_MIN)) {
+    return NextResponse.json({ sent: 0, videoId, skipped: `an alert already went out in the last ${REALERT_GAP_MIN} min` });
   }
 
   const label = currentServiceWindow()?.label ?? "Special service";

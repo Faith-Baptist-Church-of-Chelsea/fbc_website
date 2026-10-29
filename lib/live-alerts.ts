@@ -104,6 +104,16 @@ export async function alertAlreadySent(videoId: string): Promise<boolean> {
   return blobs.length > 0;
 }
 
+/** Did ANY alert go out in the last `minutes`? A stream that drops and
+ *  reconnects mid-service gets a brand-new videoId, so per-video dedup
+ *  alone would email "we're live" twice. One alert per couple of hours. */
+export async function alertSentRecently(minutes: number): Promise<boolean> {
+  if (!process.env.BLOB_READ_WRITE_TOKEN) return false;
+  const cutoff = Date.now() - minutes * 60_000;
+  const { blobs } = await list({ prefix: SENT_PREFIX, limit: 100 });
+  return blobs.some((b) => new Date(b.uploadedAt).getTime() > cutoff);
+}
+
 export async function markAlertSent(videoId: string, detail: Record<string, unknown>): Promise<void> {
   await put(`${SENT_PREFIX}${videoId}.json`, JSON.stringify({ videoId, at: new Date().toISOString(), ...detail }), {
     access: "private",
