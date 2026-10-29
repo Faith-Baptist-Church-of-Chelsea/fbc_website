@@ -15,7 +15,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { currentServiceWindow } from "@/lib/service-windows";
 import { confirmLive, scrapeLiveNow } from "@/lib/youtube";
-import { alertAlreadySent, markAlertSent, sendLiveAlert } from "@/lib/live-alerts";
+import { alertAlreadySent, liveAlertEmail, markAlertSent, sendLiveAlert, sendLiveAlertTest } from "@/lib/live-alerts";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -34,11 +34,26 @@ function authorized(req: NextRequest): boolean {
   // No CRON_SECRET configured: accept Vercel's cron user-agent (same rule
   // as /api/monitor) so a fresh environment still works.
   if (!cron && (req.headers.get("user-agent") ?? "").startsWith("vercel-cron")) return true;
+  // Local dev server only (never set on Vercel): lets the preview open in a browser.
+  if (process.env.NODE_ENV === "development" && !cron && !manual) return true;
   return false;
 }
 
 async function run(req: NextRequest) {
   if (!authorized(req)) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+
+  // Design checks, same auth: ?preview=1 renders the email as a page,
+  // ?test=<address> emails one sample copy to that address. Neither one
+  // touches the subscriber list.
+  const preview = req.nextUrl.searchParams.get("preview");
+  const test = req.nextUrl.searchParams.get("test");
+  if (preview) {
+    const { html } = liveAlertEmail("Sunday Morning Service (preview)", null, "#");
+    return new NextResponse(html, { headers: { "content-type": "text/html; charset=utf-8" } });
+  }
+  if (test && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(test)) {
+    return NextResponse.json(await sendLiveAlertTest(test));
+  }
 
   const scraped = await scrapeLiveNow();
   if (scraped.live !== true || !scraped.videoId) {
