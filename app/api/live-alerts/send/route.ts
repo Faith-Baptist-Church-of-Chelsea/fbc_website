@@ -1,11 +1,21 @@
-// Called by .github/workflows/live-alerts.yml once per stream. Requires the
-// shared LIVE_ALERT_SECRET, then independently re-verifies that a stream
-// really is live and recently started before emailing anyone — the caller
-// is trusted for *when* to ask, never for *whether* we're live.
+// Sends the "we're live" email — at most once per stream.
+//
+// Called every minute by a Vercel cron (GET, Vercel's CRON_SECRET header),
+// and still accepts a manual POST with LIVE_ALERT_SECRET. Either way the
+// caller is trusted only for *when to ask*; this route decides *whether
+// we're live* on its own:
+//   1. the channel's /live page names a candidate video (free scrape),
+//   2. YouTube's API must say that exact video is live right now, with a
+//      real start time — scheduled placeholders and ended streams fail,
+//   3. the stream must have started within the last MAX_AGE_MIN minutes,
+//   4. and no alert may have gone out for that video before (Blob marker).
+// A scheduled-but-not-started stream once got past the old check and
+// emailed subscribers "we're live" on a quiet Wednesday night — step 2
+// exists so that cannot recur.
 import { NextRequest, NextResponse } from "next/server";
 import { currentServiceWindow } from "@/lib/service-windows";
-import { checkLiveNow, scrapeLiveNow } from "@/lib/youtube";
-import { sendLiveAlert } from "@/lib/live-alerts";
+import { confirmLive, scrapeLiveNow } from "@/lib/youtube";
+import { alertAlreadySent, markAlertSent, sendLiveAlert } from "@/lib/live-alerts";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -15,47 +25,55 @@ export const maxDuration = 60;
 // worse than none.
 const MAX_AGE_MIN = 45;
 
-async function startedMinutesAgo(videoId: string): Promise<number | null> {
-  const key = process.env.YOUTUBE_API_KEY;
-  if (!key) return null;
-  try {
-    const res = await fetch(
-      `https://www.googleapis.com/youtube/v3/videos?part=liveStreamingDetails&id=${videoId}&key=${key}`,
-      { cache: "no-store" }
-    );
-    if (!res.ok) return null;
-    const json = (await res.json()) as {
-      items?: { liveStreamingDetails?: { actualStartTime?: string; actualEndTime?: string } }[];
-    };
-    const d = json.items?.[0]?.liveStreamingDetails;
-    if (!d?.actualStartTime) return null;
-    if (d.actualEndTime) return Number.POSITIVE_INFINITY;
-    return (Date.now() - new Date(d.actualStartTime).getTime()) / 60_000;
-  } catch {
-    return null;
-  }
+function authorized(req: NextRequest): boolean {
+  const auth = req.headers.get("authorization");
+  const cron = process.env.CRON_SECRET;
+  const manual = process.env.LIVE_ALERT_SECRET;
+  if (cron && auth === `Bearer ${cron}`) return true;
+  if (manual && auth === `Bearer ${manual}`) return true;
+  // No CRON_SECRET configured: accept Vercel's cron user-agent (same rule
+  // as /api/monitor) so a fresh environment still works.
+  if (!cron && (req.headers.get("user-agent") ?? "").startsWith("vercel-cron")) return true;
+  return false;
 }
 
-export async function POST(req: NextRequest) {
-  const secret = process.env.LIVE_ALERT_SECRET;
-  if (!secret || req.headers.get("authorization") !== `Bearer ${secret}`) {
-    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-  }
+async function run(req: NextRequest) {
+  if (!authorized(req)) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
   const scraped = await scrapeLiveNow();
-  const api = await checkLiveNow();
-  const live = scraped.live === true || api.live === true;
-  if (!live) return NextResponse.json({ sent: 0, skipped: "not live" });
+  if (scraped.live !== true || !scraped.videoId) {
+    return NextResponse.json({ sent: 0, skipped: scraped.live === null ? "channel page unreadable" : "not live" });
+  }
+  const videoId = scraped.videoId;
 
-  const videoId = api.videoId ?? scraped.videoId;
-  if (videoId) {
-    const age = await startedMinutesAgo(videoId);
-    if (age !== null && age > MAX_AGE_MIN) {
-      return NextResponse.json({ sent: 0, skipped: `stream started ${Math.round(age)} min ago` });
-    }
+  const confirmed = await confirmLive(videoId);
+  if (confirmed.live !== true) {
+    return NextResponse.json({
+      sent: 0,
+      videoId,
+      skipped: confirmed.live === null ? "could not confirm with YouTube API" : "YouTube says this video is not live (scheduled or ended)",
+    });
+  }
+
+  const ageMin = confirmed.startedAt ? (Date.now() - new Date(confirmed.startedAt).getTime()) / 60_000 : null;
+  if (ageMin !== null && ageMin > MAX_AGE_MIN) {
+    return NextResponse.json({ sent: 0, videoId, skipped: `stream started ${Math.round(ageMin)} min ago` });
+  }
+
+  if (await alertAlreadySent(videoId)) {
+    return NextResponse.json({ sent: 0, videoId, skipped: "already alerted for this stream" });
   }
 
   const label = currentServiceWindow()?.label ?? "Special service";
   const result = await sendLiveAlert(videoId, label);
+  if (result.sent > 0) await markAlertSent(videoId, { label, sent: result.sent });
   return NextResponse.json({ ...result, videoId, label });
+}
+
+export async function GET(req: NextRequest) {
+  return run(req);
+}
+
+export async function POST(req: NextRequest) {
+  return run(req);
 }

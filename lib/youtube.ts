@@ -69,6 +69,11 @@ export async function scrapeLiveNow(): Promise<{ live: boolean | null; videoId: 
     });
     if (!res.ok) return { live: null, videoId: null };
     const html = await res.text();
+    // A SCHEDULED stream parks on the channel's /live page too, and
+    // YouTube's page data marks it "isLive":true AND "isUpcoming":true.
+    // That combination fooled the banner (and an alert email) into
+    // announcing a service that hadn't started. Upcoming means not live.
+    if (html.includes('"isUpcoming":true')) return { live: false, videoId: null };
     if (html.includes('"isLive":true')) {
       const m = html.match(/"videoId":"([\w-]{6,20})"/);
       return { live: true, videoId: m?.[1] ?? null };
@@ -77,6 +82,52 @@ export async function scrapeLiveNow(): Promise<{ live: boolean | null; videoId: 
   } catch (err) {
     console.warn("[youtube] live scrape failed:", err instanceof Error ? err.message : err);
     return { live: null, videoId: null };
+  }
+}
+
+export type LiveConfirmation = {
+  /** true = YouTube's API says this video is live right now; false = it
+   *  isn't (upcoming, ended, or an ordinary video); null = couldn't check. */
+  live: boolean | null;
+  /** When the broadcast actually started, if it has. */
+  startedAt: string | null;
+  ended: boolean;
+};
+
+/**
+ * The authoritative answer for ONE video — 1 quota unit, cached 1 min.
+ * The scrape finds a candidate; this decides. A video counts as live only
+ * when YouTube itself reports liveBroadcastContent === "live" and a real
+ * actualStartTime, so scheduled placeholders and finished streams never
+ * pass. Null when the key is missing or the API errors (callers fall back
+ * to the scrape alone).
+ */
+export async function confirmLive(videoId: string): Promise<LiveConfirmation> {
+  if (!KEY) return { live: null, startedAt: null, ended: false };
+  try {
+    const res = await fetch(
+      `https://www.googleapis.com/youtube/v3/videos?part=snippet,liveStreamingDetails&id=${videoId}&key=${KEY}`,
+      { next: { revalidate: 60 } }
+    );
+    if (!res.ok) {
+      console.warn(`[youtube] confirmLive HTTP ${res.status}`);
+      return { live: null, startedAt: null, ended: false };
+    }
+    const json = (await res.json()) as {
+      items?: {
+        snippet?: { liveBroadcastContent?: string };
+        liveStreamingDetails?: { actualStartTime?: string; actualEndTime?: string };
+      }[];
+    };
+    const item = json.items?.[0];
+    if (!item) return { live: false, startedAt: null, ended: false };
+    const d = item.liveStreamingDetails ?? {};
+    const ended = Boolean(d.actualEndTime);
+    const live = item.snippet?.liveBroadcastContent === "live" && Boolean(d.actualStartTime) && !ended;
+    return { live, startedAt: d.actualStartTime ?? null, ended };
+  } catch (err) {
+    console.warn("[youtube] confirmLive failed:", err instanceof Error ? err.message : err);
+    return { live: null, startedAt: null, ended: false };
   }
 }
 

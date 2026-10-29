@@ -1,7 +1,8 @@
 // Tells the live banner what to show. YouTube-driven so special services
 // work automatically, in three layers:
 //   1. Free scrape of the channel's /live page (cached 1 min, no quota) —
-//      runs around the clock. Says definitively live / not live.
+//      runs around the clock and names the candidate video; the API then
+//      confirms that video is really live (not scheduled, not ended).
 //   2. The Data API (quota-costing, cached 5 min) plays a supporting role:
 //      it supplies the videoId when the scrape says LIVE, and it gets the
 //      final say only when the scrape says NOT live during a scheduled
@@ -11,7 +12,7 @@
 //      service-time schedule + API check, so Sundays still work.
 import { NextResponse } from "next/server";
 import { currentServiceWindow } from "@/lib/service-windows";
-import { checkLiveNow, scrapeLiveNow } from "@/lib/youtube";
+import { checkLiveNow, confirmLive, scrapeLiveNow } from "@/lib/youtube";
 
 export const dynamic = "force-dynamic";
 
@@ -20,23 +21,23 @@ export async function GET() {
   const label = window?.label ?? "Special service";
   const scraped = await scrapeLiveNow();
 
-  if (scraped.live === true) {
-    // The scrape reads YouTube's own "isLive" flag off the channel page —
-    // strong evidence. The Data API's eventType=live search is only
-    // eventually consistent and can come back empty for minutes after a
-    // stream starts; letting that veto the scrape hid the banner mid-service
-    // for 5 min at a time (its cache window). So the API only enriches
-    // (videoId) here — it never overrides a positive scrape.
-    const api = await checkLiveNow();
-    return NextResponse.json({
-      show: true,
-      verified: true,
-      label,
-      videoId: api.videoId ?? scraped.videoId,
-    });
+  // The scrape names a candidate video; YouTube's API (1 unit, cached
+  // 1 min) confirms that exact video is live right now. The confirmation
+  // is per-video, so it doesn't suffer the lag of the eventType=live
+  // search — and it rejects scheduled placeholders and ended streams,
+  // which the raw page flag did not. If the API can't answer, the scrape
+  // (which already excludes "upcoming") stands on its own.
+  let live = scraped.live;
+  if (scraped.live === true && scraped.videoId) {
+    const confirmed = await confirmLive(scraped.videoId);
+    if (confirmed.live === false) live = false;
   }
 
-  if (scraped.live === false) {
+  if (live === true) {
+    return NextResponse.json({ show: true, verified: true, label, videoId: scraped.videoId });
+  }
+
+  if (live === false) {
     // YouTube says nothing is live. Outside a scheduled window, trust it —
     // that's what lets special services work with no schedule. INSIDE a
     // window, a single bad scrape (YouTube serving a page variant without

@@ -4,11 +4,12 @@
 // Subscribers live in a PRIVATE Vercel Blob store (one small JSON file per
 // address under live-alerts/subscribers/), not a Resend audience: the
 // church's Resend plan allows three audiences and all three are in use.
-// Sending is triggered by .github/workflows/live-alerts.yml, which polls
-// /api/live every 5 minutes around service times and calls
-// /api/live-alerts/send once per stream (Vercel's Hobby cron can only run
-// daily, so the poll lives in GitHub Actions). Emails go out individually
-// with the sending-only Resend key.
+// Sending is triggered by a Vercel cron that calls /api/live-alerts/send
+// every minute (vercel.json). That route confirms a stream is genuinely
+// live and recently started, and the sent-marker below guarantees one
+// email per stream no matter how many times the cron fires. (This used to
+// be a GitHub Actions poll; GitHub ran it hours late, so services came
+// and went with no email.) Emails go out with the sending-only Resend key.
 import "server-only";
 import crypto from "node:crypto";
 import { Resend } from "resend";
@@ -93,6 +94,24 @@ export async function unsubscribeLiveAlerts(email: string, token: string): Promi
 }
 
 /** Email everyone on the list that a stream just started. */
+const SENT_PREFIX = "live-alerts/sent/";
+
+/** Has an alert already gone out for this stream? One email per videoId. */
+export async function alertAlreadySent(videoId: string): Promise<boolean> {
+  if (!process.env.BLOB_READ_WRITE_TOKEN) return false;
+  const { blobs } = await list({ prefix: `${SENT_PREFIX}${videoId}.json`, limit: 1 });
+  return blobs.length > 0;
+}
+
+export async function markAlertSent(videoId: string, detail: Record<string, unknown>): Promise<void> {
+  await put(`${SENT_PREFIX}${videoId}.json`, JSON.stringify({ videoId, at: new Date().toISOString(), ...detail }), {
+    access: "private",
+    addRandomSuffix: false,
+    allowOverwrite: true,
+    contentType: "application/json",
+  });
+}
+
 export async function sendLiveAlert(videoId: string | null, label: string): Promise<{ sent: number; detail: string }> {
   const sendKey = process.env.RESEND_API_KEY;
   if (!sendKey) return { sent: 0, detail: "RESEND_API_KEY not set" };
