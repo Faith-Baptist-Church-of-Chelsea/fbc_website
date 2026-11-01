@@ -115,11 +115,7 @@ export async function alertSentRecently(label: string, minutes: number): Promise
   const cutoff = Date.now() - minutes * 60_000;
   const { blobs } = await list({ prefix: SENT_PREFIX, limit: 200 });
   const suffix = `--${slug(label)}.json`;
-  // Markers written before labels were part of the name (just "<id>.json")
-  // count too — anything recent with no label is treated as this service.
-  return blobs.some(
-    (b) => new Date(b.uploadedAt).getTime() > cutoff && (b.pathname.endsWith(suffix) || !b.pathname.includes("--"))
-  );
+  return blobs.some((b) => new Date(b.uploadedAt).getTime() > cutoff && b.pathname.endsWith(suffix));
 }
 
 export async function markAlertSent(videoId: string, label: string, detail: Record<string, unknown>): Promise<void> {
