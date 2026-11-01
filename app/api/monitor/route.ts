@@ -8,7 +8,7 @@ import { Resend } from "resend";
 import site from "@/content/site.json";
 import { runPcoHealthChecks, type HealthCheck } from "@/lib/pco";
 import { getRecentVideos } from "@/lib/youtube";
-import { sendMonthlyReport } from "@/lib/report";
+import { composeMonthlyReport, sendMonthlyReport } from "@/lib/report";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 60;
@@ -30,6 +30,12 @@ export async function GET(req: NextRequest) {
   // Rides on this daily cron because the Hobby plan allows only two.
   const dayOfMonth = new Date().toLocaleDateString("en-US", { day: "numeric", timeZone: "America/Detroit" });
   const forcedMonth = req.nextUrl.searchParams.get("report");
+  // ?report=YYYY-MM&preview=1 renders that month's report as a page instead
+  // of emailing it (still cron-gated) — for checking the design.
+  if (forcedMonth && /^\d{4}-\d{2}$/.test(forcedMonth) && req.nextUrl.searchParams.get("preview")) {
+    const { html } = await composeMonthlyReport(forcedMonth);
+    return new NextResponse(html, { headers: { "content-type": "text/html; charset=utf-8" } });
+  }
   let report: { sent: boolean; detail: string } | null = null;
   if (forcedMonth || dayOfMonth === "1") {
     report = await sendMonthlyReport(forcedMonth && /^\d{4}-\d{2}$/.test(forcedMonth) ? forcedMonth : undefined).catch(
