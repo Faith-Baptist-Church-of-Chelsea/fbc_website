@@ -4,9 +4,10 @@
 // and still accepts a manual POST with LIVE_ALERT_SECRET. Either way the
 // caller is trusted only for *when to ask*; this route decides *whether
 // we're live* on its own:
-//   1. the channel's /live page names a candidate video (free scrape),
-//   2. YouTube's API must say that exact video is live right now, with a
-//      real start time — scheduled placeholders and ended streams fail,
+//   1. our channel's /live page names a candidate video (free scrape),
+//   2. YouTube's API must say that exact video is live right now, is OURS,
+//      and has a real start time — scheduled placeholders, ended streams
+//      and other channels' streams all fail,
 //   3. the stream must have started within the last MAX_AGE_MIN minutes,
 //   4. and no alert may have gone out for that video before (Blob marker).
 // A scheduled-but-not-started stream once got past the old check and
@@ -14,7 +15,7 @@
 // exists so that cannot recur.
 import { NextRequest, NextResponse } from "next/server";
 import { currentServiceWindow } from "@/lib/service-windows";
-import { confirmLive, scrapeLiveNow } from "@/lib/youtube";
+import { detectLive } from "@/lib/youtube";
 import { alertAlreadySent, alertSentRecently, liveAlertEmail, markAlertSent, sendLiveAlert, sendLiveAlertTest } from "@/lib/live-alerts";
 
 export const dynamic = "force-dynamic";
@@ -58,22 +59,16 @@ async function run(req: NextRequest) {
     return NextResponse.json(await sendLiveAlertTest(test));
   }
 
-  const scraped = await scrapeLiveNow();
-  if (scraped.live !== true || !scraped.videoId) {
-    return NextResponse.json({ sent: 0, skipped: scraped.live === null ? "channel page unreadable" : "not live" });
-  }
-  const videoId = scraped.videoId;
-
-  const confirmed = await confirmLive(videoId);
-  if (confirmed.live !== true) {
+  const status = await detectLive();
+  if (status.live !== true || !status.videoId) {
     return NextResponse.json({
       sent: 0,
-      videoId,
-      skipped: confirmed.live === null ? "could not confirm with YouTube API" : "YouTube says this video is not live (scheduled or ended)",
+      skipped: status.live === null ? "channel page unreadable and API unavailable" : "not live",
     });
   }
+  const videoId = status.videoId;
 
-  const ageMin = confirmed.startedAt ? (Date.now() - new Date(confirmed.startedAt).getTime()) / 60_000 : null;
+  const ageMin = status.startedAt ? (Date.now() - new Date(status.startedAt).getTime()) / 60_000 : null;
   if (ageMin !== null && ageMin > MAX_AGE_MIN) {
     return NextResponse.json({ sent: 0, videoId, skipped: `stream started ${Math.round(ageMin)} min ago` });
   }

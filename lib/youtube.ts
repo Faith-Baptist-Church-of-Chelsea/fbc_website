@@ -49,13 +49,22 @@ export async function checkLiveNow(): Promise<{ live: boolean | null; videoId: s
 }
 
 /**
- * Free live check: reads the channel's public /live page and looks for
- * YouTube's own "isLive" flag. Costs no API quota, so it can run around
- * the clock — this is what lets the banner appear for special services
- * without a schedule. Returns null when the page can't be read (then the
- * caller falls back to the service-time schedule).
+ * Free live check: reads the channel's public /live page. Costs no API
+ * quota, so it can run around the clock — this is what lets the banner
+ * appear for special services without a schedule.
+ *
+ * When the channel is live (or has a scheduled stream), YouTube serves the
+ * WATCH page for that video and its <link rel="canonical"> names it. When
+ * nothing is live, YouTube serves the channel home page instead — which
+ * can still contain "isLive":true and videoIds for OTHER channels' live
+ * videos in its recommendations (on 2026-11-01 the site briefly picked up
+ * a different church's "Church Online" stream this way). So the canonical
+ * watch URL is the only accepted source of the video id; without it,
+ * nothing of ours is live. `upcoming` is reported so callers without API
+ * access can still tell a scheduled placeholder from a real stream.
+ * Returns live:null when the page can't be read.
  */
-export async function scrapeLiveNow(): Promise<{ live: boolean | null; videoId: string | null }> {
+export async function scrapeLiveNow(): Promise<{ live: boolean | null; videoId: string | null; upcoming: boolean }> {
   try {
     // Cached only 1 min: this costs no API quota and Next's fetch cache is
     // shared across all visitors, so that's at most one YouTube fetch per
@@ -67,22 +76,38 @@ export async function scrapeLiveNow(): Promise<{ live: boolean | null; videoId: 
           "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36",
       },
     });
-    if (!res.ok) return { live: null, videoId: null };
+    if (!res.ok) return { live: null, videoId: null, upcoming: false };
     const html = await res.text();
-    // A SCHEDULED stream parks on the channel's /live page too, and
-    // YouTube's page data marks it "isLive":true AND "isUpcoming":true.
-    // That combination fooled the banner (and an alert email) into
-    // announcing a service that hadn't started. Upcoming means not live.
-    if (html.includes('"isUpcoming":true')) return { live: false, videoId: null };
-    if (html.includes('"isLive":true')) {
-      const m = html.match(/"videoId":"([\w-]{6,20})"/);
-      return { live: true, videoId: m?.[1] ?? null };
-    }
-    return { live: false, videoId: null };
+    const canonical = html.match(/<link rel="canonical" href="https:\/\/www\.youtube\.com\/watch\?v=([\w-]{6,20})"/);
+    if (!canonical) return { live: false, videoId: null, upcoming: false };
+    const upcoming = html.includes('"isUpcoming":true');
+    return { live: html.includes('"isLive":true') && !upcoming, videoId: canonical[1], upcoming };
   } catch (err) {
     console.warn("[youtube] live scrape failed:", err instanceof Error ? err.message : err);
-    return { live: null, videoId: null };
+    return { live: null, videoId: null, upcoming: false };
   }
+}
+
+export type LiveStatus = {
+  live: boolean | null; // null = couldn't tell (page unreadable and no API)
+  videoId: string | null;
+  startedAt: string | null;
+};
+
+/**
+ * THE live check, shared by the banner API and the alert sender so they
+ * can never disagree. Scrape names the candidate video off our channel's
+ * /live page; the Data API then confirms that exact video is live right
+ * now AND belongs to our channel. If the API can't answer, the scrape's
+ * own verdict (live flag, not upcoming) stands.
+ */
+export async function detectLive(): Promise<LiveStatus> {
+  const scraped = await scrapeLiveNow();
+  if (scraped.live === null) return { live: null, videoId: null, startedAt: null };
+  if (!scraped.videoId) return { live: false, videoId: null, startedAt: null };
+  const confirmed = await confirmLive(scraped.videoId);
+  if (confirmed.live === null) return { live: scraped.live, videoId: scraped.live ? scraped.videoId : null, startedAt: null };
+  return { live: confirmed.live, videoId: confirmed.live ? scraped.videoId : null, startedAt: confirmed.startedAt };
 }
 
 export type LiveConfirmation = {
@@ -115,7 +140,7 @@ export async function confirmLive(videoId: string): Promise<LiveConfirmation> {
     }
     const json = (await res.json()) as {
       items?: {
-        snippet?: { liveBroadcastContent?: string };
+        snippet?: { liveBroadcastContent?: string; channelId?: string };
         liveStreamingDetails?: { actualStartTime?: string; actualEndTime?: string };
       }[];
     };
@@ -123,7 +148,11 @@ export async function confirmLive(videoId: string): Promise<LiveConfirmation> {
     if (!item) return { live: false, startedAt: null, ended: false };
     const d = item.liveStreamingDetails ?? {};
     const ended = Boolean(d.actualEndTime);
-    const live = item.snippet?.liveBroadcastContent === "live" && Boolean(d.actualStartTime) && !ended;
+    // Must be OUR stream: another channel's live video can turn up on our
+    // channel page's recommendations when we're off the air.
+    const ours = item.snippet?.channelId === CHANNEL;
+    if (!ours) console.warn(`[youtube] confirmLive: ${videoId} belongs to another channel — ignoring`);
+    const live = ours && item.snippet?.liveBroadcastContent === "live" && Boolean(d.actualStartTime) && !ended;
     return { live, startedAt: d.actualStartTime ?? null, ended };
   } catch (err) {
     console.warn("[youtube] confirmLive failed:", err instanceof Error ? err.message : err);
