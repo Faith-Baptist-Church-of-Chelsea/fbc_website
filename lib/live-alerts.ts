@@ -96,26 +96,34 @@ export async function unsubscribeLiveAlerts(email: string, token: string): Promi
 
 /** Email everyone on the list that a stream just started. */
 const SENT_PREFIX = "live-alerts/sent/";
+const slug = (label: string) => label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
-/** Has an alert already gone out for this stream? One email per videoId. */
-export async function alertAlreadySent(videoId: string): Promise<boolean> {
+/** Has an alert already gone out for this stream AND this service? One
+ *  stream can span two services (Family School runs straight into the
+ *  morning service) — each service gets its own alert. */
+export async function alertAlreadySent(videoId: string, label: string): Promise<boolean> {
   if (!process.env.BLOB_READ_WRITE_TOKEN) return false;
-  const { blobs } = await list({ prefix: `${SENT_PREFIX}${videoId}.json`, limit: 1 });
+  const { blobs } = await list({ prefix: `${SENT_PREFIX}${videoId}--${slug(label)}.json`, limit: 1 });
   return blobs.length > 0;
 }
 
-/** Did ANY alert go out in the last `minutes`? A stream that drops and
- *  reconnects mid-service gets a brand-new videoId, so per-video dedup
- *  alone would email "we're live" twice. One alert per couple of hours. */
-export async function alertSentRecently(minutes: number): Promise<boolean> {
+/** Did an alert for THIS service label go out in the last `minutes`? A
+ *  stream that drops and reconnects mid-service gets a brand-new videoId,
+ *  so per-video dedup alone would email "we're live" twice. */
+export async function alertSentRecently(label: string, minutes: number): Promise<boolean> {
   if (!process.env.BLOB_READ_WRITE_TOKEN) return false;
   const cutoff = Date.now() - minutes * 60_000;
-  const { blobs } = await list({ prefix: SENT_PREFIX, limit: 100 });
-  return blobs.some((b) => new Date(b.uploadedAt).getTime() > cutoff);
+  const { blobs } = await list({ prefix: SENT_PREFIX, limit: 200 });
+  const suffix = `--${slug(label)}.json`;
+  // Markers written before labels were part of the name (just "<id>.json")
+  // count too — anything recent with no label is treated as this service.
+  return blobs.some(
+    (b) => new Date(b.uploadedAt).getTime() > cutoff && (b.pathname.endsWith(suffix) || !b.pathname.includes("--"))
+  );
 }
 
-export async function markAlertSent(videoId: string, detail: Record<string, unknown>): Promise<void> {
-  await put(`${SENT_PREFIX}${videoId}.json`, JSON.stringify({ videoId, at: new Date().toISOString(), ...detail }), {
+export async function markAlertSent(videoId: string, label: string, detail: Record<string, unknown>): Promise<void> {
+  await put(`${SENT_PREFIX}${videoId}--${slug(label)}.json`, JSON.stringify({ videoId, at: new Date().toISOString(), ...detail }), {
     access: "private",
     addRandomSuffix: false,
     allowOverwrite: true,

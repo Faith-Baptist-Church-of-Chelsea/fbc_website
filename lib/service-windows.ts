@@ -72,6 +72,15 @@ export function currentServiceWindow(now = new Date()): ServiceWindow | null {
   );
 }
 
+/** How many minutes into the current scheduled window we are (null outside one). */
+export function minutesIntoCurrentWindow(now = new Date()): number | null {
+  const w = currentServiceWindow(now);
+  if (!w) return null;
+  const parts = new Intl.DateTimeFormat("en-US", { timeZone: "America/Detroit", hour: "numeric", minute: "numeric", hour12: false }).formatToParts(now);
+  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? "0";
+  return parseInt(get("hour"), 10) * 60 + parseInt(get("minute"), 10) - w.startMinutes;
+}
+
 /**
  * True from `lead` minutes before a scheduled service starts until `tail`
  * minutes after — the stretch when "did we just go live?" is the live

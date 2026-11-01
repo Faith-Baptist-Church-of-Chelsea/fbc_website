@@ -14,7 +14,7 @@
 // emailed subscribers "we're live" on a quiet Wednesday night — step 2
 // exists so that cannot recur.
 import { NextRequest, NextResponse } from "next/server";
-import { currentServiceWindow } from "@/lib/service-windows";
+import { currentServiceWindow, minutesIntoCurrentWindow } from "@/lib/service-windows";
 import { detectLive, scrapeDiagnostics } from "@/lib/youtube";
 import { alertAlreadySent, alertSentRecently, liveAlertEmail, markAlertSent, sendLiveAlert, sendLiveAlertTest } from "@/lib/live-alerts";
 
@@ -71,22 +71,28 @@ async function run(req: NextRequest) {
   }
   const videoId = status.videoId;
 
-  const ageMin = status.startedAt ? (Date.now() - new Date(status.startedAt).getTime()) / 60_000 : null;
+  // "Recently started" is measured from the stream start OR the start of
+  // the current scheduled service, whichever is later: Family School's
+  // stream usually runs straight into the 11 AM service, and that service
+  // deserves its own on-time alert even though the video is 75 min old.
+  const label = currentServiceWindow()?.label ?? "Special service";
+  const sinceStream = status.startedAt ? (Date.now() - new Date(status.startedAt).getTime()) / 60_000 : null;
+  const sinceWindow = minutesIntoCurrentWindow();
+  const ageMin = sinceWindow !== null && sinceStream !== null ? Math.min(sinceStream, sinceWindow) : sinceStream;
   if (ageMin !== null && ageMin > MAX_AGE_MIN) {
-    return NextResponse.json({ sent: 0, videoId, skipped: `stream started ${Math.round(ageMin)} min ago` });
+    return NextResponse.json({ sent: 0, videoId, label, skipped: `started ${Math.round(ageMin)} min ago` });
   }
 
-  if (await alertAlreadySent(videoId)) {
-    return NextResponse.json({ sent: 0, videoId, skipped: "already alerted for this stream" });
+  if (await alertAlreadySent(videoId, label)) {
+    return NextResponse.json({ sent: 0, videoId, label, skipped: "already alerted for this stream and service" });
   }
   // A dropped-and-reconnected stream is a new videoId but the same service.
-  if (await alertSentRecently(REALERT_GAP_MIN)) {
-    return NextResponse.json({ sent: 0, videoId, skipped: `an alert already went out in the last ${REALERT_GAP_MIN} min` });
+  if (await alertSentRecently(label, REALERT_GAP_MIN)) {
+    return NextResponse.json({ sent: 0, videoId, label, skipped: `an alert for ${label} already went out in the last ${REALERT_GAP_MIN} min` });
   }
 
-  const label = currentServiceWindow()?.label ?? "Special service";
   const result = await sendLiveAlert(videoId, label);
-  if (result.sent > 0) await markAlertSent(videoId, { label, sent: result.sent });
+  if (result.sent > 0) await markAlertSent(videoId, label, { sent: result.sent });
   return NextResponse.json({ ...result, videoId, label });
 }
 
