@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import site from "@/content/site.json";
 import NextStep from "@/components/NextStep";
-import { checkLiveNow, getRecentVideos, scrapeLiveNow } from "@/lib/youtube";
+import { checkLiveNow, detectLive, getRecentVideos } from "@/lib/youtube";
 import { currentServiceWindow, nextService } from "@/lib/service-windows";
 import { getCurrentBulletin } from "@/lib/bulletin";
 import LiteYouTube from "@/components/LiteYouTube";
@@ -20,27 +20,18 @@ export const metadata: Metadata = {
 export const revalidate = 60;
 
 export default async function LivePage() {
-  // Same decision logic as /api/live: YouTube's own isLive flag (scraped)
-  // is the primary signal and a positive reading is never vetoed by the
-  // Data API's laggier live search — that veto used to blank this page
-  // mid-service. A negative scrape during a scheduled window IS
-  // double-checked, so one bad page fetch can't hide a real stream.
-  const scraped = await scrapeLiveNow();
+  // Same decision logic as /api/live, via the shared detectLive(): our
+  // channel page supplies candidate videos and YouTube's API decides which
+  // is our own live stream. A NOT-live answer during a scheduled window is
+  // double-checked with the API's live search, so one bad page read can't
+  // blank this page mid-service.
+  const status = await detectLive();
   const window = currentServiceWindow();
-  let live = scraped.live === true;
-  let videoId = scraped.videoId;
-  if (live) {
+  let live = status.live === true;
+  let videoId = status.videoId;
+  if (!live && window) {
     const api = await checkLiveNow();
-    if (api.videoId) videoId = api.videoId;
-  } else if (scraped.live === false && window) {
-    const api = await checkLiveNow();
-    if (api.live === true) {
-      live = true;
-      videoId = api.videoId;
-    }
-  } else if (scraped.live === null && window) {
-    const api = await checkLiveNow();
-    if (api.live !== false) {
+    if (api.live === true || (status.live === null && api.live !== false)) {
       live = true;
       videoId = api.videoId;
     }
