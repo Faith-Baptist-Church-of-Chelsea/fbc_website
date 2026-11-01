@@ -88,6 +88,30 @@ export async function scrapeLiveNow(): Promise<{ live: boolean | null; videoId: 
   }
 }
 
+/** What the channel /live page looks like from here — for debugging the
+ *  scrape from production (the page can differ by network/region). */
+export async function scrapeDiagnostics(): Promise<Record<string, unknown>> {
+  const res = await fetch(`https://www.youtube.com/channel/${CHANNEL}/live`, {
+    cache: "no-store",
+    headers: {
+      "user-agent":
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36",
+    },
+  });
+  const html = await res.text();
+  return {
+    status: res.status,
+    finalUrl: res.url,
+    length: html.length,
+    title: html.match(/<title>([^<]*)/)?.[1] ?? null,
+    canonical: html.match(/<link rel="canonical"[^>]*>/)?.[0] ?? null,
+    ogUrl: html.match(/<meta property="og:url"[^>]*>/)?.[0] ?? null,
+    isLive: html.includes('"isLive":true'),
+    isUpcoming: html.includes('"isUpcoming":true'),
+    videoIds: [...new Set([...html.matchAll(/"videoId":"([\w-]{6,20})"/g)].map((m) => m[1]))].slice(0, 5),
+  };
+}
+
 export type LiveStatus = {
   live: boolean | null; // null = couldn't tell (page unreadable and no API)
   videoId: string | null;

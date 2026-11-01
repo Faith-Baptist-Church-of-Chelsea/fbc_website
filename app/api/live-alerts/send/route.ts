@@ -15,7 +15,7 @@
 // exists so that cannot recur.
 import { NextRequest, NextResponse } from "next/server";
 import { currentServiceWindow } from "@/lib/service-windows";
-import { detectLive } from "@/lib/youtube";
+import { detectLive, scrapeDiagnostics } from "@/lib/youtube";
 import { alertAlreadySent, alertSentRecently, liveAlertEmail, markAlertSent, sendLiveAlert, sendLiveAlertTest } from "@/lib/live-alerts";
 
 export const dynamic = "force-dynamic";
@@ -51,6 +51,9 @@ async function run(req: NextRequest) {
   // touches the subscriber list.
   const preview = req.nextUrl.searchParams.get("preview");
   const test = req.nextUrl.searchParams.get("test");
+  if (req.nextUrl.searchParams.get("debug")) {
+    return NextResponse.json({ diagnostics: await scrapeDiagnostics(), detect: await detectLive() });
+  }
   if (preview) {
     const { html } = liveAlertEmail("Sunday Morning Service (preview)", null, "#");
     return new NextResponse(html, { headers: { "content-type": "text/html; charset=utf-8" } });
