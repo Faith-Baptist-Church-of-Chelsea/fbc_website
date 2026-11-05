@@ -14,7 +14,7 @@
 // emailed subscribers "we're live" on a quiet Wednesday night — step 2
 // exists so that cannot recur.
 import { NextRequest, NextResponse } from "next/server";
-import { currentServiceWindow, minutesIntoCurrentWindow } from "@/lib/service-windows";
+import { liveServiceLabel, minutesIntoCurrentWindow } from "@/lib/service-windows";
 import { detectLive, scrapeDiagnostics } from "@/lib/youtube";
 import { alertAlreadySent, alertSentRecently, liveAlertEmail, markAlertSent, sendLiveAlert, sendLiveAlertTest } from "@/lib/live-alerts";
 
@@ -28,6 +28,7 @@ const MAX_AGE_MIN = 45;
 // Never email twice for the same service: a stream that drops and comes
 // back is a new YouTube video but not a new reason to email anyone.
 const REALERT_GAP_MIN = 120;
+const SPECIAL = "Special service";
 
 function authorized(req: NextRequest): boolean {
   const auth = req.headers.get("authorization");
@@ -75,7 +76,10 @@ async function run(req: NextRequest) {
   // the current scheduled service, whichever is later: Family School's
   // stream usually runs straight into the 11 AM service, and that service
   // deserves its own on-time alert even though the video is 75 min old.
-  const label = currentServiceWindow()?.label ?? "Special service";
+  // A stream that starts shortly BEFORE a scheduled service is that service
+  // (liveServiceLabel looks 30 min ahead), so the early start and the
+  // scheduled start share one name and one alert.
+  const label = liveServiceLabel() ?? SPECIAL;
   const sinceStream = status.startedAt ? (Date.now() - new Date(status.startedAt).getTime()) / 60_000 : null;
   const sinceWindow = minutesIntoCurrentWindow();
   const ageMin = sinceWindow !== null && sinceStream !== null ? Math.min(sinceStream, sinceWindow) : sinceStream;
@@ -85,6 +89,12 @@ async function run(req: NextRequest) {
 
   if (await alertAlreadySent(videoId, label)) {
     return NextResponse.json({ sent: 0, videoId, label, skipped: "already alerted for this stream and service" });
+  }
+  // A stream first announced with no service name (it began well ahead of
+  // the schedule) has been announced; rolling into a scheduled service
+  // later must not announce the same stream a second time.
+  if (label !== SPECIAL && (await alertAlreadySent(videoId, SPECIAL))) {
+    return NextResponse.json({ sent: 0, videoId, label, skipped: "this stream was already announced before the service began" });
   }
   // A dropped-and-reconnected stream is a new videoId but the same service.
   if (await alertSentRecently(label, REALERT_GAP_MIN)) {

@@ -73,6 +73,17 @@ export function currentServiceWindow(now = new Date()): ServiceWindow | null {
 }
 
 /** How many minutes into the current scheduled window we are (null outside one). */
+/**
+ * The service a live stream belongs to: the one in progress, or the one
+ * about to begin. The encoder routinely goes live 5-10 minutes before the
+ * scheduled time, and that early stream IS the upcoming service, not an
+ * unnamed "special" one. Null when no service is on or within `leadMin`.
+ */
+export function liveServiceLabel(now = new Date(), leadMin = 30): string | null {
+  const w = currentServiceWindow(now) ?? currentServiceWindow(new Date(now.getTime() + leadMin * 60_000));
+  return w?.label ?? null;
+}
+
 export function minutesIntoCurrentWindow(now = new Date()): number | null {
   const w = currentServiceWindow(now);
   if (!w) return null;

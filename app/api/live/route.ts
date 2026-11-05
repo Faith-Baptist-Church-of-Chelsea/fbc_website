@@ -11,14 +11,14 @@
 //   3. If the page is unreadable and the API can't help, fall back to the
 //      service-time schedule so Sundays still work.
 import { NextResponse } from "next/server";
-import { currentServiceWindow } from "@/lib/service-windows";
+import { currentServiceWindow, liveServiceLabel } from "@/lib/service-windows";
 import { checkLiveNow, detectLive } from "@/lib/youtube";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   const window = currentServiceWindow();
-  const label = window?.label ?? "Special service";
+  const label = liveServiceLabel() ?? "Special service";
   const status = await detectLive();
 
   if (status.live === true) {
