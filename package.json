@@ -6,11 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "postinstall": "node scripts/patch-keystatic.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.115.0",
-    "@keystatic/core": "^0.6.3",
+    "@keystatic/core": "0.6.3",
     "@keystatic/next": "^5.0.4",
     "@vercel/analytics": "^2.0.1",
     "@vercel/blob": "^2.8.0",
